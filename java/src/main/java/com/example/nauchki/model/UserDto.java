@@ -1,0 +1,49 @@
+package com.example.nauchki.model;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@RequiredArgsConstructor
+public class UserDto {
+    private Long id;
+    private String name;
+    private String login;
+    private String password;
+    private String number;
+    private String Email;
+
+    public UserDto(Long id, String name, String login, String password,String number, String mail) {
+        this.id = id;
+        this.name = name;
+        this.login = login;
+        this.password = password;
+        this.number = number;
+        this.Email = mail;
+    }
+
+    public static UserDto valueOf(User user) {
+        return new UserDto(
+                user.getId(),
+                user.getUsername(),
+                user.getLogin(),
+                user.getPassword(),
+                user.getNumber(),
+                user.getEmail()
+        );
+    }
+
+    public User mapToUser() {
+        User user = new User();
+        user.setId(id);
+        user.setUsername(name);
+        user.setLogin(login);
+        user.setPassword(password);
+        user.setNumber(number);
+        user.setEmail(Email);
+        return user;
+    }
+
+}
