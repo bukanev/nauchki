@@ -2,7 +2,7 @@ package com.example.nauchki.service;
 
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
-import com.example.nauchki.model.UserDto;
+import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,8 @@ public class UserService implements UserDetailsService {
     }
 
     public User findByLogin(String login) {
-        return userRepository.findByLogin(login);
+        Optional<User> user = userRepository.findByLogin(login);
+        return user.orElse(null);
     }
 
     @Override
@@ -61,11 +62,11 @@ public class UserService implements UserDetailsService {
     }
 
     public boolean saveUser(UserDto userDto) {
-        if(userDto.getLogin() == null) {
+        if (userDto.getLogin() == null) {
             return false;
         }
-        User userFromDB = userRepository.findByLogin(userDto.getLogin());
-        if (userFromDB != null) {
+        Optional<User> userFromDB = userRepository.findByLogin(userDto.getLogin());
+        if (userFromDB.isPresent()) {
             return false;
         }
         saveRole();
@@ -76,7 +77,7 @@ public class UserService implements UserDetailsService {
         }
         roles.add(new Role(1L, "USER"));
         user.setRoles(roles);
-        user.setScore(10);
+        user.setActivate(0);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
@@ -102,9 +103,17 @@ public class UserService implements UserDetailsService {
 
     public UserDto getUser(Long id, Principal principal) {
         Optional<User> user = userRepository.findById(id);
-        if(user.isPresent() & (principal.getName().equalsIgnoreCase(user.get().getUsername()) | principal.getName().equals("ADMIN"))){
-            return UserDto.valueOf(user.get());
+        if (user.isPresent()) {
+            if (principal.getName().equalsIgnoreCase(user.get().getUsername()) | principal.getName().equals("ADMIN")) {
+                return UserDto.valueOf(user.get());
+            }
         }
         return null;
+    }
+
+    public UserDto getUser(Principal principal) {
+        User user = userRepository.findByUsername(principal.getName());
+        user.setPassword("Protected");
+        return UserDto.valueOf(user);
     }
 }

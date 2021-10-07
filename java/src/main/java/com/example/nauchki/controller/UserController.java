@@ -1,6 +1,6 @@
 package com.example.nauchki.controller;
 
-import com.example.nauchki.model.UserDto;
+import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +28,11 @@ public class UserController {
     @GetMapping("/user/{id}")
     public UserDto getUser(@PathVariable Long id, Principal principal){
         return userService.getUser(id, principal);
+    }
+
+    @GetMapping("/getuser")
+    public UserDto getUserDto(Principal principal){
+        return userService.getUser(principal);
     }
 
     @GetMapping("/test/principal")

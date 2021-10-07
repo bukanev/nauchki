@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/registration", "/reg","/login").permitAll()
-                .antMatchers("/del/{spring:[0-9]+}").hasAnyAuthority("ADMIN")
+                .antMatchers("/del/{spring:[0-9]+}").hasAnyAuthority("ADMIN","SUPERADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -41,8 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JdbcUserDetailsManager users(DataSource dataSource) {
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
-        return jdbcUserDetailsManager;
+        return new JdbcUserDetailsManager(dataSource);
     }
 
     @Bean

@@ -1,5 +1,6 @@
-package com.example.nauchki.model;
+package com.example.nauchki.model.dto;
 
+import com.example.nauchki.model.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
