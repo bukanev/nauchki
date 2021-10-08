@@ -20,17 +20,15 @@ public class ChildrenDto {
     private String gender;
     private String dateOfBirth;
     private String timeOfBirth;
-    private User parent;
     private List<StandartStage> standartStages;
     private List<UserStage> userStages;
 
-    public ChildrenDto(Long id, String name, String gender, String dateOfBirth, String timeOfBirth, User parent, List<StandartStage> standartStages, List<UserStage> userStages) {
+    public ChildrenDto(Long id, String name, String gender, String dateOfBirth, String timeOfBirth, List<StandartStage> standartStages, List<UserStage> userStages) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
         this.timeOfBirth = timeOfBirth;
-        this.parent = parent;
         this.standartStages = standartStages;
         this.userStages = userStages;
     }
@@ -45,7 +43,6 @@ public class ChildrenDto {
                 children.getGender(),
                 children.getDateOfBirth(),
                 children.getTimeOfBirth(),
-                children.getParent(),
                 children.getStandartStages(),
                 children.getUserStages());
     }
@@ -56,7 +53,6 @@ public class ChildrenDto {
         children.setGender(gender);
         children.setDateOfBirth(dateOfBirth);
         children.setTimeOfBirth(timeOfBirth);
-        children.setParent(parent);
         children.setStandartStages(standartStages);
         children.setUserStages(userStages);
         return children;

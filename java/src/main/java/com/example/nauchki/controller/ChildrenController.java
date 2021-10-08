@@ -1,6 +1,6 @@
 package com.example.nauchki.controller;
 
-import com.example.nauchki.model.User;
+import com.example.nauchki.model.Children;
 import com.example.nauchki.model.dto.ChildrenDto;
 import com.example.nauchki.service.ChildrenService;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,13 @@ public class ChildrenController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-    @GetMapping("/getchildrenbyuserid/{id}")
+    @GetMapping("/getchildren/{id}")
     public List<ChildrenDto> getChildren(@PathVariable Long id){
         return childrenService.getChildren(id);
+    }
+
+    @PostMapping("/getchildren")
+    public List<ChildrenDto> getChildrenList(@RequestBody Children children){
+        return childrenService.getChildren(children);
     }
 }

@@ -8,13 +8,11 @@ import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.repository.UserRepository;
 import com.example.nauchki.repository.UserStageRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,7 +27,7 @@ public class ChildrenService {
 
     public boolean addChildren(Long id, ChildrenDto childrenDto){
         Optional<User> user = userRepository.findById(id);
-        if(user.isPresent()) {
+        if(user.isPresent() & !childrenDto.getName().isEmpty()) {
             Children children = childrenDto.mapToChildren();
             children.setParent(user.get());
             user.get().addChildren(children);
@@ -44,8 +42,17 @@ public class ChildrenService {
         Optional<User> user = userRepository.findById(id);
         if(user.isPresent()){
             //List<Children> childrens = childrenRepository.findByParent(user.get());
-            List<Children> childrens = childrenRepository.findAllByParentId(id);
+            Set<Children> childrens = (Set<Children>) user.get().getChildrenList();
             return childrens.stream().map(Children::mapToChildrenDto).collect(Collectors.toList());
+        }
+        return null;
+    }
+    public List<ChildrenDto> getChildren(Children children){
+        List<Children> childrenList = childrenRepository.findAll(Example.of(children));
+        if(!childrenList.isEmpty()){
+            //List<Children> childrens = childrenRepository.findByParent(user.get());
+            //Set<Children> childrens = childrenRepository.findAll(Example.of(children));
+            return childrenList.stream().map(Children::mapToChildrenDto).collect(Collectors.toList());
         }
         return null;
     }

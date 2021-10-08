@@ -48,7 +48,7 @@ public class Children {
         children.setGender(gender);
         children.setDateOfBirth(dateOfBirth);
         children.setTimeOfBirth(timeOfBirth);
-        children.setParent(parent);
+        //children.setParent(parent);
         children.setStandartStages(standartStages);
         children.setUserStages(userStages);
         return children;
