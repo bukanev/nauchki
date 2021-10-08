@@ -15,20 +15,34 @@ import java.util.List;
 public class ChildrenController {
     private final ChildrenService childrenService;
 
-    @PostMapping("/addchildren/{id}")
-    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id, ChildrenDto childrenDto){
-        return childrenService.addChildren(id, childrenDto)?
+    @PostMapping("/children/{id}")
+    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id, ChildrenDto childrenDto) {
+        return childrenService.addChildren(id, childrenDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @GetMapping("/getchildren/{id}")
-    public List<ChildrenDto> getChildren(@PathVariable Long id){
+    public List<ChildrenDto> getChildren(@PathVariable Long id) {
         return childrenService.getChildren(id);
     }
 
     @PostMapping("/getchildren")
-    public List<ChildrenDto> getChildrenList(@RequestBody Children children){
+    public List<ChildrenDto> getChildrenList(@RequestBody Children children) {
         return childrenService.getChildren(children);
+    }
+
+    @PostMapping("/children")
+    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children) {
+        return childrenService.editChildren(children) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    @DeleteMapping("/deletechildren")
+    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children) {
+        return childrenService.deleteChildren(children) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }

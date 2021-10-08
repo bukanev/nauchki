@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b59144b2-83e6-4ca4-9102-8893419608c0" name="Changes" comment="Add Children и многое другое.&#10;Но при получении ChildrenDto и его сериализации уходит в ошибку.">
+    <list default="true" id="b59144b2-83e6-4ca4-9102-8893419608c0" name="Changes" comment="Add Children и многое другое.&#10;Убрал из ChildrenDto поле Parent чтобы не уходило в бесконечный цикл.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/ChildrenController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/ChildrenController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/Children.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/Children.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/Comment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/dto/ChildrenDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/model/dto/ChildrenDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/repository/ChildrenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/repository/ChildrenRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/service/ChildrenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/service/ChildrenService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -125,7 +122,7 @@
       <workItem from="1633368257596" duration="7001000" />
       <workItem from="1633417546633" duration="26088000" />
       <workItem from="1633636118496" duration="1763000" />
-      <workItem from="1633637962099" duration="8429000" />
+      <workItem from="1633637962099" duration="12053000" />
     </task>
     <task id="LOCAL-00001" summary="Create user + SpringSecurity">
       <created>1633375082448</created>
@@ -141,7 +138,14 @@
       <option name="project" value="LOCAL" />
       <updated>1633641974212</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Add Children и многое другое.&#10;Убрал из ChildrenDto поле Parent чтобы не уходило в бесконечный цикл.">
+      <created>1633679352114</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1633679352114</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -290,18 +294,10 @@
     <MESSAGE value="Create user + SpringSecurity" />
     <MESSAGE value="Add Children и многое другое." />
     <MESSAGE value="Add Children и многое другое.&#10;Но при получении ChildrenDto и его сериализации уходит в ошибку." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Children и многое другое.&#10;Но при получении ChildrenDto и его сериализации уходит в ошибку." />
+    <MESSAGE value="Add Children и многое другое.&#10;Убрал из ChildrenDto поле Parent чтобы не уходило в бесконечный цикл." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Children и многое другое.&#10;Убрал из ChildrenDto поле Parent чтобы не уходило в бесконечный цикл." />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/ChildrenController.java</url>
-          <line>31</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="SpringBootApplicationConfigurationType">
         <watch expression="this" />

@@ -21,8 +21,9 @@ public class Children {
     private String gender;
 
     /** Добавить паттерн даты рождения. Format dd-MM-yyyy */
-    @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])[- ](0?[1-9]|1[012])[-](19|20)?[0-9]{2}$")
+    @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])[-,.](0?[1-9]|1[012])[-,.](19|20)?[0-9]{2}$")
     private String dateOfBirth;
+    /** Добавим позже паттерн для времени */
     private String timeOfBirth;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -44,11 +45,11 @@ public class Children {
 
     public ChildrenDto mapToChildrenDto(){
         ChildrenDto children = new ChildrenDto();
+        children.setId(id);
         children.setName(name);
         children.setGender(gender);
         children.setDateOfBirth(dateOfBirth);
         children.setTimeOfBirth(timeOfBirth);
-        //children.setParent(parent);
         children.setStandartStages(standartStages);
         children.setUserStages(userStages);
         return children;

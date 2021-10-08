@@ -47,7 +47,7 @@ public class User {
     private Collection<Role> roles;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private Collection<Children> childrenList;
+    private List<Children> childrenList;
 
     public Collection<Role> getRoles() {
         return roles;
