@@ -1,1 +1,1 @@
-worker:    java $JAVA_OPTS -jar target/dependency/nauchki-runner.jar --port $PORT
+web:java $JAVA_OPTS -jar target/dependency/nauchki-runner.jar --port $PORT target/*.war
