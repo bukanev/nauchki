@@ -12,14 +12,16 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping()
-@RequiredArgsConstructor
 public class UserController {
     @Autowired
     private UserService userService;
 
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> addUser(UserDto userDto) {
+    public ResponseEntity<HttpStatus> addUser(@RequestBody UserDto userDto) {
         return userService.saveUser(userDto) ?
                 new ResponseEntity<>(HttpStatus.CREATED) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);

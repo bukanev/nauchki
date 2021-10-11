@@ -6,10 +6,7 @@ import com.example.nauchki.service.StageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/stage")
 @RestController
@@ -19,21 +16,21 @@ public class StageController {
 
 
     @PostMapping("/st")
-    public ResponseEntity<ResponseStatus> saveStandartStage(StandartStage stage){
+    public ResponseEntity<ResponseStatus> saveStandartStage(@RequestBody StandartStage stage){
        return stageService.saveStandartStage(stage)?
                new ResponseEntity<>(HttpStatus.OK) :
                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PostMapping("/stedit")
-    public ResponseEntity<ResponseStatus> editStandartStage(StandartStage stage){
+    public ResponseEntity<ResponseStatus> editStandartStage(@RequestBody StandartStage stage){
         return stageService.editStandartStage(stage)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PostMapping("/us")
-    public ResponseEntity<ResponseStatus> saveUserStage(UserStage stage){
+    public ResponseEntity<ResponseStatus> saveUserStage(@RequestBody UserStage stage){
         return stageService.saveUserStage(stage)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

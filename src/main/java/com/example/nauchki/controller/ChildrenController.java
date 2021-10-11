@@ -16,7 +16,7 @@ public class ChildrenController {
     private final ChildrenService childrenService;
 
     @PostMapping("/children/{id}")
-    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id, ChildrenDto childrenDto) {
+    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id,@RequestBody ChildrenDto childrenDto) {
         return childrenService.addChildren(id, childrenDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

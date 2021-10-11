@@ -14,7 +14,7 @@
     <name>nauchki</name>
     <description>nauchki</description>
     <properties>
-        <java.version>11</java.version>
+        <java.version>1.8</java.version>
     </properties>
     <dependencies>
         <dependency>
@@ -129,7 +129,6 @@
                     <programs>
                         <program>
                             <mainClass>NauchkiApplication</mainClass>
-                            <name>nauchki</name>
                         </program>
                     </programs>
                 </configuration>
@@ -142,7 +141,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+            <!--<plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.1.1</version>
@@ -153,7 +152,7 @@
                         </manifest>
                     </archive>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
     </build>
 </project>
