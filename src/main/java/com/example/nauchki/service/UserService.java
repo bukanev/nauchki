@@ -101,7 +101,7 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public UserDto getUser(Long id, Principal principal) {
+    public UserDto getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
                 UserDto userDto = UserDto.valueOf(user.get());
@@ -121,7 +121,7 @@ public class UserService implements UserDetailsService {
     public boolean editPassword(UserDto userDto) {
         Optional<User> user = userRepository.findByLogin(userDto.getLogin());
         if(user.isPresent() & user.get().getSecretAnswer().equalsIgnoreCase(userDto.getSecretAnswer())){
-            user.get().setPassword(userDto.getPassword());
+            user.get().setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
             userRepository.save(user.get());
             return true;
         }

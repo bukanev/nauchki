@@ -28,8 +28,8 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public UserDto getUser(@PathVariable Long id, Principal principal){
-        return userService.getUser(id, principal);
+    public UserDto getUser(@PathVariable Long id){
+        return userService.getUser(id);
     }
 
     @GetMapping("/getuser")

@@ -13,4 +13,9 @@ public class MainController {
     public String reg(){
         return "registrate.html";
     }
+
+    @GetMapping()
+    public String hello(){
+        return "Hello world!";
+    }
 }
