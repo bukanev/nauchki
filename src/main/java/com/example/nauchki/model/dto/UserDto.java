@@ -57,6 +57,8 @@ public class UserDto {
         user.setPassword(password);
         user.setNumber(number);
         user.setEmail(Email);
+        user.setSecretAnswer(secretAnswer);
+        user.setSecretQuestion(secretQuestion);
         return user;
     }
 

@@ -104,10 +104,10 @@ public class UserService implements UserDetailsService {
     public UserDto getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-                UserDto userDto = UserDto.valueOf(user.get());
-                userDto.setPassword("PROTECTED");
-                userDto.setSecretAnswer(user.get().getSecretAnswer());
-                return userDto;
+            UserDto userDto = UserDto.valueOf(user.get());
+            userDto.setPassword("PROTECTED");
+            userDto.setSecretAnswer(user.get().getSecretAnswer());
+            return userDto;
         }
         return null;
     }
@@ -120,10 +120,15 @@ public class UserService implements UserDetailsService {
 
     public boolean editPassword(UserDto userDto) {
         Optional<User> user = userRepository.findByLogin(userDto.getLogin());
-        if(user.isPresent() & user.get().getSecretAnswer().equalsIgnoreCase(userDto.getSecretAnswer())){
-            user.get().setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-            userRepository.save(user.get());
-            return true;
+        if (user.isPresent() &
+                !userDto.getSecretAnswer().isEmpty() &
+                !userDto.getPassword().isEmpty()) {
+            if (bCryptPasswordEncoder.matches(user.get().getSecretAnswer(),
+                    bCryptPasswordEncoder.encode(userDto.getSecretAnswer()))) {
+                user.get().setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+                userRepository.save(user.get());
+                return true;
+            }
         }
         return false;
     }
