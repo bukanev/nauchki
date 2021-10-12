@@ -31,6 +31,10 @@ public class User {
 
     private Integer activate;
 
+    private String secretQuestion;
+
+    private String secretAnswer;
+
 
     public User() {}
 

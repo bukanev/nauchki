@@ -29,7 +29,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/registration", "/reg","/login").permitAll()
-                .antMatchers("/del/{spring:[0-9]+}").hasAnyAuthority("ADMIN","SUPERADMIN")
+                .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}").hasAnyAuthority("ADMIN","SUPERADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

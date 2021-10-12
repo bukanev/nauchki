@@ -104,16 +104,27 @@ public class UserService implements UserDetailsService {
     public UserDto getUser(Long id, Principal principal) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            if (principal.getName().equalsIgnoreCase(user.get().getUsername()) | principal.getName().equals("ADMIN")) {
-                return UserDto.valueOf(user.get());
-            }
+                UserDto userDto = UserDto.valueOf(user.get());
+                userDto.setPassword("PROTECTED");
+                userDto.setSecretAnswer(user.get().getSecretAnswer());
+                return userDto;
         }
         return null;
     }
 
     public UserDto getUser(Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
-        user.setPassword("Protected");
+        user.setPassword("PROTECTED");
         return UserDto.valueOf(user);
+    }
+
+    public boolean editPassword(UserDto userDto) {
+        Optional<User> user = userRepository.findByLogin(userDto.getLogin());
+        if(user.isPresent() & user.get().getSecretAnswer().equalsIgnoreCase(userDto.getSecretAnswer())){
+            user.get().setPassword(userDto.getPassword());
+            userRepository.save(user.get());
+            return true;
+        }
+        return false;
     }
 }

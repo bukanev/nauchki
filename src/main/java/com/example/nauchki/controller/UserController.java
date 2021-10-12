@@ -37,14 +37,28 @@ public class UserController {
         return userService.getUser(principal);
     }
 
-    @GetMapping("/test/principal")
+    /*@GetMapping("/test/principal")
     public String test(Principal principal) {
         return principal.toString();
-    }
+    }*/
 
     @PostMapping("/del/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
         return userService.deleteUser(id) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    /**
+     * Принимает userDto у которого обязательно должен быть:
+     * login
+     * password
+     * SecretAnswer
+     * @return
+     */
+    @PostMapping("/editpassword")
+    public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
+        return userService.editPassword(userDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

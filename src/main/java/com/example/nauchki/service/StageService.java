@@ -7,14 +7,17 @@ import com.example.nauchki.repository.UserStageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.security.Principal;
+
 @Service
 @RequiredArgsConstructor
 public class StageService {
     private final StandartStageRepo standartStageRepo;
     private final UserStageRepository userStageRepository;
 
-    public boolean saveStandartStage(StandartStage stage) {
-        if (standartStageRepo.findByDays(stage.getDays()) == null) {
+    public boolean saveStandartStage(StandartStage stage, Principal principal) {
+        if (standartStageRepo.findByDays(stage.getDays()) == null
+                & principal.getName().equalsIgnoreCase("admin")) {
             stage.setId(null);
             standartStageRepo.save(stage);
             return true;
@@ -22,8 +25,9 @@ public class StageService {
         return false;
     }
 
-    public boolean editStandartStage(StandartStage stage) {
-        if (standartStageRepo.findByDays(stage.getDays()) != null) {
+    public boolean editStandartStage(StandartStage stage, Principal principal) {
+        if (standartStageRepo.findByDays(stage.getDays()) != null
+                & principal.getName().equalsIgnoreCase("admin")) {
             StandartStage standartStage = standartStageRepo.findByDays(stage.getDays());
             if (stage.getHeightUSSR() != null){
                 standartStage.setHeightUSSR(stage.getHeightUSSR());}

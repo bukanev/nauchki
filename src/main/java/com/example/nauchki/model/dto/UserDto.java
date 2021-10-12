@@ -15,6 +15,9 @@ public class UserDto {
     private String password;
     private String number;
     private String Email;
+    private String secretQuestion;
+    private String secretAnswer;
+
 
     public UserDto(Long id, String name, String login, String password,String number, String mail) {
         this.id = id;
@@ -23,6 +26,16 @@ public class UserDto {
         this.password = password;
         this.number = number;
         this.Email = mail;
+    }
+
+    public UserDto(String name, String login, String password, String number, String email, String secretQuestion, String secretAnswer) {
+        this.name = name;
+        this.login = login;
+        this.password = password;
+        this.number = number;
+        Email = email;
+        this.secretQuestion = secretQuestion;
+        this.secretAnswer = secretAnswer;
     }
 
     public static UserDto valueOf(User user) {
