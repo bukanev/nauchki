@@ -43,6 +43,10 @@ public class Children {
             inverseJoinColumns = @JoinColumn(name = "user_stage_id"))
     private List<UserStage> userStages;
 
+    public void addUserStage( UserStage userStage){
+        this.userStages.add(userStage);
+    }
+
     public ChildrenDto mapToChildrenDto(){
         ChildrenDto children = new ChildrenDto();
         children.setId(id);
