@@ -2,7 +2,6 @@ package com.example.nauchki.controller;
 
 import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> addUser(@RequestBody UserDto userDto) {
+    public ResponseEntity<HttpStatus> addUser(UserDto userDto) {
         return userService.saveUser(userDto) ?
                 new ResponseEntity<>(HttpStatus.CREATED) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -57,7 +56,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/editpassword")
-    public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
+    public ResponseEntity<HttpStatus> editPassword(UserDto userDto){
         return userService.editPassword(userDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

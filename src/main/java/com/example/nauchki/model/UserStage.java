@@ -60,4 +60,16 @@ public class UserStage {
     public void setSkills(String skills) {
         this.skills = skills;
     }
+
+    @Override
+    public String toString() {
+        return "UserStage{" +
+                "id=" + id +
+                ", days=" + days +
+                ", stageDate='" + stageDate + '\'' +
+                ", height=" + height +
+                ", weight=" + weight +
+                ", skills='" + skills + '\'' +
+                '}';
+    }
 }

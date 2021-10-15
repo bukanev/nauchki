@@ -33,7 +33,7 @@ public class UserDto {
         this.login = login;
         this.password = password;
         this.number = number;
-        Email = email;
+        this.Email = email;
         this.secretQuestion = secretQuestion;
         this.secretAnswer = secretAnswer;
     }

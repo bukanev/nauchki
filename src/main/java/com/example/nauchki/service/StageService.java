@@ -51,9 +51,10 @@ public class StageService {
     public boolean saveUserStage(Long id,UserStage userStage) {
         Optional<Children> children = childrenRepository.findById(id);
         if(children.isPresent()) {
-            Children findChildren = children.get();
-            findChildren.addUserStage(userStage);
-            childrenRepository.save(findChildren);
+            //userStageRepository.save(userStage);
+            System.out.println(userStage.toString());
+            children.get().addUserStage(userStage);
+            childrenRepository.save(children.get());
             return true;
         }
         return false;

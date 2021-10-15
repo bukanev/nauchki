@@ -18,21 +18,21 @@ public class StageController {
 
 
     @PostMapping("/st")
-    public ResponseEntity<ResponseStatus> saveStandartStage(@RequestBody StandartStage stage, Principal principal){
+    public ResponseEntity<ResponseStatus> saveStandartStage(StandartStage stage, Principal principal){
        return stageService.saveStandartStage(stage, principal)?
                new ResponseEntity<>(HttpStatus.OK) :
                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PostMapping("/stedit")
-    public ResponseEntity<ResponseStatus> editStandartStage(@RequestBody StandartStage stage, Principal principal){
+    public ResponseEntity<ResponseStatus> editStandartStage( StandartStage stage, Principal principal){
         return stageService.editStandartStage(stage, principal)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @PostMapping("/us/{id}")
-    public ResponseEntity<ResponseStatus> saveUserStage(@PathVariable Long id,@RequestBody UserStage stage){
+    public ResponseEntity<ResponseStatus> saveUserStage(@PathVariable Long id, UserStage stage){
         return stageService.saveUserStage(id,stage)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
