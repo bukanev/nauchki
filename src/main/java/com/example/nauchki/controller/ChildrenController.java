@@ -33,14 +33,14 @@ public class ChildrenController {
     }
 
     @PostMapping("/children")
-    public ResponseEntity<ResponseStatus> editChildren( Children children) {
+    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children) {
         return childrenService.editChildren(children) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @DeleteMapping("/deletechildren")
-    public ResponseEntity<ResponseStatus> deleteChildren(Children children) {
+    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children) {
         return childrenService.deleteChildren(children) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

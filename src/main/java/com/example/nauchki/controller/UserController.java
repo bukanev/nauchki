@@ -20,7 +20,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<HttpStatus> addUser(UserDto userDto) {
+    public ResponseEntity<HttpStatus> addUser(@RequestBody UserDto userDto) {
         return userService.saveUser(userDto) ?
                 new ResponseEntity<>(HttpStatus.CREATED) :
                 new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -56,7 +56,7 @@ public class UserController {
      * @return
      */
     @PostMapping("/editpassword")
-    public ResponseEntity<HttpStatus> editPassword(UserDto userDto){
+    public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
         return userService.editPassword(userDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
