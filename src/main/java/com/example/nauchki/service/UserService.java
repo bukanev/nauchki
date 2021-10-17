@@ -72,8 +72,10 @@ public class UserService implements UserDetailsService {
         saveRole();
         User user = userDto.mapToUser();
         List<Role> roles = new ArrayList<>();
-        if (userDto.getName().equalsIgnoreCase("admin") && userDto.getName().equalsIgnoreCase(userDto.getLogin())) {
-            roles.add(new Role(2L, "ADMIN"));
+        if (userDto.getName() != null) {
+            if (userDto.getName().equals("admin") && userDto.getName().equals(userDto.getLogin())) {
+                roles.add(new Role(2L, "ADMIN"));
+            }
         }
         roles.add(new Role(1L, "USER"));
         user.setRoles(roles);
