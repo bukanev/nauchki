@@ -72,8 +72,10 @@ public class UserService implements UserDetailsService {
         saveRole();
         User user = userDto.mapToUser();
         List<Role> roles = new ArrayList<>();
-        if (userDto.getName().equalsIgnoreCase("admin") && userDto.getName().equalsIgnoreCase(userDto.getLogin())) {
-            roles.add(new Role(2L, "ADMIN"));
+        if (userDto.getName() != null) {
+            if (userDto.getName().equals("admin") && userDto.getName().equals(userDto.getLogin())) {
+                roles.add(new Role(2L, "ADMIN"));
+            }
         }
         roles.add(new Role(1L, "USER"));
         user.setRoles(roles);
@@ -101,19 +103,43 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
-    public UserDto getUser(Long id, Principal principal) {
+    public UserDto getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            if (principal.getName().equalsIgnoreCase(user.get().getUsername()) | principal.getName().equals("ADMIN")) {
-                return UserDto.valueOf(user.get());
-            }
+            UserDto userDto = UserDto.valueOf(user.get());
+            userDto.setPassword("PROTECTED");
+            userDto.setSecretAnswer(user.get().getSecretAnswer());
+            return userDto;
         }
         return null;
     }
 
     public UserDto getUser(Principal principal) {
         User user = userRepository.findByUsername(principal.getName());
-        user.setPassword("Protected");
+        user.setPassword("PROTECTED");
         return UserDto.valueOf(user);
+    }
+    public UserDto getUser(UserDto userDto) {
+        Optional<User> user = userRepository.findByLogin(userDto.getLogin());
+        if(user.isPresent()) {
+            user.get().setPassword("PROTECTED");
+            return UserDto.valueOf(user.get());
+        }
+        return new UserDto();
+    }
+
+    public boolean editPassword(UserDto userDto) {
+        Optional<User> user = userRepository.findByLogin(userDto.getLogin());
+        if (user.isPresent() &
+                !userDto.getSecretAnswer().isEmpty() &
+                !userDto.getPassword().isEmpty()) {
+            if (bCryptPasswordEncoder.matches(user.get().getSecretAnswer(),
+                    bCryptPasswordEncoder.encode(userDto.getSecretAnswer()))) {
+                user.get().setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+                userRepository.save(user.get());
+                return true;
+            }
+        }
+        return false;
     }
 }

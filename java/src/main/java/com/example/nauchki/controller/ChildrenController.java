@@ -11,12 +11,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+//@CrossOrigin(origins = "http://localhost:3000", maxAge = 3600)
 @RequiredArgsConstructor
 public class ChildrenController {
     private final ChildrenService childrenService;
 
     @PostMapping("/children/{id}")
-    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id, ChildrenDto childrenDto) {
+    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id,ChildrenDto childrenDto) {
         return childrenService.addChildren(id, childrenDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -28,7 +29,7 @@ public class ChildrenController {
     }
 
     @PostMapping("/getchildren")
-    public List<ChildrenDto> getChildrenList(@RequestBody Children children) {
+    public List<ChildrenDto> getChildrenList(Children children) {
         return childrenService.getChildren(children);
     }
 

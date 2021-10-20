@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StandartStageRepo extends JpaRepository<StandartStage, Long> {
+    StandartStage findByDaysAndGender(Integer days, String gender);
 }

@@ -15,7 +15,9 @@ public class StandartStage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(name = "days", nullable = false)
     private Integer days;
+    private String gender;
     private Integer heightWHO;
     private Integer heightUSSR;
     private Integer weightWHO;
