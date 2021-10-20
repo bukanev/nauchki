@@ -54,13 +54,6 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-    /**
-     * Принимает userDto у которого обязательно должен быть:
-     * login
-     * password
-     * SecretAnswer
-     * @return
-     */
     @PostMapping("/editpassword")
     public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
         return userService.editPassword(userDto) ?

@@ -17,6 +17,7 @@ public class UserDto {
     private String Email;
     private String secretQuestion;
     private String secretAnswer;
+    private String activationCode;
 
 
     public UserDto(Long id, String name, String login, String password,String number, String mail) {

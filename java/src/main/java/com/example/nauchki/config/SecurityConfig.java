@@ -49,8 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/registration", "/reg").permitAll()
+                .antMatchers("/registration", "/reg","/static/**", "/activate/*").permitAll()
                 .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}","/stage/**").hasAnyAuthority("ADMIN","SUPERADMIN")
+                .anyRequest().authenticated()
                 .and()
                 .cors()
                 .and()

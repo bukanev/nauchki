@@ -14,12 +14,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +25,7 @@ public class UserService implements UserDetailsService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private MailSender mailSender;
 
     private PasswordEncoder bCryptPasswordEncoder;
 
@@ -39,6 +38,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @Autowired
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
     }
 
     public User findByLogin(String login) {
@@ -81,7 +85,22 @@ public class UserService implements UserDetailsService {
         user.setRoles(roles);
         user.setActivate(0);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setActive(1);
+        user.setActivationCode(UUID.randomUUID().toString());
+
         userRepository.save(user);
+
+        if (user.getEmail() != null) {
+            String message = String.format(
+                    "Hello, %s! \n" +
+                            "Welcome to Nauchki. Please, visit next link: http://localhost:8080/activate/%s",
+                    user.getUsername(),
+                    user.getActivationCode()
+            );
+
+            mailSender.send(user.getEmail(), "Activation code", message);
+        }
+
         return true;
     }
 
@@ -141,5 +160,15 @@ public class UserService implements UserDetailsService {
             }
         }
         return false;
+    }
+
+    public boolean activateUser(String code) {
+        User user = userRepository.findByActivationCode(code);
+        if (user == null) {
+            return false;
+        }
+        user.setActivationCode(null);
+        userRepository.save(user);
+        return true;
     }
 }

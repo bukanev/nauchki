@@ -1,20 +1,20 @@
 package com.example.nauchki.model;
 
-import com.example.nauchki.model.dto.ChildrenDto;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,16 +29,20 @@ public class User {
 
     private String number;
 
-    private Integer activate;
+    private Integer activate; //тут будет активная или не активная подписка.
 
     private String secretQuestion;
 
     private String secretAnswer;
 
+    private String activationCode;
 
-    public User() {}
+    private Integer active;
 
-    public User(Long id,String username) {
+    public User() {
+    }
+
+    public User(Long id, String username) {
         this.id = id;
         this.username = username;
     }
@@ -56,7 +60,60 @@ public class User {
     public Collection<Role> getRoles() {
         return roles;
     }
+
     public void addChildren(Children children) {
         this.childrenList.add(children);
+    }
+
+    public String getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(String activationCode) {
+        this.activationCode = activationCode;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "username='" + username + '\'' +
+                ", login='" + login + '\'' +
+                ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
+                ", number='" + number + '\'' +
+                ", activate=" + activate +
+                ", secretQuestion='" + secretQuestion + '\'' +
+                ", secretAnswer='" + secretAnswer + '\'' +
+                ", activationCode='" + activationCode + '\'' +
+                ", active=" + active +
+                '}';
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        if (active == 1) {
+            return true;
+        }
+        return false;
     }
 }
