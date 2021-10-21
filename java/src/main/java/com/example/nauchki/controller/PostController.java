@@ -3,6 +3,7 @@ package com.example.nauchki.controller;
 
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.User;
+import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,14 +25,14 @@ public class PostController {
     private final PostService postService;
 
     @GetMapping("/post")
-    public Set<Post> main(@RequestParam(required = false, defaultValue = "") String filter) {
+    public Set<PostDto> main(@RequestParam(required = false, defaultValue = "") String filter) {
         if (filter != null && !filter.isEmpty()) {
             return postService.getPost(filter);
         }
         return postService.getAllPost();
     }
 
-    @PostMapping("/post")
+    @PostMapping(value = "/post")
     public ResponseEntity<HttpStatus> add(
             @AuthenticationPrincipal User user,
             @RequestParam String text,
@@ -40,9 +41,6 @@ public class PostController {
 
         return postService.addPost(user,text, tag, file) ?
                 new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
-
-
-
 }

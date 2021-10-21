@@ -1,9 +1,13 @@
 package com.example.nauchki.model.dto;
 
+import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
@@ -15,28 +19,20 @@ public class UserDto {
     private String password;
     private String number;
     private String Email;
-    private String secretQuestion;
     private String secretAnswer;
+    private Collection<Role> roleList;
+    private String secretQuestion;
     private String activationCode;
 
 
-    public UserDto(Long id, String name, String login, String password,String number, String mail) {
+    public UserDto(Long id, String name, String login, String password, String number, String email,Collection<Role> roleList) {
         this.id = id;
         this.name = name;
         this.login = login;
         this.password = password;
         this.number = number;
-        this.Email = mail;
-    }
-
-    public UserDto(String name, String login, String password, String number, String email, String secretQuestion, String secretAnswer) {
-        this.name = name;
-        this.login = login;
-        this.password = password;
-        this.number = number;
         this.Email = email;
-        this.secretQuestion = secretQuestion;
-        this.secretAnswer = secretAnswer;
+        this.roleList = roleList;
     }
 
     public static UserDto valueOf(User user) {
@@ -46,7 +42,8 @@ public class UserDto {
                 user.getLogin(),
                 user.getPassword(),
                 user.getNumber(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRoles()
         );
     }
 

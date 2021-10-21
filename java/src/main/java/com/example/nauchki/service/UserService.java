@@ -93,7 +93,7 @@ public class UserService implements UserDetailsService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello, %s! \n" +
-                            "Welcome to Nauchki. Please, visit next link: http://localhost:8080/activate/%s",
+                            "Welcome to Nauchki. Please, visit next link: https://nauchki.herokuapp.com/activate/%s",
                     user.getUsername(),
                     user.getActivationCode()
             );
@@ -140,6 +140,14 @@ public class UserService implements UserDetailsService {
     }
     public UserDto getUser(UserDto userDto) {
         Optional<User> user = userRepository.findByLogin(userDto.getLogin());
+        if(user.isPresent()) {
+            user.get().setPassword("PROTECTED");
+            return UserDto.valueOf(user.get());
+        }
+        return new UserDto();
+    }
+    public UserDto getUser(String login) {
+        Optional<User> user = userRepository.findByLogin(login);
         if(user.isPresent()) {
             user.get().setPassword("PROTECTED");
             return UserDto.valueOf(user.get());

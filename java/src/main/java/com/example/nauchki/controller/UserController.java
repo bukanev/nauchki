@@ -38,7 +38,13 @@ public class UserController {
 
     @PostMapping("/user")
     public UserDto getUserDtoByName(@RequestBody UserDto userDto){
-        return userService.getUser(userDto);
+        if(userDto.getName()!= null){
+            return userService.getUser(userDto.getName());
+        }
+        if(userDto.getLogin()!= null){
+            return userService.getUser(userDto);
+        }
+        return new UserDto();
     }
 
 

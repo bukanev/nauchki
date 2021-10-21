@@ -9,11 +9,11 @@ public class Post {
     private Integer id;
     private String tag;
     private String text;
+    private String img_path;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User author;
-
-    private String filename;
 
     public Post() {
     }
@@ -58,11 +58,11 @@ public class Post {
         this.tag = tag;
     }
 
-    public String getFilename() {
-        return filename;
+    public String getImg_path() {
+        return img_path;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename;
+    public void setImg_path(String filename) {
+        this.img_path = filename;
     }
 }

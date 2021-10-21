@@ -2,6 +2,7 @@ package com.example.nauchki.service;
 
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.User;
+import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,6 @@ public class PostService {
 
     @Value("src/main/resources/img")
     private String uploadPath;
-
-    public Set<Post> getPost(String filter) {
-        return (Set<Post>) postRepo.findByTag(filter);
-    }
 
 
 
@@ -44,7 +42,7 @@ public class PostService {
                 String resultFilename = uuidFile + "." + file.getOriginalFilename();
 
                 file.transferTo(new File(uploadPath + "/" + resultFilename));
-                post.setFilename(resultFilename);
+                post.setImg_path(resultFilename);
             }
             postRepo.save(post);
             return true;
@@ -54,7 +52,11 @@ public class PostService {
         return false;
     }
 
-    public Set<Post> getAllPost() {
-        return (Set<Post>) postRepo.findAll();
+    public Set<PostDto> getPost(String filter) {
+        return postRepo.findByTag(filter).stream().map(PostDto::valueOf).collect(Collectors.toSet());
+    }
+
+    public Set<PostDto> getAllPost() {
+        return postRepo.findAll().stream().map(PostDto::valueOf).collect(Collectors.toSet());
     }
 }

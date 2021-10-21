@@ -15,7 +15,7 @@ public class MailController {
     private UserService userService;
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code){
+    public String activate(@PathVariable String code){
         boolean isActivated = userService.activateUser(code);
         if(isActivated) {
             return "User successfully activated!" ;
