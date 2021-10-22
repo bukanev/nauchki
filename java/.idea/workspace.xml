@@ -13,8 +13,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Class" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -25,6 +25,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="JpbToolWindowState">
     <option name="myId2FirstActivated">
@@ -65,6 +66,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/main/resources/static" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
@@ -73,6 +75,9 @@
     <property name="settings.editor.selected.configurable" value="MavenSettings" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\UltimateIdeaProjects\nauchki\java\src\main\resources\static" />
+    </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="com.example.nauchki.repository" />
       <recent name="com.example.nauchki.model" />
@@ -100,7 +105,9 @@
       <workItem from="1634562761565" duration="16801000" />
       <workItem from="1634724193398" duration="15108000" />
       <workItem from="1634801918831" duration="5902000" />
-      <workItem from="1634825193880" duration="8221000" />
+      <workItem from="1634825193880" duration="16873000" />
+      <workItem from="1634849251577" duration="9000" />
+      <workItem from="1634886974481" duration="6379000" />
     </task>
     <servers />
   </component>
@@ -265,14 +272,9 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/service/SmsService.java</url>
-          <line>23</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/service/SmsService.java</url>
-          <line>18</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/PostController.java</url>
+          <line>41</line>
+          <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

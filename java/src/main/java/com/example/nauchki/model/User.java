@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -87,33 +87,5 @@ public class User implements UserDetails {
                 ", activationCode='" + activationCode + '\'' +
                 ", active=" + active +
                 '}';
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        if (active == 1) {
-            return true;
-        }
-        return false;
     }
 }

@@ -55,18 +55,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/registration", "/reg","/static/**", "/activate/*").permitAll()
+                .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/test").permitAll()
                 .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}","/stage/**").hasAnyAuthority("ADMIN","SUPERADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .cors()
                 .and()
-                .formLogin().successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-                        //do nothing
-                    }
-                })
+                .formLogin().permitAll()
                 .and()
                 .logout()
                 .and()

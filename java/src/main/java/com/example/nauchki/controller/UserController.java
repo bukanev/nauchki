@@ -33,7 +33,8 @@ public class UserController {
 
     @GetMapping("/getuser")
     public UserDto getUserDto(Principal principal){
-        return userService.getUser(principal);
+        UserDto userDto = userService.getUser(principal);
+        return userDto;
     }
 
     @PostMapping("/user")
