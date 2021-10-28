@@ -22,4 +22,8 @@ public class MainController {
         return "Hello";
     }
 
+    @GetMapping("/test")
+    public String test(){
+        return "index";
+    }
 }

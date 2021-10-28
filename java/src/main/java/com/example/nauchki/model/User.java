@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Table(name = "users")
-public class User implements UserDetails {
+public class User implements UserDetails{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -111,9 +111,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if (active == 1) {
-            return true;
-        }
-        return false;
+        return true;
     }
 }

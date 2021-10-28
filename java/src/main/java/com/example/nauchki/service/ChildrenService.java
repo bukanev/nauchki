@@ -23,7 +23,7 @@ public class ChildrenService {
 
     public boolean addChildren(Long id, ChildrenDto childrenDto) {
         Optional<User> user = userRepository.findById(id);
-        if (user.isPresent() & !childrenDto.getName().isEmpty()) {
+        if (user.isPresent() & childrenDto.getName() != null) {
             Children children = childrenDto.mapToChildren();
             children.setParent(user.get());
             user.get().addChildren(children);
