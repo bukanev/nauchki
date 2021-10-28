@@ -7,14 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.Collection;
-import java.util.List;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class UserDto {
     private Long id;
-    private String name;
+    private String username;
     private String login;
     private String password;
     private String number;
@@ -27,7 +26,7 @@ public class UserDto {
 
     public UserDto(Long id, String name, String login, String password, String number, String email,Collection<Role> roleList) {
         this.id = id;
-        this.name = name;
+        this.username = name;
         this.login = login;
         this.password = password;
         this.number = number;
@@ -50,7 +49,7 @@ public class UserDto {
     public User mapToUser() {
         User user = new User();
         user.setId(id);
-        user.setUsername(name);
+        user.setUsername(username);
         user.setLogin(login);
         user.setPassword(password);
         user.setNumber(number);

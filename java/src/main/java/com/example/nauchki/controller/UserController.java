@@ -1,5 +1,6 @@
 package com.example.nauchki.controller;
 
+import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,26 +34,23 @@ public class UserController {
 
     @GetMapping("/getuser")
     public UserDto getUserDto(Principal principal){
-        UserDto userDto = userService.getUser(principal);
-        return userDto;
-    }
-
-    @PostMapping("/user")
-    public UserDto getUserDtoByName(@RequestBody UserDto userDto){
-        if(userDto.getName()!= null){
-            return userService.getUser(userDto.getName());
-        }
-        if(userDto.getLogin()!= null){
-            return userService.getUser(userDto);
+        if(principal != null){
+            System.out.println("============ "+principal.toString());
+            return userService.getUser(principal.getName());
         }
         return new UserDto();
     }
 
-
-    /*@GetMapping("/test/principal")
-    public String test(Principal principal) {
-        return principal.toString();
-    }*/
+    @PostMapping("/user")
+    public UserDto getUserDtoByName(@RequestBody UserDto userDto){
+        if(userDto.getUsername()!= null){
+            return userService.getUser(userDto.getUsername());
+        }
+        if(userDto.getLogin()!= null){
+            return userService.getUser(userDto.getLogin());
+        }
+        return new UserDto();
+    }
 
     @PostMapping("/del/{id}")
     public ResponseEntity<HttpStatus> deleteUser(@PathVariable Long id){
@@ -66,5 +64,10 @@ public class UserController {
         return userService.editPassword(userDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<HttpStatus> auth(@RequestBody User user) throws Exception {
+        return userService.getAuth(user.getLogin(), user.getPassword());
     }
 }

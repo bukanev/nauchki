@@ -7,11 +7,13 @@ import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -23,16 +25,16 @@ public class PostService {
     @Autowired
     private final PostRepo postRepo;
 
-    @Value("src/main/resources/img")
+    @Value("${upload.path}")
     private String uploadPath;
 
-
+    private String localDir = System.getProperty("user.dir");
 
     public boolean addPost(User user, String text, String tag, MultipartFile file){
         Post post = new Post(text, tag, user);
         try {
             if (file != null && !file.getOriginalFilename().isEmpty()) {
-                File uploadDir = new File(uploadPath);
+                File uploadDir = new File(localDir + uploadPath);
 
                 if (!uploadDir.exists()) {
                     uploadDir.mkdir();
@@ -40,9 +42,9 @@ public class PostService {
 
                 String uuidFile = UUID.randomUUID().toString();
                 String resultFilename = uuidFile + "." + file.getOriginalFilename();
-
-                file.transferTo(new File(uploadPath + "/" + resultFilename));
-                post.setImg_path(resultFilename);
+                File img = new File(localDir + uploadPath + "/" , resultFilename);
+                file.transferTo(img);
+                post.setImg_path("https://nauchki.herokuapp.com/img/" + resultFilename);
             }
             postRepo.save(post);
             return true;
@@ -52,11 +54,25 @@ public class PostService {
         return false;
     }
 
-    public Set<PostDto> getPost(String filter) {
-        return postRepo.findByTag(filter).stream().map(PostDto::valueOf).collect(Collectors.toSet());
+    public Set<PostDto> getPost(Post filter) {
+        return postRepo.findAll(Example.of(filter)).stream().map(PostDto::valueOf).collect(Collectors.toSet());
     }
-
     public Set<PostDto> getAllPost() {
         return postRepo.findAll().stream().map(PostDto::valueOf).collect(Collectors.toSet());
+    }
+
+    public boolean deletePost(Long id) {
+        try {
+            Optional<Post> post = postRepo.findById(id);
+            if(post.isPresent()){
+                File file = new File(localDir + uploadPath + post.get().getImg_path());
+                file.delete();
+            }
+            postRepo.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }

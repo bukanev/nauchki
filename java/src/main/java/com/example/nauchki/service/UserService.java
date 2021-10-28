@@ -6,15 +6,18 @@ import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import java.security.Principal;
 import java.util.*;
@@ -76,8 +79,8 @@ public class UserService implements UserDetailsService {
         saveRole();
         User user = userDto.mapToUser();
         List<Role> roles = new ArrayList<>();
-        if (userDto.getName() != null) {
-            if (userDto.getName().equals("admin") && userDto.getName().equals(userDto.getLogin())) {
+        if (userDto.getUsername() != null) {
+            if (userDto.getUsername().equals("admin") && userDto.getUsername().equals(userDto.getLogin())) {
                 roles.add(new Role(2L, "ADMIN"));
             }
         }
@@ -94,7 +97,7 @@ public class UserService implements UserDetailsService {
             String message = String.format(
                     "Hello, %s! \n" +
                             "Welcome to Nauchki. Please, visit next link: https://nauchki.herokuapp.com/activate/%s",
-                    user.getUsername(),
+                    user.getLogin(),
                     user.getActivationCode()
             );
 
@@ -138,17 +141,10 @@ public class UserService implements UserDetailsService {
         user.setPassword("PROTECTED");
         return UserDto.valueOf(user);
     }
-    public UserDto getUser(UserDto userDto) {
-        Optional<User> user = userRepository.findByLogin(userDto.getLogin());
-        if(user.isPresent()) {
-            user.get().setPassword("PROTECTED");
-            return UserDto.valueOf(user.get());
-        }
-        return new UserDto();
-    }
+
     public UserDto getUser(String login) {
         Optional<User> user = userRepository.findByLogin(login);
-        if(user.isPresent()) {
+        if (user.isPresent()) {
             user.get().setPassword("PROTECTED");
             return UserDto.valueOf(user.get());
         }
@@ -178,5 +174,30 @@ public class UserService implements UserDetailsService {
         user.setActivationCode(null);
         userRepository.save(user);
         return true;
+    }
+
+    public User findByUsernameAndPassword(String username, String password) {
+        String bPass = bCryptPasswordEncoder.encode(password);
+        Optional<User> user = userRepository.findByUsernameAndPassword(username, bPass);
+        return user.orElse(null);
+    }
+
+    public ResponseEntity<HttpStatus> getAuth(String login, String password) {
+        try {
+            Optional<User> user = userRepository.findByLogin(login);
+            if (user.isPresent()) {
+                UserDetails userDetails = user.get();
+                if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(login, null, userDetails.getAuthorities());
+                    authentication.setDetails(userDetails);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                }
+            }
+        } catch (UsernameNotFoundException ex) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
