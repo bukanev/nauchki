@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b59144b2-83e6-4ca4-9102-8893419608c0" name="Changes" comment="Добавил секретное слово и еще подправил методы получения пользователя." />
+    <list default="true" id="b59144b2-83e6-4ca4-9102-8893419608c0" name="Changes" comment="Добавил секретное слово и еще подправил методы получения пользователя.">
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/PostController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/example/nauchki/service/PostService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/example/nauchki/service/PostService.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -122,7 +125,11 @@
       <workItem from="1635147387362" duration="19710000" />
       <workItem from="1635412069513" duration="13000" />
       <workItem from="1635414674547" duration="3543000" />
-      <workItem from="1635433736373" duration="812000" />
+      <workItem from="1635433736373" duration="3255000" />
+      <workItem from="1635509396517" duration="3084000" />
+      <workItem from="1635520317551" duration="115000" />
+      <workItem from="1635863928520" duration="3806000" />
+      <workItem from="1635953491279" duration="6225000" />
     </task>
     <servers />
   </component>
@@ -287,11 +294,6 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/service/PostService.java</url>
-          <line>33</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/controller/UserController.java</url>
           <line>50</line>
           <option name="temporary" value="true" />
@@ -301,6 +303,11 @@
           <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/service/ChildrenService.java</url>
           <line>24</line>
           <option name="timeStamp" value="34" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/com/example/nauchki/service/PostService.java</url>
+          <line>60</line>
+          <option name="timeStamp" value="36" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

@@ -33,7 +33,7 @@ public class StageController {
     }
 
     @PostMapping("/us/{id}")
-    public ResponseEntity<ResponseStatus> saveUserStage(@PathVariable Long id, UserStage stage){
+    public ResponseEntity<ResponseStatus> saveUserStage(@PathVariable Long id, @RequestBody UserStage stage){
         return stageService.saveUserStage(id,stage)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
