@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.6.0-1/css/bootstrap.min.css}"/>
+</head>
+<body>
+<script th:src="@{/webjars/bootstrap/4.6.0-1/js/bootstrap.bundle.min.js}"></script>
+<tr>
+    <td>
+        <form action="#" th:action="@{/registration}" method="post" th:object="${user}">
+            <div class="mb-3">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" id="name" name="name"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Login</label>
+                <input type="text" class="form-control" id="login" name="login"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input type="text" class="form-control" id="password" name="password"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Tel. number</label>
+                <input type="tel" class="form-control" id="number" name="number"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email"/>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Secret Answer</label>
+                <input type="text" class="form-control" id="secretAnswer" name="secretAnswer"/>
+            </div>
+            <div class="mb-3">
+                <button type="submit" class="btn-primary">Enter</button>
+            </div>
+        </form>
+    </td>
+</tr>
+</body>
+</html>
