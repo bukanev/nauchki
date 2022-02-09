@@ -1,0 +1,6 @@
+@import url("https://fonts.googleapis.com/css?family=Inter:300,regular,400,500,700&display=swap&subset=cyrillic-ext");
+
+* {
+  margin: 0 auto;
+  font-family: "Inter", sans-serif;
+}

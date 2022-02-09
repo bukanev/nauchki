@@ -1,0 +1,50 @@
+
+.circle {
+    height: 50px;
+    width: 50px;
+    background-color: #FDFFA7;
+    position: relative;
+    border-radius: 100%;
+    border: none;
+    margin-left: 35px;
+}
+
+
+.circle:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "+"; 
+    font-size: 60px; 
+    color: #875335;
+    line-height: 40px;
+    text-align: center;
+    
+}
+
+
+.circleCross{
+    height: 50px;
+    width: 50px;
+    background-color: #0EAC99;
+    position: relative;
+    border-radius: 100%;
+    border: none;
+}
+
+.circleCross:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    content: "\2716"; 
+    font-size: 35px; 
+    color: #ffffff;
+    line-height: 50px;
+    text-align: center;
+    font-weight: 900;
+    
+}
