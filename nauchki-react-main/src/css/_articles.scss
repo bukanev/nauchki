@@ -1,0 +1,167 @@
+.acticles__container {
+  display: grid;
+  grid-template-columns: 183px 946px;
+  grid-column-gap: 43px;
+}
+
+.articles__title {
+  font-size: 30px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 36px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+
+.articles {
+  margin-top: 59px;
+}
+
+.acticles__cards {
+  min-height: 298px;
+  width: 946px;
+  background: #ffffff;
+  box-shadow: 0px 4px 15px rgba(2, 2, 2, 0.38);
+  border-radius: 20px 20px 0px 0px;
+  margin-top: 129px; //от заголовка
+}
+
+.acticles__cards li {
+  list-style-type: none;
+}
+
+.post__card-img {
+  height: 208px;
+  width: 310px;
+  border-radius: 20px;
+}
+
+.acticles__cards-wrapper {
+  margin: 0 auto;
+  position: relative;
+  width: 705px;
+  display: grid;
+  grid-template-columns: 313px 313px;
+  grid-column-gap: 85px;
+  grid-row-gap: 92px;
+  padding-top: 94px;
+  padding-bottom: 64px;
+}
+
+.post__card {
+  height: 208px;
+  width: 310px;
+  border-radius: 20px;
+  background: #c4c4c4;
+}
+//TODO: скачет верстка. Думаю, связано с тем, что картинки не приходят
+
+.post__card-title {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: #000000;
+  text-align: center;
+  padding-top: 13px;
+}
+
+.themes {
+  width: 183px;
+  margin-top: 184px;
+}
+.themes__title {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 36px;
+
+  color: #000000;
+}
+
+.themes__line {
+  border-bottom: 3px solid #c5c5c5;
+  width: 183px;
+}
+
+.acrticles__search {
+  height: 53px;
+  width: 746px;
+  background-color: #ebe7e7;
+  float: left;
+  border-radius: 50px;
+  margin-top: 26px;
+  border: none;
+  padding-left: 31px;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 27px;
+}
+
+/* отдельный пост */
+
+.onePost-imgWrapper {
+  height: 314px;
+  width: 512px;
+  border-radius: 20px;
+  background-color: #c4c4c4;
+  margin-top: 36px;
+}
+
+.onePost-img {
+  height: 314px;
+  width: 512px;
+  border-radius: 20px;
+}
+
+.onePost-title {
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 30px;
+  text-align: center;
+  margin-top: 35px;
+}
+
+.onePost-arrowBtn {
+  border: none;
+  background-color: inherit;
+  transition: transform 0.2s ease-in-out;
+}
+
+.onePost-arrowBtn:hover {
+  transform: translate3d(-10px, 0px, 0px);
+}
+
+.onePost-wrapper {
+  width: 868px;
+  padding-top: 29px;
+}
+
+.onePost-textWrapper {
+  min-height: 36px;
+  width: 512px;
+  margin-top: 41px;
+  text-align: justify;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 19px;
+}
+
+.themes__taggsList {
+  list-style: none;
+  width: 100%;
+  padding: 0;
+  font-size: 25px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+  margin-top: 38px;
+  text-transform: capitalize;
+}
+
+.themes__taggsList li {
+  margin-top: 45px;
+}
