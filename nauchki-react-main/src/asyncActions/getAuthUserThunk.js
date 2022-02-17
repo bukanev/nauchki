@@ -1,16 +1,26 @@
-import { LoginAPI, UserAPI } from "../api/api";
-import { getUserDataAC, toggleAuthAC } from "../store/userReducer";
-import { Redirect } from "react-router";
-
+import {
+  LoginAPI,
+  UserAPI
+} from "../api/api";
+import {
+  getUserDataAC,
+  toggleAuthAC
+} from "../store/userReducer";
+import {
+  Redirect
+} from "react-router";
 export const asyncApiCall = (login, password) => {
   return async (dispatch) => {
-    await LoginAPI.auth(login, password);
+    await LoginAPI.auth(login, password)
+      .then((res) => {
+        const token = res.data;
+        localStorage.setItem("TOKEN", token);
+      });
 
     await UserAPI.getAuthUser(login, password)
       .then((res) => {
         dispatch(getUserDataAC(res.data));
-        dispatch(toggleAuthAC(true));
-        <Redirect to="/personalArea" />;
+        dispatch(toggleAuthAC(true)); 
       })
       .catch((err) => {
         if (err.response) {
