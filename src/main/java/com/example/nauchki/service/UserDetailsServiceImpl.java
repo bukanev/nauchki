@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -22,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
 
-    @Override
+    /*@Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
@@ -33,6 +34,17 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         //        mapRolesToAuthorities(user.getGrantedAuthorities()));
         return  new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(),
                 mapRolesToAuthorities(user.getGrantedAuthorities()));
+    }*/
+
+    @Override
+    @Transactional
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (!user.isPresent()) {
+            throw new UsernameNotFoundException(String.format("Email '%s' not found", email));
+        }
+        return  new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(),
+                mapRolesToAuthorities(user.get().getGrantedAuthorities()));
     }
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {

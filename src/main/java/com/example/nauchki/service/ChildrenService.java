@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -49,7 +50,7 @@ public class ChildrenService {
             List<Children> childrens = user.get().getChildrenList();
             for (int i = 0; i < childrens.size(); i++) {
                 Children children = childrens.get(i);
-                long days = extracted(children.getDateOfBirth());
+                long days = getDays(children.getDateOfBirth());
                 List<StandartStage> stageList = stageRepo.findByDaysAndGender((int) days, children.getGender());
                 children.setStandartStages(stageList);
             }
@@ -58,7 +59,7 @@ public class ChildrenService {
         return null;
     }
 
-    private long extracted(String dateOfBirth) {
+    private long getDays(String dateOfBirth) {
         DateFormat dateFormat = new SimpleDateFormat(dateOfBirth);
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
         long days = 0;
@@ -113,20 +114,38 @@ public class ChildrenService {
         return null;
     }
 
-    public String addChildrenImgToList(MultipartFile file, Long id, String comment){
+    public String addChildrenImg(MultipartFile file, Long id, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            String path = fileSaver.saveFile(file);
             Optional<Children> children = childrenRepository.findById(id);
-            children.ifPresent(value -> {
-                ChildrenImg childrenImg = new ChildrenImg();
-                childrenImg.setImgPath(path);
-                childrenImg.setImg(file.getOriginalFilename());
-                childrenImg.setComment(comment);
-                value.addChildrenImg(childrenImg);
-                childrenImgRepo.save(childrenImg);
-                childrenRepository.save(value);
-            });
-            return path;
+            if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
+                String path = fileSaver.saveFile(file);
+                children.ifPresent(value -> {
+                    value.setImg_path(path);
+                    value.setImg(file.getOriginalFilename());
+                    childrenRepository.save(value);
+                });
+                return path;
+            }
+        }
+        return null;
+    }
+
+    public String addChildrenImgToList(MultipartFile file, Long id, String comment, Principal principal) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<Children> children = childrenRepository.findById(id);
+            if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
+                String path = fileSaver.saveFile(file);
+                children.ifPresent(value -> {
+                    ChildrenImg childrenImg = new ChildrenImg();
+                    childrenImg.setImgPath(path);
+                    childrenImg.setImg(file.getOriginalFilename());
+                    childrenImg.setComment(comment);
+                    value.addChildrenImg(childrenImg);
+                    childrenImgRepo.save(childrenImg);
+                    childrenRepository.save(value);
+                });
+                return path;
+            }
         }
         return null;
     }

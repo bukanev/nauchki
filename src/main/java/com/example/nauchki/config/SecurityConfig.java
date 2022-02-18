@@ -7,6 +7,7 @@ import com.example.nauchki.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -62,7 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/test", "/auth", "/login", "index.html","/swagger-ui").permitAll()
+                .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/test", "/auth", "/login",
+                        "index.html","/swagger-ui", "/editpassword/**","editpass").permitAll()
                 .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}","/stage/**","/admin","/admin/**").hasAnyAuthority("ADMIN","SUPERADMIN")
                 //.anyRequest().authenticated()
                 .and()

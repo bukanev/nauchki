@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -35,6 +36,12 @@ public class UserService {
     private final PasswordEncoder bCryptPasswordEncoder;
 
 
+    /**
+     * Сохранение нового пользователя
+     *
+     * @param userDto
+     * @return
+     */
     public boolean saveUser(UserDto userDto) {
         if (userDto.getEmail() == null || userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             return false;
@@ -58,10 +65,10 @@ public class UserService {
 
         if (user.getEmail() != null) {
             String message = String.format(
-                            "Hello! \n" +
+                    "Hello! \n" +
                             "Welcome to Nauchki! To confirm your email, please, visit next link: https://nauchki.herokuapp.com/activate/%s",
-                            //user.getLogin(),
-                            user.getActivationCode()
+                    //user.getLogin(),
+                    user.getActivationCode()
             );
 
             mailSender.send(user.getEmail(), "Activation code", message);
@@ -99,14 +106,9 @@ public class UserService {
         return null;
     }
 
-    public UserDto getUser(String login) {
-        Optional<User> user = userRepository.findByLogin(login);
-        if (user.isPresent()) {
-            user.get().setPassword("PROTECTED");
-            return UserDto.valueOf(user.get());
-        }
-        Optional<User> userTwo = userRepository.findByEmail(login);
-        if(userTwo.isPresent()){
+    public UserDto getUser(String email) {
+        Optional<User> userTwo = userRepository.findByEmail(email);
+        if (userTwo.isPresent()) {
             userTwo.get().setPassword("PROTECTED");
             return UserDto.valueOf(userTwo.get());
         }
@@ -114,16 +116,16 @@ public class UserService {
     }
 
     public boolean editPassword(UserDto userDto) {
-        Optional<User> user = userRepository.findByLogin(userDto.getLogin());
-        if (user.isPresent() &
-                !userDto.getSecretAnswer().isEmpty() &
-                !userDto.getPassword().isEmpty()) {
-            if (bCryptPasswordEncoder.matches(user.get().getSecretAnswer(),
-                    bCryptPasswordEncoder.encode(userDto.getSecretAnswer()))) {
-                user.get().setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
-                userRepository.save(user.get());
-                return true;
-            }
+        Optional<User> user = userRepository.findByEmail(userDto.getEmail());
+        if(user.isPresent()) {
+            user.get().setActivationCode(UUID.randomUUID().toString());
+            String message = String.format(
+                    "Для смены пароля пройдите по ссылке: https://nauchki.herokuapp.com/editpassword/%s",
+                    user.get().getActivationCode()
+            );
+            userRepository.save(user.get());
+            mailSender.send(userDto.getEmail(), "Смена пароля", message);
+            return true;
         }
         return false;
     }
@@ -168,11 +170,12 @@ public class UserService {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     HttpHeaders headers = new HttpHeaders();
                     headers.set(HttpHeaders.AUTHORIZATION, token);
-                    return new ResponseEntity<>(headers,HttpStatus.OK);
+                    ResponseEntity response = new ResponseEntity<>(token, headers, HttpStatus.OK);
+                    return response;
                 }
             }
         } catch (UsernameNotFoundException ex) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(ex.getMessage(),HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
@@ -190,5 +193,28 @@ public class UserService {
         return null;
     }
 
+    public String addImage(MultipartFile file, Principal principal) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<User> user = userRepository.findByEmail(principal.getName());
+            String path = fileSaver.saveFile(file);
+            if (user.isPresent()) {
+                user.get().setImg_path(path);
+                userRepository.save(user.get());
+                return path;
+            }
+        }
+        return null;
+    }
 
+
+    public boolean editPass(String code, String password) {
+        User user = userRepository.findByActivationCode(code);
+        if (user == null) {
+            return false;
+        }
+        user.setActivationCode(null);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
+        return true;
+    }
 }

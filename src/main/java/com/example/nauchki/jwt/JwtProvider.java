@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Component
 public class JwtProvider {
 
-    private final static String BEARER_PREFIX = "Bearer ";
+    final static String BEARER_PREFIX = "Bearer ";
     private final static String KEY = "securesecuresecuresecuresecuresecuresecureNauchki";
 
     public String createToken(Authentication authentication) {
