@@ -64,7 +64,7 @@ public class UserController {
     public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
         return userService.editPassword(userDto) ?
                 new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 

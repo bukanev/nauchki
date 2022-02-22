@@ -4,10 +4,12 @@ import com.example.nauchki.model.Post;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,16 +32,20 @@ public class PostService {
         return postRepo.findByTag(tag).stream().map(PostDto::valueOf).collect(Collectors.toList());
     }
 
-    public boolean deletePost(Long id) {
-        //TODO Сделать удаление.
+    public boolean deletePost(Long id, Principal principal) {
+        Post post = postRepo.getById(id);
+        if(post.getAuthor().getEmail().equals(principal.getName())){
+            postRepo.deleteById(id);
+            return true;
+        }
         return false;
     }
 
     public boolean addPost(Post post, MultipartFile file){
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             String path = saverFile.saveFile(file);
-            postRepo.save(post);
             post.setImg_path(path);
+            postRepo.save(post);
             return true;
         }
         return false;
