@@ -87,6 +87,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000","http://127.0.0.1:3000","http://localhost:8080")
                 .allowedMethods("*")
+                .allowedHeaders("Content-Type","Authorization", "X-Requested-With", "accept", "Origin", "Access-Control-Request-Method",
+                        "Access-Control-Request-Headers")
+                .exposedHeaders("Access-Control-Allow-Origin", "Access-Control-Allow-Credentials")
                 .allowCredentials(true);
     }
 

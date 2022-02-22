@@ -1,12 +1,14 @@
 package com.example.nauchki.controller;
 
+import com.example.nauchki.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.cloudinary.json.JSONObject;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.security.Principal;
@@ -15,6 +17,7 @@ import java.security.Principal;
 @Controller
 @RequiredArgsConstructor
 public class MainController {
+    private final FileService fileService;
 
     @GetMapping()
     public String hello(){

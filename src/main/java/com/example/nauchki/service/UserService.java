@@ -29,7 +29,7 @@ import java.util.UUID;
 public class UserService {
 
     private final JwtProvider jwtProvider;
-    private final FileSaver fileSaver;
+    private final FileService fileSaver;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final MailSender mailSender;
@@ -120,6 +120,7 @@ public class UserService {
         if(user.isPresent()) {
             user.get().setActivationCode(UUID.randomUUID().toString());
             String message = String.format(
+                    //TODO изменить url после деплоя фронта
                     "Для смены пароля пройдите по ссылке: https://nauchki.herokuapp.com/editpassword/%s",
                     user.get().getActivationCode()
             );
@@ -170,8 +171,7 @@ public class UserService {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     HttpHeaders headers = new HttpHeaders();
                     headers.set(HttpHeaders.AUTHORIZATION, token);
-                    ResponseEntity response = new ResponseEntity<>(token, headers, HttpStatus.OK);
-                    return response;
+                    return new ResponseEntity<>(token, headers, HttpStatus.OK);
                 }
             }
         } catch (UsernameNotFoundException ex) {
@@ -197,6 +197,7 @@ public class UserService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             String path = fileSaver.saveFile(file);
+            user.get().setImg(file.getOriginalFilename());
             if (user.isPresent()) {
                 user.get().setImg_path(path);
                 userRepository.save(user.get());
@@ -204,6 +205,11 @@ public class UserService {
             }
         }
         return null;
+    }
+
+    public boolean deleteImg(Principal principal){
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        return user.filter(value -> fileSaver.deleteFile(value.getImg())).isPresent();
     }
 
 

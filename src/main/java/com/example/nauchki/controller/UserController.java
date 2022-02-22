@@ -4,7 +4,7 @@ import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +16,10 @@ import java.security.Principal;
 
 @RestController
 @RequestMapping()
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @ApiOperation("Регистрация нового пользователя")
     @PostMapping("/registration")
@@ -62,7 +59,7 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-    @ApiOperation("Изменение пароля принимает почту")
+    @ApiOperation("Изменение пароля принимает почту в JSON")
     @PostMapping("/editpassword")
     public ResponseEntity<HttpStatus> editPassword(@RequestBody UserDto userDto){
         return userService.editPassword(userDto) ?
@@ -70,11 +67,16 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
+
     /*@ApiOperation("Добавление картинку пользователя по его id")
     @PostMapping("/addimage/{id}")
     public String addImage(@RequestParam("file") MultipartFile file,@PathVariable Long id ){
         return userService.addImage(file, id);
     }*/
+    @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity auth(@RequestBody User user) {
+        return userService.getAuthEmail(user.getEmail(), user.getPassword());
+    }
 
     @ApiOperation("Добавление картинку пользователя по его Principal")
     @PostMapping("/addimg")
@@ -82,8 +84,11 @@ public class UserController {
         return userService.addImage(file, principal);
     }
 
-    @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity auth(@RequestBody User user) {
-        return userService.getAuthEmail(user.getEmail(), user.getPassword());
+    @ApiOperation("Добавление картинку пользователя по его Principal")
+    @DeleteMapping("/deleteimg")
+    public ResponseEntity<HttpStatus> deleteImg(Principal principal){
+        return userService.deleteImg(principal) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }

@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ChildrenService {
 
-    private final FileSaver fileSaver;
+    private final FileService fileSaver;
     private final ChildrenRepository childrenRepository;
     private final UserRepository userRepository;
     private final StandartStageRepo stageRepo;

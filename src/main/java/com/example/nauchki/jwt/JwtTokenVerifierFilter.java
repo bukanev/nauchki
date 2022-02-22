@@ -28,6 +28,11 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
+//            Enumeration res = request.getHeaderNames();
+//            while (res.hasMoreElements()){
+//                String r = res.nextElement().toString();
+//                System.out.println( r + " " + request.getHeader(r));
+//            }
             String token = jwtProvider.resolveToken(request);
             if (token == null) {
                 filterChain.doFilter(request, response);

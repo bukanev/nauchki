@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
@@ -30,8 +27,8 @@ public class MailController {
 
 
     @PostMapping("/editpass/{code}")
-    public ResponseEntity<HttpStatus> editPass(@PathVariable String code, String password){
-        System.out.println(password);
+    public ResponseEntity<HttpStatus> editPass(@PathVariable String code, @RequestBody String password){
+
         return userService.editPass(code, password) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);

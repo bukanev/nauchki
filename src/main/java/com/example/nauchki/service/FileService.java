@@ -2,7 +2,9 @@ package com.example.nauchki.service;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ import java.io.IOException;
 
 @RequiredArgsConstructor
 @Component
-public class FileSaver {
+public class FileService {
     private final Cloudinary cloudinary;
 
     @Value("${upload.path}")
@@ -35,7 +37,18 @@ public class FileSaver {
             path = String.valueOf(object.get("url"));
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
         return path;
+    }
+
+    public boolean deleteFile(String filename){
+        JSONObject object = new JSONObject();
+        try {
+            object = new JSONObject(cloudinary.uploader().destroy(filename,null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return String.valueOf(object.get("result")).equals("ok");
     }
 }

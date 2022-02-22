@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepo postRepo;
-    private final FileSaver saverFile;
+    private final FileService saverFile;
 
     public List<PostDto> getPost(Post filter) {
         return postRepo.findAll(Example.of(filter)).stream().map(PostDto::valueOf).collect(Collectors.toList());
