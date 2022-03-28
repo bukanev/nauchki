@@ -1,0 +1,22 @@
+spring.datasource.url=jdbc:postgresql://ec2-54-73-147-133.eu-west-1.compute.amazonaws.com:5432/d9u3trjiai20d0
+spring.datasource.username=sbafntwmtlljhu
+spring.datasource.password=3228e82ddc749e5ebe1c18d959de32f327e869d405fc22ce03ccd8d72243269d
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto = update
+
+server.port=${PORT:8080}
+
+spring.mail.host=smtp.yandex.ru
+spring.mail.username=nau4ki@yandex.ru
+spring.mail.password=eflrtbuwoeefqxkp
+spring.mail.port=465
+spring.mail.protocol=smtps
+mail.debug=true
+
+yandex.path= https://cloud-api.yandex.net/v1/disk/resources/upload
+yandex.id = 0a0d473f281149cd94fc1111e56624b0
+yandex.password = 83230f5ac384415a9df5a8892255c13d
+yandex.token = AQAAAABXAeEbAAd6iD9pu1iUHk1gihwnnTScaVA
+
+upload.path= /src/main/resources/static/sample/img
