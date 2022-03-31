@@ -5,7 +5,7 @@ services:
     image: 'docker-spring-boot-postgres:latest'
     build:
       context: .
-    container_name: nauchki
+    container_name: java
     depends_on:
       - db
     environment:
@@ -24,8 +24,9 @@ services:
       - POSTGRES_PASSWORD=compose-postgres
 
   react:
-    image: 'react'
-    build: ./nauchki-react-main
+#    image: 'react'
+    build:
+      context: ./nauchki-react-main
     ports:
       - 3000:3000
     container_name: react
