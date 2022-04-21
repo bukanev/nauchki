@@ -10,7 +10,8 @@ export const Main = () => {
       <Landing />
       <Information />
       <Standart />
-      <Tariff />
+      {/*<Tariff />*/}
     </>
   );
 };
+
