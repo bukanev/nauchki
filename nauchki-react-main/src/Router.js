@@ -9,10 +9,12 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Articles } from "./pages/Articles/Articles";
 import { Themes } from "./pages/Articles/Themes";
 import { OneChildren } from "./pages/PersonalArea/OneChildren";
+import {Feedback} from "./pages/Feedback/Feedback"
 
 export const Router = () => {
   return (
     <>
+      <Route path="/Feedback" component={Feedback} />
       <Route path="/registration" component={Registration} />
       <Route path="/login" component={LogIn} />
 

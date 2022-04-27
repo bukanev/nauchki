@@ -20,6 +20,12 @@ a {
     font-size: 30px;
     color: #000000;
   }
+  &__App-logo {
+    height: 70px;
+    width: 70px;
+    color: #000000;
+  }
+
   &__menu {
     display: flex;
     flex-direction: row;
