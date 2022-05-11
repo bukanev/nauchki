@@ -2,21 +2,21 @@ import React from "react";
 import { Route } from "react-router-dom";
 import { Registration } from "./pages/Registration/Registration";
 import { Main } from "./pages/Main/Main";
-import { LogIn } from "./pages/LogIn/LogIn";
+import { Login } from "./pages/Login/Login";
 import { PersonalArea } from "./pages/PersonalArea/PersonalArea";
 import { Adminka } from "./pages/Adminka/Adminka";
 import { PrivateRoute } from "./PrivateRoute";
 import { Articles } from "./pages/Articles/Articles";
 import { Themes } from "./pages/Articles/Themes";
 import { OneChildren } from "./pages/PersonalArea/OneChildren";
-import {Feedback} from "./pages/Feedback/Feedback"
+
 
 export const Router = () => {
   return (
     <>
-      <Route path="/Feedback" component={Feedback} />
+
       <Route path="/registration" component={Registration} />
-      <Route path="/login" component={LogIn} />
+      <Route path="/login" component={Login} />
 
       <Route path="/articles" component={Articles} />
 

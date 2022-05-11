@@ -10,6 +10,7 @@ export const Header = () => {
       <div className="header__content _container">
         <div className="header__title">
           <div className="header__logo">
+
          <img src={logo} className="header__App-logo" alt="logo" />
           </div>
         </div>
@@ -24,9 +25,7 @@ export const Header = () => {
             <li className="header__menu-item">
               <NavLink to="/">Источники данных</NavLink>
             </li>
-            <li className="header__menu-item">
-              <NavLink to="/Feedback">Обратная связь</NavLink>
-            </li>
+
           </ul>
         </div>
         <div>
