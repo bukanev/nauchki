@@ -18,7 +18,7 @@ const schema = yup.object({
   password: yup.string().required(),
 });
 
-export const LogIn = () => {
+export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
   

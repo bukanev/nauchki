@@ -79,15 +79,15 @@ export const Registration = () => {
       <MainContainer>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h2 className="login_title">Регистрация</h2>
-          <Input
-            {...register("username", { required: true })}
-            id="username"
-            type="username"
-            name="username"
-            placeholder="username"
-            autoComplete="on"
-            error={!!errors.username}
-          />
+          {/*<Input*/}
+          {/*  {...register("username", { required: true })}*/}
+          {/*  id="username"*/}
+          {/*  type="username"*/}
+          {/*  name="username"*/}
+          {/*  placeholder="username"*/}
+          {/*  autoComplete="on"*/}
+          {/*  error={!!errors.username}*/}
+          {/*/>*/}
           <p className="errorText">{errors?.username?.message}</p>
 
           <Input
