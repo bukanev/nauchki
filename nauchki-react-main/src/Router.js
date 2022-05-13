@@ -9,12 +9,12 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Articles } from "./pages/Articles/Articles";
 import { Themes } from "./pages/Articles/Themes";
 import { OneChildren } from "./pages/PersonalArea/OneChildren";
+import { Error404 } from "./pages/Error 404/Error404";
 
 
 export const Router = () => {
   return (
     <>
-
       <Route path="/registration" component={Registration} />
       <Route path="/login" component={Login} />
 
@@ -26,6 +26,7 @@ export const Router = () => {
       <PrivateRoute path="/adminka" component={Adminka} />
 
       <Route exact path="/" component={Main} />
+      <Route path="*" component={Error404}></Route>
     </>
   );
 };

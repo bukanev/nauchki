@@ -1,0 +1,63 @@
+.error {
+    padding: 50px 20px;
+    margin-top: 50px;
+    background: url('../../img/error404.svg') no-repeat;
+    background-position: right center;
+}
+
+.error__info {
+    max-width: 400px;
+}
+
+.error__title {
+    font-weight: 900;
+    font-size: 220px;
+    line-height: 266px;
+    color: #007567;
+}
+
+.error__text {
+    font-weight: 600;
+    font-size: 25px;
+    line-height: 30px;
+    color: #007567;
+    margin-bottom: 150px;
+}
+
+.error__link {
+    background: #0EAC99;
+    border-radius: 60px;
+    padding: 12px 80px 11px 80px;
+
+    &:hover {
+        box-shadow: 0 0 10px #0EAC99;
+
+        & span {
+            font-size: 26px;
+        }
+    }
+
+    & span {
+        font-weight: 600;
+        font-size: 25px;
+        line-height: 30px;
+        color: #FFFFFF;
+    }
+}
+
+.error__title,
+.error__text,
+.error__link {
+    -ms-user-select: none;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
+
+@supports (-webkit-text-stroke: 5px #007567) {
+    .error__title {
+        color: transparent;
+        -webkit-text-stroke: 5px #007567;
+    }
+}
