@@ -2,7 +2,8 @@
     padding: 50px 20px;
     margin-top: 50px;
     background: url('../../img/error404.svg') no-repeat;
-    background-position: right center;
+    background-position: 40px center;
+    background-size: contain;
 }
 
 .error__info {
@@ -12,23 +13,29 @@
 .error__title {
     font-family: sans-serif;
     font-weight: 900;
-    font-size: 220px;
-    line-height: 266px;
+    font-size: 80px;
     color: #007567;
 }
 
 .error__text {
-    font-weight: 600;
-    font-size: 25px;
+    font-weight: 550;
+    font-size: 18px;
     line-height: 30px;
     color: #007567;
     margin-bottom: 150px;
 }
 
 .error__link {
+    display: block;
+    width: fit-content;
+    width: -moz-fit-content;
+    width: -webkit-fit-content;
     background: #0EAC99;
+    border: none;
+    outline: none;
     border-radius: 60px;
     padding: 12px 80px 11px 80px;
+    margin: 0 auto;
 
     &:hover {
         box-shadow: 0 0 10px #0EAC99;
@@ -36,6 +43,11 @@
         & span {
             font-size: 26px;
         }
+    }
+
+    &:active {
+        border-radius: 60px;
+        box-shadow: 0 0 10px #0EAC99;
     }
 
     & span {
@@ -55,10 +67,45 @@
     -webkit-user-select: none;
 }
 
-
-@supports (-webkit-text-stroke: 5px #007567) {
+@supports (-webkit-text-stroke: 3px #007567) {
     .error__title {
         color: transparent;
-        -webkit-text-stroke: 5px #007567;
+        -webkit-text-stroke: 3px #007567;
+    }
+}
+
+@media screen and (min-width: 768px) {
+    .error {
+        width: 100%;
+        background-position: right center;
+
+        &__title {
+            font-family: sans-serif;
+            font-size: 150px;
+            color: #007567;
+        }
+
+        &__text {
+            font-weight: 600;
+            font-size: 25px;
+        }
+    }
+
+    @supports (-webkit-text-stroke: 5px #007567) {
+        .error__title {
+            color: transparent;
+            -webkit-text-stroke: 5px #007567;
+        }
+    }
+}
+
+@media screen and (min-width: 1024px) {
+    .error {
+        background-position: right center;
+
+        &__title {
+            font-size: 220px;
+            line-height: 266px
+        }
     }
 }
