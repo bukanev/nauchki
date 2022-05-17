@@ -26,7 +26,7 @@ export const Router = () => {
       <PrivateRoute path="/adminka" component={Adminka} />
 
       <Route exact path="/" component={Main} />
-      <Route path="*" component={Error404}></Route>
+      <Route path="/notFound" component={Error404}></Route>
     </>
   );
 };
