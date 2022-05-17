@@ -66,7 +66,7 @@ export const Login = () => {
           <PrimaryButton>{isLoading ? <LoaderSvg /> : <p>Войти</p>}</PrimaryButton>
           <div className="routerLinkAuth">
             <NavLink className="routerLinkAuth-text" to="/registration">
-              Регистарция
+              Регистрация
             </NavLink>
           </div>
         </Form>

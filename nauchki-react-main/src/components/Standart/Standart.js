@@ -1,4 +1,5 @@
 import React from 'react';
+import './standart.scss';
 import { NavLink } from 'react-router-dom';
 import padlock from '../../img/iconPadlock.svg';
 

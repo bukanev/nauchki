@@ -1,6 +1,5 @@
 import React from "react";
-import classes from "./OneChild.module.css";
-
+import classes from "./OneChild.scss";
 
 const ChildPost = (props) => {
     return (
