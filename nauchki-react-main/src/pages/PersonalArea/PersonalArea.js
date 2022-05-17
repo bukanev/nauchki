@@ -25,7 +25,7 @@ export const PersonalArea = () => {
   };
   const getUserChildren = () => {
     axios
-      .get(`https://nauchki.herokuapp.com/getchildren/${user.id}`, {
+      .get(`http://89.108.88.2:8080/${user.id}`, {
         withCredentials: true,
       })
       .then((res) => {
@@ -44,9 +44,9 @@ export const PersonalArea = () => {
       const date = new FormData();
       date.append("file", img);
       await axios
-        .post(`https://nauchki.herokuapp.com/addimage/${user.id}`, date, {
+        .post(`http://89.108.88.2:8080/${user.id}`, date, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'multipart/form-data',
           },
         })
 

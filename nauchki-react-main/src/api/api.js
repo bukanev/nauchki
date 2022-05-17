@@ -6,7 +6,7 @@ import {
 
 const instance = axios.create({
   withCredentials: true,
-  baseURL: "https://nauchki.herokuapp.com",
+  baseURL: 'http://89.108.88.2:8080',
 });
 
 
