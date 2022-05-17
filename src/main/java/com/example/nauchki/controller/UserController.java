@@ -75,7 +75,7 @@ public class UserController {
     }*/
     @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity auth(@RequestBody User user) {
-        return userService.getAuthEmail(user.getEmail(), user.getPassword());
+        return userService.getAuthEmail(user.getLogin(), user.getPassword());
     }
 
     @ApiOperation("Добавление картинку пользователя по его Principal")

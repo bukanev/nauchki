@@ -1,16 +1,15 @@
 package com.example.nauchki.jwt;
 
+import com.example.nauchki.model.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.FilterChain;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,25 +22,17 @@ public class JwtLoginAndPasswordAuthenticationFilter extends UsernamePasswordAut
     private final JwtProvider jwtProvider;
 
     @Override
-    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
         try {
-            UsernamePasswordRequest usernamePasswordAuthRequest = new ObjectMapper().readValue(
-                    request.getInputStream(), UsernamePasswordRequest.class);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    usernamePasswordAuthRequest.getUsername(), usernamePasswordAuthRequest.getPassword());
-
+            User user =
+                    new ObjectMapper().readValue(request.getInputStream(), User.class);
+            Authentication authentication =
+                    new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword(), user.getAuthorities());
             return authenticationManager.authenticate(authentication);
         } catch (IOException e) {
             log.error("Unexpected error", e);
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException {
-        String access_token = jwtProvider.createToken(authResult);
-        response.addHeader(HttpHeaders.AUTHORIZATION, access_token);
-        response.getWriter().write("token: " + access_token);
-        response.getWriter().flush();
     }
 }
