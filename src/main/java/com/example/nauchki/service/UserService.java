@@ -160,8 +160,10 @@ public class UserService {
     }
 
     public ResponseEntity getAuthEmail(String email, String password) {
+        System.out.println("email, password: "+ email + ", "+ password);
         try {
             Optional<User> user = userRepository.findByEmail(email);
+            System.out.println("user is present: "+user.isPresent());
             if (user.isPresent()) {
                 UserDetails userDetails = user.get();
                 if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {

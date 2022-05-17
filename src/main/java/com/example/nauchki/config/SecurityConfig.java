@@ -68,10 +68,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
         http
                 .authorizeRequests()
                 .antMatchers("/auth").permitAll()
-                .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/test", "/auth",
-                        "index.html","/swagger-ui", "/editpassword/**","editpass").permitAll()
+//                .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/test", "/auth",
+//                        "index.html","/swagger-ui", "/editpassword/**","editpass").permitAll()
                 .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}","/stage/**","/admin","/admin/**").hasAnyAuthority("ADMIN","SUPERADMIN")
-//                .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
