@@ -22,8 +22,11 @@ services:
     environment:
       - POSTGRES_USER=compose-postgres
       - POSTGRES_PASSWORD=compose-postgres
+    ports:
+     - 5432:5432
     volumes:
       - data_pg:/var/lib/postgresql/data
+      
   react:
     image: 'react'
     build:
