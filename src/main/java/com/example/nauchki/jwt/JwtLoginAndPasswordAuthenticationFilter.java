@@ -25,8 +25,10 @@ public class JwtLoginAndPasswordAuthenticationFilter extends UsernamePasswordAut
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         try {
-            UsernamePasswordRequest usernamePasswordAuthRequest = new ObjectMapper().readValue(request.getInputStream(), UsernamePasswordRequest.class);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(usernamePasswordAuthRequest.getUsername(), usernamePasswordAuthRequest.getPassword());
+            UsernamePasswordRequest usernamePasswordAuthRequest = new ObjectMapper().readValue(
+                    request.getInputStream(), UsernamePasswordRequest.class);
+            Authentication authentication = new UsernamePasswordAuthenticationToken(
+                    usernamePasswordAuthRequest.getUsername(), usernamePasswordAuthRequest.getPassword());
 
             return authenticationManager.authenticate(authentication);
         } catch (IOException e) {
