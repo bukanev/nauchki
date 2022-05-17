@@ -14,7 +14,7 @@ import { MainContainer } from "../../UI/MainContainer";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 
 const schema = yup.object({
-  username: yup.string().required("username - обязательное поле"),
+  // username: yup.string().required("username - обязательное поле"),
   login: yup
     .string()
     .required("login - обязательное поле")
