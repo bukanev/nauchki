@@ -36,7 +36,7 @@ export const UserAPI = {
     return Api.post(
       `/user`,
       {
-        login: login,
+        email: login,
         password: password,
       },
       true,
