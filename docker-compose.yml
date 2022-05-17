@@ -24,14 +24,13 @@ services:
       - POSTGRES_PASSWORD=compose-postgres
     volumes:
       - data_pg:/var/lib/postgresql/data
+  react:
+    image: 'react'
+    build:
+      context: ./nauchki-react-main
+    ports:
+     - 3000:3000
+   container_name: react
 
 volumes:
   data_pg:
-
-#  react:
-##    image: 'react'
-#    build:
-#      context: ./nauchki-react-main
-#    ports:
-#      - 3000:3000
-#    container_name: react
