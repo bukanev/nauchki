@@ -21,11 +21,11 @@ export const Standart = () => {
               </div>
               <div className="level">
                 <p className="level__title">Ур 2</p>
-                <div className="level__color"></div>
+                <div className="level__color  level__color-two"></div>
               </div>
               <div className="level">
                 <p className="level__title">Ур 1</p>
-                <div className="level__color"></div>
+                <div className="level__color level__color-one"></div>
               </div>
 
               <div className="level">
@@ -55,15 +55,15 @@ export const Standart = () => {
             <div className="standart__data-levels">
               <div className="level">
                 <p className="level__title">Ур 3</p>
-                <div className="level__color"></div>
+                <div className="level__color  level__color-three"></div>
               </div>
               <div className="level">
                 <p className="level__title">Ур 2</p>
-                <div className="level__color"></div>
+                <div className="level__color  level__color-two"></div>
               </div>
               <div className="level">
                 <p className="level__title">Ур 1</p>
-                <div className="level__color"></div>
+                <div className="level__color  level__color-one"></div>
               </div>
 
               <div className="level">
