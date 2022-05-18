@@ -32,11 +32,11 @@ class Api {
 }
 
 export const UserAPI = {
-  getAuthUser(login, password) {
+  getAuthUser(email, password) {
     return Api.post(
       `/user`,
       {
-        email: login,
+        email: email,
         password: password,
       },
       true,
@@ -45,11 +45,11 @@ export const UserAPI = {
 };
 
 export const LoginAPI = {
-  auth(login, password) {
+  auth(email, password) {
     return Api.post(
       `/auth`,
       {
-        login: login,
+        email: email,
         password: password,
       },
       false,

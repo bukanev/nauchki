@@ -12,16 +12,15 @@ import { useDispatch } from "react-redux";
 import { asyncApiCall } from "../../asyncActions/getAuthUserThunk";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 
-
 const schema = yup.object({
-  login: yup.string().required(),
+  email: yup.string().email().required(),
   password: yup.string().required(),
 });
 
 export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
-  
+
   const {
     register,
     formState: { errors },
@@ -33,25 +32,24 @@ export const Login = () => {
 
   const onSubmit = (data) => {
     setIsLoading(true);
-    dispatch(asyncApiCall(data.login, data.password));
+    dispatch(asyncApiCall(data.email, data.password));
   };
 
   return (
     <LogDataProvider>
-      
       <MainContainer>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="login_title">Вход</h1>
           <Input
-            {...register("login")}
-            id="login"
-            type="text"
-            name="login"
-            placeholder="login"
+            {...register('email')}
+            id="email"
+            type="email"
+            name="email"
+            placeholder="email"
             autoComplete="on"
-            error={!!errors.login}
+            error={!!errors.email}
           />
-          <p className="errorText">{errors?.login?.message}</p>
+          <p className="errorText">{errors?.email?.message}</p>
           <Input
             {...register("password")}
             id="password"
