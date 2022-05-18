@@ -16,9 +16,9 @@ export const AddChildrenForm = ({
   const addUserChildren = () => {
     axios
       .post(
-        `https://nauchki.herokuapp.com/children/${userId}`,
+        `http://89.108.88.2:8080/children/${userId}`,
         { name: name, gender: gender, dateOfBirth: dateOfBirth },
-        { withCredentials: true }
+        { withCredentials: true },
       )
       .then((res) => {
         console.log(res);
