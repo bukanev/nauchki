@@ -37,7 +37,6 @@ public class UserController {
     @GetMapping("/getuser")
     public ResponseEntity<HttpStatus> getUserDto(Principal principal){
         if(principal != null){
-            System.out.println("============ "+principal.toString());
             return new ResponseEntity(userService.getUser(principal.getName()), HttpStatus.OK);
         }
         return new ResponseEntity(new UserDto(), HttpStatus.BAD_REQUEST);
@@ -67,12 +66,6 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
-
-    /*@ApiOperation("Добавление картинку пользователя по его id")
-    @PostMapping("/addimage/{id}")
-    public String addImage(@RequestParam("file") MultipartFile file,@PathVariable Long id ){
-        return userService.addImage(file, id);
-    }*/
     @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity auth(@RequestBody User user) {
         return userService.getAuthEmail(user.getLogin(), user.getPassword());

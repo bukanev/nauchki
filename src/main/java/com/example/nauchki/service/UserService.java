@@ -7,6 +7,8 @@ import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +27,24 @@ import java.util.Set;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
 
+    private final String url;
     private final JwtProvider jwtProvider;
     private final FileService fileSaver;
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final MailSender mailSender;
     private final PasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    public UserService(@Value("${my-config.url}")String url , JwtProvider jwtProvider, FileService fileSaver, UserRepository userRepository, MailSender mailSender, PasswordEncoder bCryptPasswordEncoder) {
+        this.url = url;
+        this.jwtProvider = jwtProvider;
+        this.fileSaver = fileSaver;
+        this.userRepository = userRepository;
+        this.mailSender = mailSender;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     /**
      * Сохранение нового пользователя
@@ -46,14 +56,9 @@ public class UserService {
         if (userDto.getEmail() == null || userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             return false;
         }
-        saveRole();
+        //saveRole();
         User user = userDto.mapToUser();
         Set<Role> roles = new HashSet<>();
-        /*if (userDto.getUsername() != null) {
-            if (userDto.getUsername().equals("admin") && userDto.getUsername().equals(userDto.getLogin())) {
-                roles.add(new Role(2L, "ADMIN"));
-            }
-        }*/
         roles.add(new Role(1L, "USER"));
         user.setGrantedAuthorities(roles);
         user.setActivate(0);
@@ -66,25 +71,22 @@ public class UserService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello! \n" +
-                            "Welcome to Nauchki! To confirm your email, please, visit next link: https://nauchki.herokuapp.com/activate/%s",
-                    //user.getLogin(),
+                            "Welcome to Nauchki! To confirm your email, please, visit next link: " + url + "/activate/%s",
                     user.getActivationCode()
             );
-
             mailSender.send(user.getEmail(), "Activation code", message);
         }
-
         return true;
     }
 
-    private void saveRole() {
+    /*private void saveRole() {
         if (roleRepository.findByName("USER") == null) {
             roleRepository.save(new Role(1L, "USER"));
         }
         if (roleRepository.findByName("ADMIN") == null) {
             roleRepository.save(new Role(2L, "ADMIN"));
         }
-    }
+    }*/
 
 
     public boolean deleteUser(Long userId) {
@@ -121,7 +123,7 @@ public class UserService {
             user.get().setActivationCode(UUID.randomUUID().toString());
             String message = String.format(
                     //TODO изменить url после деплоя фронта
-                    "Для смены пароля пройдите по ссылке: https://nauchki.herokuapp.com/editpassword/%s",
+                    "Для смены пароля пройдите по ссылке: " + url + "/editpassword/%s",
                     user.get().getActivationCode()
             );
             userRepository.save(user.get());
@@ -141,7 +143,7 @@ public class UserService {
         return true;
     }
 
-    public ResponseEntity<HttpStatus> getAuth(String login, String password) {
+    public ResponseEntity<HttpStatus> getAuthLogin(String login, String password) {
         try {
             Optional<User> user = userRepository.findByLogin(login);
             if (user.isPresent()) {
@@ -160,10 +162,8 @@ public class UserService {
     }
 
     public ResponseEntity getAuthEmail(String email, String password) {
-        System.out.println("email, password: "+ email + ", "+ password);
         try {
             Optional<User> user = userRepository.findByEmail(email);
-            System.out.println("user is present: "+user.isPresent());
             if (user.isPresent()) {
                 UserDetails userDetails = user.get();
                 if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
