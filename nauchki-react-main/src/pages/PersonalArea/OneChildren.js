@@ -1,13 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
-import ChildPost from "../../components/OneChild/OneChild";
-import childPlaceholder from "../../img/childCardPlaceholder.jpg";
-import ButtonChild from "../../UI/ButtonChild";
-import InputChild from "../../UI/InputChild";
-import { useDispatch } from "react-redux";
-import { getchildrenInputAC, GET_PHRASE } from "../../store/OnechildInput";
-import axios from "axios";
+import React, { useCallback, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import ChildPost from '../../components/OneChild/OneChild';
+import childPlaceholder from '../../img/childCardPlaceholder.jpg';
+import ButtonChild from '../../UI/ButtonChild';
+import InputChild from '../../UI/InputChild';
+import { useDispatch } from 'react-redux';
+import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
+import axios from 'axios';
 
 function getDate(d) {
   let days = d % 365;
@@ -25,14 +25,14 @@ function getDate(d) {
 
 export const OneChildrenWithoutRouter = (props) => {
   const children = useSelector((state) => state.children.children);
-  const [value, setValue] = useState("");
+  const [value, setValue] = useState('');
 
   //Инпут у фразы ребенка
   /*   const dispatch = useDispatch();
   const phase = useSelector((state) => state.phase.phase);
  */
   const [childrenPhrase, setChildrenPhrase] = useState([]);
-  const [childText, setChildText] = useState("");
+  const [childText, setChildText] = useState('');
   const AddNewChildPhrase = (e) => {
     e.preventDefault();
     const newChildPhrase = {
@@ -41,7 +41,7 @@ export const OneChildrenWithoutRouter = (props) => {
     };
     /* dispatch({ type: "GET_PHRASE", payload: e.target.value }); */
     setChildrenPhrase([...childrenPhrase, newChildPhrase]);
-    setChildText("");
+    setChildText('');
   };
 
   // input
@@ -52,9 +52,7 @@ export const OneChildrenWithoutRouter = (props) => {
 
   // падало, потому что ф-ю надо за компонент; потому что в переменной первоначально undefined(поэтому сначала создаем переменную, потом ее в стэйт пихаем)
   useEffect(() => {
-    const filtered = children.filter(
-      (item) => item.id.toString() === props.match.params.id
-    );
+    const filtered = children.filter((item) => item.id.toString() === props.match.params.id);
 
     setFilteredChildren(filtered);
     const standartStages = filtered.map((t) => t.standartStages);
@@ -68,17 +66,13 @@ export const OneChildrenWithoutRouter = (props) => {
   const sendFile = useCallback(async () => {
     try {
       const date = new FormData();
-      date.append("file", imgChildren);
+      date.append('file', imgChildren);
       await axios
-        .post(
-          `https://nauchki.herokuapp.com/addchildrenimg/${filteredChildren[0].id}`,
-          date,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
+        .post(`http://89.108.88.2:8080/addchildrenimg/${filteredChildren[0].id}`, date, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        })
 
         .then((res) => setAvatarChildren(res.data));
 
@@ -108,11 +102,7 @@ export const OneChildrenWithoutRouter = (props) => {
                     {children.img_path ? (
                       <img
                         className="oneChild_placeholder"
-                        src={`${
-                          avatarChildren ||
-                          children.img_path ||
-                          childPlaceholder
-                        }`}
+                        src={`${avatarChildren || children.img_path || childPlaceholder}`}
                         alt="avatarChildren"
                       />
                     ) : (
@@ -126,16 +116,10 @@ export const OneChildrenWithoutRouter = (props) => {
                   <div className="oneChild_age"> ГОД</div>
                   <div className="oneChild_dateOfBirth">
                     Дата рождения: <br />
-                    {children.dateOfBirth}{" "}
+                    {children.dateOfBirth}{' '}
                   </div>
-                  <input
-                    onChange={(e) => setImgChildren(e.target.files[0])}
-                    type="file"
-                  />
-                  <button
-                    onClick={sendFile}
-                    className="personalArea__parent_button"
-                  >
+                  <input onChange={(e) => setImgChildren(e.target.files[0])} type="file" />
+                  <button onClick={sendFile} className="personalArea__parent_button">
                     Добавить фото
                   </button>
                 </div>
@@ -143,7 +127,7 @@ export const OneChildrenWithoutRouter = (props) => {
           </div>
           <div className="infoChild">
             <div>
-              {" "}
+              {' '}
               {filteredChildren &&
                 filteredChildren.map((children) => (
                   <div className="infoChild_dataChild">
@@ -160,55 +144,45 @@ export const OneChildrenWithoutRouter = (props) => {
                       <li className="infoChild_dataParamTab">Рост</li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus3">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightMinus3
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightMinus3
                         }
                       </li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus2">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightMinus2
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightMinus2
                         }
                       </li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus1">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightMinus1
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightMinus1
                         }
                       </li>
                       <li className="infoChild_dataHightList  backgroundInfo_cent">
-                        {" "}
-                        {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeight
-                        }
+                        {' '}
+                        {children.standartStages[children.standartStages.length - 1].medianHeight}
                       </li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus1">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightPlus1
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightPlus1
                         }
                       </li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus2">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightPlus2
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightPlus2
                         }
                       </li>
                       <li className="infoChild_dataHightList backgroundInfo_plusminus3">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianHeightPlus3
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianHeightPlus3
                         }
                       </li>
                     </ul>
@@ -216,55 +190,45 @@ export const OneChildrenWithoutRouter = (props) => {
                       <li className="infoChild_dataParamTab">Вес</li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus3">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightMinus3
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightMinus3
                         }
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus2">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightMinus2
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightMinus2
                         }
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus1">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightMinus1
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightMinus1
                         }
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_cent">
-                        {" "}
-                        {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeight
-                        }
+                        {' '}
+                        {children.standartStages[children.standartStages.length - 1].medianWeight}
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus1">
-                        {" "}
+                        {' '}
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightPlus1
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightPlus1
                         }
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus2">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightPlus2
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightPlus2
                         }
                       </li>
                       <li className="infoChild_dataWightList backgroundInfo_plusminus3">
                         {
-                          children.standartStages[
-                            children.standartStages.length - 1
-                          ].medianWeightPlus3
+                          children.standartStages[children.standartStages.length - 1]
+                            .medianWeightPlus3
                         }
                       </li>
                     </ul>
@@ -278,8 +242,7 @@ export const OneChildrenWithoutRouter = (props) => {
                   <input
                     {...{ value, onChange }}
                     className="infoChild_input"
-                    placeholder="Рост"
-                  ></input>
+                    placeholder="Рост"></input>
                 </div>
                 <div className="infoChild_blocInputWeight">
                   <input className="infoChild_input" placeholder="Вес"></input>
@@ -296,16 +259,12 @@ export const OneChildrenWithoutRouter = (props) => {
             <div className="childrenSkills_infoNowStend">
               {filteredChildren &&
                 filteredChildren.map(
-                  (children) =>
-                    children.standartStages[children.standartStages.length - 1]
-                      .skills
+                  (children) => children.standartStages[children.standartStages.length - 1].skills,
                 )}
             </div>
           </div>
           <div className="childrenSkills_info">
-            <div className="childrenSkills_infoNow">
-              Что умеет ребенок в этом возрасте?
-            </div>
+            <div className="childrenSkills_infoNow">Что умеет ребенок в этом возрасте?</div>
             <div className="childrenSkills_infoNowStend">ИНФА</div>
           </div>
         </div>
@@ -348,18 +307,10 @@ export const OneChildrenWithoutRouter = (props) => {
             dates.map((t) => {
               return (
                 <li className="oneChildren_listDate" key={t.id}>{`
-            ${typeof t.years === "number" && t.years > 0 ? t.years + "г." : ""} 
-            ${
-              typeof t.months === "number" && t.months > 0
-                ? t.months + "м."
-                : ""
-            } 
-            ${
-              typeof t.weeks === "number" && t.days == 0 && t.weeks > 0
-                ? t.weeks + "нед."
-                : ""
-            } 
-            ${typeof t.days === "number" && t.weeks == 0 ? t.days + "д." : ""} 
+            ${typeof t.years === 'number' && t.years > 0 ? t.years + 'г.' : ''} 
+            ${typeof t.months === 'number' && t.months > 0 ? t.months + 'м.' : ''} 
+            ${typeof t.weeks === 'number' && t.days == 0 && t.weeks > 0 ? t.weeks + 'нед.' : ''} 
+            ${typeof t.days === 'number' && t.weeks == 0 ? t.days + 'д.' : ''} 
           `}</li>
               );
             })}
