@@ -1,48 +1,49 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-import { getUserDataAC, toggleAuthAC } from "../../store/userReducer";
-import { Route, useHistory } from "react-router";
-import axios from "axios";
-import { AddChildrenForm } from "./AddChildrenForm";
-import { getChildrenAC } from "../../store/childrenReducer";
-import { ChildCard } from "./ChildCart";
-import childPlaceholder from "../../img/childCardPlaceholder.jpg";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { toggleAuthAC } from '../../store/userReducer';
+import { Route, useHistory } from 'react-router';
+import axios from 'axios';
+import { AddChildrenForm } from './AddChildrenForm';
+import { getChildrenAC } from '../../store/childrenReducer';
+import { ChildCard } from './ChildCart';
+import childPlaceholder from '../../img/childCardPlaceholder.jpg';
+// import { ContactsOutlined } from '@material-ui/icons';
 
 export const PersonalArea = () => {
+  const [visibleForm, setVisibleForm] = useState(false);
+  const [img, setImg] = useState(null);
+  const [avatar, setAvatar] = useState(null);
   const user = useSelector((state) => state.user.userData);
   const children = useSelector((state) => state.children.children);
-  const [visibleForm, setVisibleForm] = useState(false);
   const dispatch = useDispatch();
+
   let history = useHistory();
   const exitHandler = () => {
     dispatch(toggleAuthAC(false));
-    history.push("/");
+    history.push('/');
   };
+
   // TODO: Перенести в санки получение детей
   const getChildrenData = (userData) => {
+    console.log('userData', userData);
     dispatch(getChildrenAC(userData));
   };
   const getUserChildren = () => {
     axios
-      .get(`http://89.108.88.2:8080/${user.id}`, {
+      .get(`http://89.108.88.2:8080/getchildren/${user.id}`, {
         withCredentials: true,
       })
       .then((res) => {
         getChildrenData(res.data);
       });
   };
-  useEffect(() => {
-    getUserChildren();
-  }, []);
-  //IMG
-  const [img, setImg] = useState(null);
-  const [avatar, setAvatar] = useState(null);
 
+  //IMG
   const sendFile = useCallback(async () => {
     try {
       const date = new FormData();
-      date.append("file", img);
+      date.append('file', img);
       await axios
         .post(`http://89.108.88.2:8080/${user.id}`, date, {
           headers: {
@@ -56,7 +57,10 @@ export const PersonalArea = () => {
     }
   }, [img]);
 
-  console.log(children);
+  useEffect(() => {
+    getUserChildren();
+  }, []);
+
   return (
     <div className="_wrapper">
       <div className="personalArea_container">
@@ -87,18 +91,13 @@ export const PersonalArea = () => {
           <div className="personalArea__parent_name">{user.username}</div>
           <div className="personalArea__parent_email">Email: {user.email}</div>
           <div className="personalArea__parent_login">login:{user.login}</div>
-          <div className="personalArea__parent_number">
-            number:{user.number}
-          </div>
+          <div className="personalArea__parent_number">number:{user.number}</div>
         </div>
         <div className="personalArea__main">
           <h1 className="personalArea__title-children">
-            Мои дети{" "}
+            Мои дети{' '}
             {!visibleForm && (
-              <button
-                onClick={() => setVisibleForm(!visibleForm)}
-                className="circle"
-              ></button>
+              <button onClick={() => setVisibleForm(!visibleForm)} className="circle"></button>
             )}
             {visibleForm && (
               <AddChildrenForm
@@ -111,19 +110,10 @@ export const PersonalArea = () => {
           </h1>
 
           <ul className="personalArea__children-container ">
-            {children &&
-              children.map((child) => (
-                <ChildCard key={child.id} child={child} />
-              ))}
+            {children && children.map((child) => <ChildCard key={child.id} child={child} />)}
           </ul>
 
-          {
-            <Route
-              exact
-              path="/personalArea/:id"
-              render={(props) => <ChildCard {...props} />}
-            />
-          }
+          {<Route exact path="/personalArea/:id" render={(props) => <ChildCard {...props} />} />}
         </div>
       </div>
       <br />
