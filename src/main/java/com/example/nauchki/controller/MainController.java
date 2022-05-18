@@ -21,13 +21,12 @@ public class MainController {
 
     @GetMapping()
     public String hello(){
-        return "Hello";
+        return "Hel+  lo";
     }
 
 
     @GetMapping("/editpassword/{code}")
-    public String editPasswordPage(@PathVariable String code, Model model){
-        model.addAttribute("code", code);
+    public String editPasswordPage(@PathVariable String code){
         return "editpassword";
     }
 }

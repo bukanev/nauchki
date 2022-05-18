@@ -37,7 +37,12 @@ public class UserService {
     private final PasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public UserService(@Value("${my-config.url}")String url , JwtProvider jwtProvider, FileService fileSaver, UserRepository userRepository, MailSender mailSender, PasswordEncoder bCryptPasswordEncoder) {
+    public UserService(@Value("${my-config.url}")String url ,
+                       JwtProvider jwtProvider,
+                       FileService fileSaver,
+                       UserRepository userRepository,
+                       MailSender mailSender,
+                       PasswordEncoder bCryptPasswordEncoder) {
         this.url = url;
         this.jwtProvider = jwtProvider;
         this.fileSaver = fileSaver;
@@ -71,7 +76,7 @@ public class UserService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello! \n" +
-                            "Welcome to Nauchki! To confirm your email, please, visit next link: " + url + "/activate/%s",
+                            "Welcome to Nauchki! To confirm your email, please, visit next link: " + url+":8080" + "/activate/%s",
                     user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
@@ -123,7 +128,7 @@ public class UserService {
             user.get().setActivationCode(UUID.randomUUID().toString());
             String message = String.format(
                     //TODO изменить url после деплоя фронта
-                    "Для смены пароля пройдите по ссылке: " + url + "/editpassword/%s",
+                    "Для смены пароля пройдите по ссылке: " + url + ":3000" + "/editpassword/%s",
                     user.get().getActivationCode()
             );
             userRepository.save(user.get());
@@ -222,6 +227,17 @@ public class UserService {
         }
         user.setActivationCode(null);
         user.setPassword(bCryptPasswordEncoder.encode(password));
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean editPass(UserDto userDto) {
+        User user = userRepository.findByActivationCode(userDto.getActivationCode());
+        if (user == null) {
+            return false;
+        }
+        user.setActivationCode(null);
+        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
         return true;
     }

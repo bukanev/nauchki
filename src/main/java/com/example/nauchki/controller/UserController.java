@@ -66,6 +66,19 @@ public class UserController {
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
+    /**
+     * Обязательно принимается password и activationCode
+     * @param userDto
+     * @return
+     */
+    @ApiOperation("Изменение пароля принимает пароль и код в JSON")
+    @PostMapping("/editpass")
+    public ResponseEntity<HttpStatus> editPass(@RequestBody UserDto userDto){
+        return userService.editPass(userDto) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
     @PostMapping(value = "/auth", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity auth(@RequestBody User user) {
         return userService.getAuthEmail(user.getEmail(), user.getPassword());
