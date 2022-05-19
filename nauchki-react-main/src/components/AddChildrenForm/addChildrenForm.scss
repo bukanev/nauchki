@@ -1,0 +1,177 @@
+/* Форма */
+.personalArea-form {
+    max-width: 700px;
+    background-color: #ffffff;
+    border-radius: 20px;
+    position: fixed;
+    margin-top: 25px;
+    top: 25%;
+    left: 25%;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgb(0, 0, 0);
+}
+
+.personalArea-form-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.circle-crossbtn {
+    align-self: flex-end;
+}
+
+.personalArea-form__title {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+}
+
+.personalArea-form__main {
+    padding: 40px;
+    margin-top: 52px;
+    background: #ffffff;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+}
+
+.personalArea-form__radio {
+    color: #000;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 15px;
+    display: flex;
+    justify-content: space-between;
+    margin: 0 auto;
+    width: 148px;
+}
+
+input[type="radio"]:after {
+    width: 22px;
+    height: 22px;
+    border-radius: 15px;
+    top: -5px;
+    left: -1px;
+    position: relative;
+    background-color: #ffffff;
+    content: "";
+    display: inline-block;
+    visibility: visible;
+    border: 1px solid #b9b9b9;
+}
+
+input[type="radio"]:checked:after {
+    background-color: #000000;
+    border: 6px solid #b9b9b9;
+    width: 16px;
+    height: 16px;
+}
+
+.personalArea-form__name {
+    width: 218px;
+    height: 36px;
+    border: 3px solid #0eac99;
+    border-radius: 40px;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 10px;
+}
+
+.personalArea-form__ptitle {
+    font-style: normal;
+    font-weight: regular;
+    font-size: 18px;
+    color: #000000;
+    text-align: center;
+}
+
+.personalArea-form__btn {
+    background-color: #0eac99;
+    height: 60px;
+    width: 275px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 27px;
+    text-align: center;
+    border: none;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin-top: 39px;
+}
+
+.personalArea-form__btn {
+    background-color: #0eac99;
+    height: 60px;
+    width: 275px;
+    border-radius: 20px;
+    color: #ffffff;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 22px;
+    line-height: 27px;
+    text-align: center;
+    border: none;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
+    margin-top: 39px;
+}
+
+.personalArea-form__btn:hover {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.personalArea-form__btn:active {
+    box-shadow: none;
+}
+
+//ChildCard
+.personalArea_addedChildren-children {
+    width: 393px;
+    height: 236px;
+    border: 3px solid #00AF70;
+    box-sizing: border-box;
+    border-radius: 40px;
+    margin-top: 20px;
+}
+
+.childPlaceholder {
+    border-radius: 100%;
+    border: none;
+    height: 171px;
+    width: 171px;
+}
+
+.personalArea_addedChildren-info {
+    width: 150px;
+    height: 100%;
+    float: right;
+}
+
+.personalArea_addedChildren-wrapper {
+    padding-top: 27px;
+    padding-left: 25px;
+    padding-right: 25px;
+
+}
+
+.personalArea_addedChildren-name {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+    color: #ffffff;
+    padding-top: 27px;
+}
