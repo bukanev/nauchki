@@ -1,12 +1,11 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
-import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -190,12 +189,10 @@ public class UserService {
     public String addImage(MultipartFile file, Long id) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findById(id);
-            String path = fileSaver.saveFile(file);
-            if (user.isPresent()) {
-                user.get().setImg_path(path);
-                userRepository.save(user.get());
-                return path;
-            }
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User with '" + id + "' not found"));
+            String path = fileSaver.saveFile(file, userModel);
+            userRepository.save(userModel);
+            return path;
         }
         return null;
     }
@@ -203,20 +200,20 @@ public class UserService {
     public String addImage(MultipartFile file, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findByEmail(principal.getName());
-            String path = fileSaver.saveFile(file);
-            user.get().setImg(file.getOriginalFilename());
-            if (user.isPresent()) {
-                user.get().setImg_path(path);
-                userRepository.save(user.get());
-                return path;
-            }
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+            String path = fileSaver.saveFile(file, userModel);
+            userRepository.save(userModel);
+            return path;
         }
         return null;
     }
 
     public boolean deleteImg(Principal principal){
         Optional<User> user = userRepository.findByEmail(principal.getName());
-        return user.filter(value -> fileSaver.deleteFile(value.getImg())).isPresent();
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        return user.filter(p->fileSaver.deleteFile(p.getImg(), p))
+                .filter(p->userRepository.save(p)!=null)
+                .isPresent();
     }
 
 

@@ -90,7 +90,7 @@ public class UserController {
         return userService.addImage(file, principal);
     }
 
-    @ApiOperation("Добавление картинку пользователя по его Principal")
+    @ApiOperation("Удаление картинки пользователя по его Principal")
     @DeleteMapping("/deleteimg")
     public ResponseEntity<HttpStatus> deleteImg(Principal principal){
         return userService.deleteImg(principal) ?

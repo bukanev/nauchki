@@ -1,5 +1,6 @@
 package com.example.nauchki.model;
 
+import com.example.nauchki.utils.FileContainer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails{
+public class User implements UserDetails, FileContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
