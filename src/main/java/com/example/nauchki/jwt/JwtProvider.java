@@ -73,8 +73,10 @@ public class JwtProvider {
 
     public String getUsername(String token) {
             final DecodedJWT decodedJwt = verifier.verify(token);
-            return decodedJwt.getClaim("username").toString();
+//            return decodedJwt.getClaim("username").toString();
+            return decodedJwt.getClaim("Email").asString();
     }
+
 
     public List<GrantedAuthority> getAuthorities(String token) {
         final DecodedJWT decodedJwt = verifier.verify(token);
