@@ -95,7 +95,7 @@ export const Standart = () => {
             </NavLink>
           </div>
 
-          <div className="standart__data-items">
+          {/* <div className="standart__data-items">
             <div className="standart__data-title">
               <h5>Оценка по шкале развития ГНОМ</h5>
             </div>
@@ -103,9 +103,9 @@ export const Standart = () => {
             <NavLink to="/" className="standart__data-lock">
               <img src={padlock} alt="padlock" />
             </NavLink>
-          </div>
+          </div> */}
 
-          <div className="standart__data-items">
+          {/* <div className="standart__data-items">
             <div className="standart__data-title">
               <h5>Оценка по зарубежным методикам</h5>
             </div>
@@ -113,7 +113,7 @@ export const Standart = () => {
             <NavLink to="/" className="standart__data-lock">
               <img src={padlock} alt="padlock" />
             </NavLink>
-          </div>
+          </div> */}
         </div>
         <NavLink className="standart_profile" to="/personalArea">
           Посмотреть информацию о своем ребенке
