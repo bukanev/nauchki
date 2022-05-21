@@ -13,7 +13,7 @@ function App() {
     </div>
 
         <div className="_downApp">
-            <Footer/>
+            <Footer />
       </div>
 
     </div>

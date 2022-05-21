@@ -5,8 +5,8 @@ import ChildPost from '../../components/OneChild/OneChild';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import ButtonChild from '../../UI/ButtonChild';
 import InputChild from '../../UI/InputChild';
-import { useDispatch } from 'react-redux';
-import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
+// import { useDispatch } from 'react-redux';
+// import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
 import axios from 'axios';
 
 function getDate(d) {

@@ -1,8 +1,6 @@
 import React from 'react';
 import './resetPassword.scss';
 import { LogDataProvider } from '../Login/DataContextLog';
-// import { MainContainer } from '../../UI/MainContainer';
-// import { Form } from '../../UI/Form';
 import { Input } from '../../UI/Input';
 import { PrimaryButton } from '../../UI/PrimaryButton';
 

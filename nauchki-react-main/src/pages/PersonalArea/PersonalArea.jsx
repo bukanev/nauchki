@@ -6,9 +6,8 @@ import { Route, useHistory } from 'react-router';
 import axios from 'axios';
 import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenForm';
 import { getChildrenAC } from '../../store/childrenReducer';
-import { ChildCard } from './ChildCart';
+import { ChildCard } from '../../components/ChildCart/ChildCart';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
-// import { ContactsOutlined } from '@material-ui/icons';
 
 export const PersonalArea = () => {
   const [visibleForm, setVisibleForm] = useState(false);
