@@ -11,6 +11,7 @@ import { Themes } from './pages/Articles/Themes';
 import { OneChildren } from './pages/PersonalArea/OneChildren';
 import { Error404 } from './pages/Error 404/Error404';
 import { ResetPassword } from './pages/ResetPassword/ResetPassword';
+import { RecoveryPassword } from './pages/RecoveryPassword/RecoveryPassvord';
 
 export const Router = () => {
   return (
@@ -24,7 +25,7 @@ export const Router = () => {
       <PrivateRoute exact path="/personalArea/:id" component={OneChildren} />
 
       <PrivateRoute path="/adminka" component={Adminka} />
-
+      <Route exact path="/recoverypass" component={RecoveryPassword} />
       <Route exact path="/resetpass" component={ResetPassword} />
       <Route exact path="/" component={Main} />
       <Route path="/notFound" component={Error404}></Route>
