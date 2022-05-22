@@ -12,6 +12,13 @@ import { RegistartionAPI } from "../../api/api";
 import Checkbox from "@material-ui/core/Checkbox";
 import { MainContainer } from "../../UI/MainContainer";
 import { LoaderSvg } from "../../UI/LoaderSvg";
+import 'react-phone-input-2/lib/style.css';
+import "./phone.scss"
+
+
+
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const schema = yup.object({
   // username: yup.string().required("username - обязательное поле"),
@@ -38,19 +45,29 @@ const schema = yup.object({
   //   /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/g, &<>
   //   "Пароль должен содержать не менее 6 символов, включать в себя цифры, спец. символы, латиницу, строчные и прописные символы"
   // ),
-  number: yup
-    .string()
-    .matches(
-      /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/,
-      "Номер телефона введен некорректно \n (пример +7 999 99 99)"
-    ),
+  // number: yup
+  //   .string()
+  //   .matches(
+  //     /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/,
+  //     "Номер телефона введен некорректно \n (пример +7 999 99 99)"
+  //   ),
+//
+//
+//   function Example() {
+//   // `value` will be the parsed phone number in E.164 format.
+//   // Example: "+12133734253".
+
+//   return (
+//
+//   )
+// }
   email: yup.string().matches(/.+@.+\..+/i, "Почта должен содержать @ \n (пример example@mail.ru)"), // проверять будем отправкой письма на почту (Раиль)
 });
 
 export const Registration = () => {
   const [checkbox, setCheckbox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [phone, setPhone] = useState();
   let history = useHistory();
 
   const {
@@ -135,16 +152,26 @@ export const Registration = () => {
           />
           <p className="errorText">{errors?.passwordRecovery?.message}</p>
 
-          <Input
-            {...register("number")}
-            id="number"
-            type="tel"
-            placeholder="Введите ваш номер телефона"
-            name="number"
-            autoComplete="on"
-            error={!!errors.number}
+          {/*<Input*/}
+          {/*  {...register("number")}*/}
+          {/*  id="number"*/}
+          {/*  type="tel"*/}
+          {/*  placeholder="Введите ваш номер телефона"*/}
+          {/*  name="number"*/}
+          {/*  autoComplete="on"*/}
+          {/*  error={!!errors.number}*/}
+
+          {/*/>*/}
+
+          <PhoneInput
+              country="ru"
+              containerClass="phone-container"
+              inputClass="phone-input"
+              buttonClass="phone-btn"
           />
+
           <p className="errorText">{errors?.number?.message}</p>
+
 
           <Input
             {...register("email")}

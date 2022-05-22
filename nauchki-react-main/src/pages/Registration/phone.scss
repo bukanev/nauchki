@@ -1,0 +1,32 @@
+.phone-container {
+  height: 56px !important;
+  border-radius: 40px !important;
+}
+
+.phone-input {
+  width: 100% !important;
+  border-radius: 40px !important;
+  padding-top: 18.5px !important;
+  padding-bottom: 18.5px !important;
+  font-weight: 400;
+  line-height: 19px;
+  height: inherit !important;
+}
+
+.phone-btn {
+  border-radius: 40px 0 0 40px !important;
+
+  &:hover {
+    border-radius: 40px 0 0 40px !important;
+  }
+}
+
+.react-tel-input .selected-flag:hover,
+.react-tel-input .selected-flag:focus {
+  background: none;
+
+}
+
+.react-tel-input .flag-dropdown.open .selected-flag {
+  background: none;
+}
