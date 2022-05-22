@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { PrimaryButton } from "../../UI/PrimaryButton";
 import { Form } from "../../UI/Form";
 import { Input } from "../../UI/Input";
-import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { NavLink } from "react-router-dom";
@@ -17,15 +16,22 @@ const schema = yup.object({
   // username: yup.string().required("username - обязательное поле"),
   login: yup
     .string()
-    .required("login - обязательное поле")
+    .required("Логин - обязательное поле")
     .matches(/^([^0-9]*)$/, "login не должен сдержать цифры"),
   password: yup
     .string()
-    .required("password - обязательное поле")
+    .required("Пароль - обязательное поле")
     .matches(
       /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/g,
       "Пароль должен содержать не менее 6 символов, включать в себя цифры, латиницу, строчные и прописные символы"
     ),
+  passwordRecovery: yup
+      .string()
+      .required("Пароль - обязательное поле")
+      .matches(
+          /(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{6,}/g,
+          "Пароль должен содержать не менее 6 символов, включать в себя цифры, латиницу, строчные и прописные символы"
+      ),
   // .matches(
   //   /(?=.*[0-9])(?=.*[!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*]{6,}/g, &<>
   //   "Пароль должен содержать не менее 6 символов, включать в себя цифры, спец. символы, латиницу, строчные и прописные символы"
@@ -34,16 +40,14 @@ const schema = yup.object({
     .string()
     .matches(
       /^(\s*)?(\+)?([- _():=+]?\d[- _():=+]?){10,14}(\s*)?$/,
-      "Номер телефона должен быть валидным"
+      "Номер телефона введен некорректно \n (пример +7 999 99 99)"
     ),
-  email: yup.string().matches(/.+@.+\..+/i, "email должен содержать @"), // проверять будем отправкой письма на почту (Раиль)
+  email: yup.string().matches(/.+@.+\..+/i, "Почта должен содержать @ \n (пример, example@mail.ru)"), // проверять будем отправкой письма на почту (Раиль)
 });
 
 export const Registration = () => {
   const [checkbox, setCheckbox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
-  let history = useHistory();
 
   const {
     register,
@@ -61,6 +65,7 @@ export const Registration = () => {
       data.login,
       data.number,
       data.password,
+      data.passwordRecovery,
       data.username
     )
       .then((res) => {
@@ -98,7 +103,7 @@ export const Registration = () => {
             {...register("login")}
             id="login"
             type="text"
-            placeholder="login"
+            placeholder="Введите логин"
             name="login"
             autoComplete="on"
             error={!!errors.login}
@@ -110,17 +115,27 @@ export const Registration = () => {
             id="password"
             type="password"
             name="password"
-            placeholder="password"
+            placeholder="Введите пароль"
             autoComplete="on"
             error={!!errors.password}
           />
           <p className="errorText">{errors?.password?.message}</p>
+          <Input
+              {...register("passwordRecovery", { required: true })}
+              id="passwordRecovery"
+              type="password"
+              name="passwordRecovery"
+              placeholder="Повторите пароль"
+              autoComplete="on"
+              error={!!errors.passwordRecovery}
+          />
+          <p className="errorText">{errors?.passwordRecovery?.message}</p>
 
           <Input
             {...register("number")}
             id="number"
             type="tel"
-            placeholder="number"
+            placeholder="Введите ваш номер телефона"
             name="number"
             autoComplete="on"
             error={!!errors.number}
@@ -132,7 +147,7 @@ export const Registration = () => {
             id="email"
             type="text"
             name="email"
-            placeholder="email"
+            placeholder="Введите вашу почту"
             autoComplete="on"
             error={!!errors.email}
           />
