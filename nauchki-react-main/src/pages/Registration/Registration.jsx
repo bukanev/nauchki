@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { PrimaryButton } from "../../UI/PrimaryButton";
 import { Form } from "../../UI/Form";
 import { Input } from "../../UI/Input";
+import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { NavLink } from "react-router-dom";
@@ -48,6 +49,8 @@ const schema = yup.object({
 export const Registration = () => {
   const [checkbox, setCheckbox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  let history = useHistory();
 
   const {
     register,
