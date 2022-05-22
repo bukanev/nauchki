@@ -61,7 +61,7 @@ const schema = yup.object({
 //
 //   )
 // }
-  email: yup.string().matches(/.+@.+\..+/i, "Почта должен содержать @ \n (пример example@mail.ru)"), // проверять будем отправкой письма на почту (Раиль)
+  email: yup.string().matches(/.+@.+\..+/i, "Почта должна содержать @ \n (пример example@mail.ru)"), // проверять будем отправкой письма на почту (Раиль)
 });
 
 export const Registration = () => {
