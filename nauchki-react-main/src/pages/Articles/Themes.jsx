@@ -1,6 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Redirect } from "react-router";
+// import { Redirect } from "react-router";
 import { NavLink } from "react-router-dom";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 

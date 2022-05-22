@@ -7,7 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import { OnePost } from "./OnePost";
 import { getTagsThunk } from "../../asyncActions/getTagsThunk";
 import { Themes } from "./Themes";
-import { isLoadingAC } from "../../store/postsReducer";
+// import { isLoadingAC } from "../../store/postsReducer";
 
 export const Articles = () => {
   const dispatch = useDispatch();
