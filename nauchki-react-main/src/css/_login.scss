@@ -6,6 +6,11 @@
 
 .routerLinkAuth-text {
   color: #0f5c53;
+
+  &_block {
+    display: block;
+    margin: 0 0 20px 0;
+  }
 }
 
 .errorText {
