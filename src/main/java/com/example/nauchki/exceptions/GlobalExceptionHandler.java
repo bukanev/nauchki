@@ -16,4 +16,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> catchOtherException(Exception e){
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> emailConfirmation(ExceptionMailConfirmation e){
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.FORBIDDEN);
+    }
 }
