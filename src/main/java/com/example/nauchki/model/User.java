@@ -42,7 +42,7 @@ public class User implements UserDetails, FileContainer {
 
     private String activationCode;
 
-    private Integer active;
+    private Integer active; //2 - означает почта подтверждена.
 
     private String img_path;
     @JsonIgnore

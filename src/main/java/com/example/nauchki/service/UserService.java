@@ -143,6 +143,7 @@ public class UserService {
             return false;
         }
         user.setActivationCode(null);
+        user.setActive(2);
         userRepository.save(user);
         return true;
     }
