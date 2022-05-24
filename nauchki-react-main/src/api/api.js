@@ -1,5 +1,4 @@
 import * as axios from 'axios';
-import { Redirect } from 'react-router';
 
 const instance = axios.create({
   withCredentials: true,
@@ -7,27 +6,17 @@ const instance = axios.create({
 });
 
 class Api {
-  static request(url, data, method, useToken = true) {
-    return instance
-      .request({
-        method,
-        url,
-        data,
-        headers: useToken
-          ? {
-              Authorization: localStorage.getItem('TOKEN'),
-            }
-          : undefined,
-      })
-      .catch((e) => {});
+  static request(url, data, method, withToken = true) {
+    const headers = withToken ? { Authorization: localStorage.getItem('TOKEN') } : undefined;
+    return instance.request({ method, url, data, headers });
   }
 
-  static post(url, data, useToken) {
-    return Api.request(url, data, 'POST', useToken);
+  static post(url, data, withToken) {
+    return Api.request(url, data, 'POST', withToken);
   }
 
-  static get(url, useToken) {
-    return Api.request(url, 'GET', useToken);
+  static get(url, withToken) {
+    return Api.request(url, 'GET', withToken);
   }
 }
 
@@ -65,6 +54,14 @@ export const RegistartionAPI = {
       number: number,
       password: password,
       username: username,
+    });
+  },
+};
+
+export const RecoveryPassAPI = {
+  recoveryPass(email) {
+    return Api.post('/editpassword', {
+      email: email,
     });
   },
 };
