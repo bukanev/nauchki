@@ -53,7 +53,7 @@ export const RegistartionAPI = {
       login: login,
       number: number,
       password: password,
-      username: username,
+      // username: username,
     });
   },
 };
