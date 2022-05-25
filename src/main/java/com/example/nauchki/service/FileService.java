@@ -25,7 +25,7 @@ public class FileService {
         storeFile.setSize(mpFile.getSize());
         String externalId = storeFile.getExternalId();
         if(externalId==null || externalId.isEmpty()) {
-            storeFile.setExternalId(UUID.randomUUID().toString());
+            storeFile.setExternalId(UUID.randomUUID().toString()); //это внешний ключ для облачного хранилища
         }
         return storeFile;
     }
