@@ -174,11 +174,12 @@ public class UserService {
     public ResponseEntity getAuthEmail(String email, String password) {
         try {
             Optional<User> user = userRepository.findByEmail(email);
-            if (user.get().getActive() != 2){
-                throw new ExceptionMailConfirmation(String.format("Email '%s' not confirmation", email));
-            }
+
             if (user.isPresent()) {
                 UserDetails userDetails = user.get();
+                if (user.get().getActive() != 2){
+                    throw new ExceptionMailConfirmation(String.format("Email '%s' not confirmation", email));
+                }
                 if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
                     authentication.setDetails(userDetails);
