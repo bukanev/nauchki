@@ -282,6 +282,7 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
         if(fileSaver.deleteAllAttachedFiles(userModel)){
+            userModel.setBaseImageId(0L);
             userRepository.save(userModel);
             return true;
         }

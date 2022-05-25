@@ -91,31 +91,30 @@ public class UserController {
     }
 
     @ApiOperation("Делает выбранную по id картинку пользователя основной")
-    @PostMapping("/addimg")
+    @PostMapping("/setbaseimage")
     public String setBaseImg(@RequestParam("file") MultipartFile file,Principal principal){
         return userService.addImage(file, principal);
     }
 
-    @ApiOperation("Удаление основной картинки пользователя по его Principal")
+    @ApiOperation("Удаление основной картинки пользователя по его Principal," +
+            " или выбранной по id")
     @DeleteMapping("/deleteimg")
-    public ResponseEntity<HttpStatus> deleteImg(Principal principal){
-        return userService.deleteImg(principal) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-    }
-
-    @ApiOperation("Удаление выбранной по id картинки пользователя по его Principal")
-    @DeleteMapping("/deleteimg")
-    public ResponseEntity<HttpStatus> deleteImg(Principal principal, Long fileId){
-        return userService.deleteImg(principal, fileId) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    public ResponseEntity<HttpStatus> deleteImg(Principal principal, @RequestParam(name = "id", required = false) Long imgId){
+        if(imgId!=null && imgId>0){
+            return userService.deleteImg(principal) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }else{
+            return userService.deleteImg(principal, imgId) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
     }
 
     @ApiOperation("Удаление всех картинок пользователя по его Principal")
     @DeleteMapping("/deleteimg")
     public ResponseEntity<HttpStatus> deleteAllImg(Principal principal){
-        return userService.deleteImg(principal) ?
+        return userService.deleteAllImages(principal) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
