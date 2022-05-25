@@ -75,7 +75,9 @@ public class UserService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello! \n" +
-                            "Welcome to Nauchki! To confirm your email, please, visit next link: " + url+":8080" + "/activate/%s",
+                            "Добро пожаловать в Nauchki!\n" +
+                            "Для подтверждения почты перейдите пожалуйста по ссылке:\n" +
+                            url + ":8080" + "/activate/%s",
                     user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
@@ -126,8 +128,7 @@ public class UserService {
         if(user.isPresent()) {
             user.get().setActivationCode(UUID.randomUUID().toString());
             String message = String.format(
-                    //TODO изменить url после деплоя фронта
-                    "Для смены пароля пройдите по ссылке: " + url + ":3000" + "/editpassword/%s",
+                    "Для смены пароля пройдите по ссылке: " + url  + "/resetpass/%s",
                     user.get().getActivationCode()
             );
             userRepository.save(user.get());
