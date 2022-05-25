@@ -17,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
@@ -186,34 +187,105 @@ public class UserService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    public String addImage(MultipartFile file, Long id) {
+    @Transactional
+    public String changeImage(MultipartFile file, Long fileId, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            Optional<User> user = userRepository.findById(id);
-            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User with '" + id + "' not found"));
-            String path = fileSaver.saveFile(file, userModel);
+            Optional<User> user = userRepository.findByEmail(principal.getName());
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+            boolean fileConsists = userModel.getImages().stream()
+                    .anyMatch(v-> v.getId()==fileId);
+            if(!fileConsists){
+                throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+            }
+            String path = fileSaver.changeFile(file, fileId);
             userRepository.save(userModel);
             return path;
         }
         return null;
     }
 
+    @Transactional
     public String addImage(MultipartFile file, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-            String path = fileSaver.saveFile(file, userModel);
+            String path = fileSaver.saveAttachedFile(file, userModel);
+            if(userModel.getImages().size()==1){
+                userModel.setBaseImageId(userModel.getImages().get(0).getId());
+            }
             userRepository.save(userModel);
             return path;
         }
         return null;
     }
 
+    @Transactional
+    public String addImage(MultipartFile file, Principal principal, String tags, String description) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<User> user = userRepository.findByEmail(principal.getName());
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+            String path = fileSaver.saveAttachedFile(file, userModel, tags, description);
+            userRepository.save(userModel);
+            return path;
+        }
+        return null;
+    }
+
+    @Transactional
+    public Long setBaseImage(Long fileId, Principal principal) {
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        boolean fileConsists = userModel.getImages().stream()
+                .anyMatch(v-> v.getId()==fileId);
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+        }
+        userModel.setBaseImageId(fileId);
+        userRepository.save(userModel);
+        return fileId;
+    }
+
+    @Transactional
+    public boolean deleteImg(Principal principal, Long fileId){
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        boolean fileConsists = userModel.getImages().stream()
+                .anyMatch(v-> v.getId()==fileId);
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+        }
+        fileSaver.deleteFile(fileId);
+        return true;
+    }
+
+    @Transactional
     public boolean deleteImg(Principal principal){
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-        return user.filter(p->fileSaver.deleteFile(p.getImg(), p))
-                .filter(p->userRepository.save(p)!=null)
-                .isPresent();
+        Long fileId = userModel.getBaseImageId();
+        if(fileId==null || fileId==0){
+            return false;
+        }
+        boolean fileConsists = userModel.getImages().stream()
+                .anyMatch(v-> v.getId()==fileId);
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+        }
+        userModel.setBaseImageId(0L);
+        userRepository.save(userModel);
+        fileSaver.deleteFile(fileId);
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteAllImages(Principal principal){
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        if(fileSaver.deleteAllAttachedFiles(userModel)){
+            userRepository.save(userModel);
+            return true;
+        }
+        return false;
     }
 
 

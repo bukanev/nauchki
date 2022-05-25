@@ -1,7 +1,6 @@
 package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,9 +43,13 @@ public class User implements UserDetails, FileContainer {
 
     private Integer active;
 
-    private String img_path;
-    @JsonIgnore
-    private String img;
+    private Long baseImageId;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "attached_files_user_images",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
+    private List<FileStorage> images;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -139,4 +142,12 @@ public class User implements UserDetails, FileContainer {
         return grantedAuthorities;
     }
 
+    @Override
+    public String getEntityType() {
+        return "user_images";
+    }
+    @Override
+    public Long getEntityId() {
+        return this.id;
+    }
 }

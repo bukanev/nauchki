@@ -37,9 +37,9 @@ public class PostService {
 
     public boolean addPost(Post post, MultipartFile file){
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            String path = saverFile.saveFile(file, null);
+            String path = saverFile.saveFile(file);
             postRepo.save(post);
-            post.setImg_path(path);
+            //post.setImg_path(path);
             return true;
         }
         return false;

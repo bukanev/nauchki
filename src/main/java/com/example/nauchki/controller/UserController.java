@@ -90,9 +90,31 @@ public class UserController {
         return userService.addImage(file, principal);
     }
 
-    @ApiOperation("Удаление картинки пользователя по его Principal")
+    @ApiOperation("Делает выбранную по id картинку пользователя основной")
+    @PostMapping("/addimg")
+    public String setBaseImg(@RequestParam("file") MultipartFile file,Principal principal){
+        return userService.addImage(file, principal);
+    }
+
+    @ApiOperation("Удаление основной картинки пользователя по его Principal")
     @DeleteMapping("/deleteimg")
     public ResponseEntity<HttpStatus> deleteImg(Principal principal){
+        return userService.deleteImg(principal) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    @ApiOperation("Удаление выбранной по id картинки пользователя по его Principal")
+    @DeleteMapping("/deleteimg")
+    public ResponseEntity<HttpStatus> deleteImg(Principal principal, Long fileId){
+        return userService.deleteImg(principal, fileId) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    }
+
+    @ApiOperation("Удаление всех картинок пользователя по его Principal")
+    @DeleteMapping("/deleteimg")
+    public ResponseEntity<HttpStatus> deleteAllImg(Principal principal){
         return userService.deleteImg(principal) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
