@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "filescomments")
+@Table(name = "files_comments")
 public class FileComment {
 
     @Id

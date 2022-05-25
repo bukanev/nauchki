@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -18,11 +19,14 @@ public class FileService {
     private final UploadAndDeleteFileManager fileManager;
     private final FileStorageRepository fileStorageRepository;
 
-    public FileStorage fillStorageFile(FileStorage storeFile, MultipartFile mpFile){
+    public FileStorage initStorageFile(FileStorage storeFile, MultipartFile mpFile){
         storeFile.setName(mpFile.getOriginalFilename());
         storeFile.setType(mpFile.getContentType());
         storeFile.setSize(mpFile.getSize());
-        storeFile.setExternalId(mpFile.getOriginalFilename());
+        String externalId = storeFile.getExternalId();
+        if(externalId==null || externalId.isEmpty()) {
+            storeFile.setExternalId(UUID.randomUUID().toString());
+        }
         return storeFile;
     }
 
@@ -32,8 +36,9 @@ public class FileService {
                 ()->new ResourceNotFoundException("File with id '" + fileId + "' not found")
         );
         if(fileManager.deleteFile(fileStorage.getExternalId())){
-            path = fileManager.saveFile(file);
-            fillStorageFile(fileStorage, file);
+            initStorageFile(fileStorage, file);
+            path = fileManager.saveFile(file, fileStorage.getExternalId());
+            fileStorage.setExternalPath(path);
             fileStorageRepository.save(fileStorage);
         }
         return path;
@@ -57,52 +62,44 @@ public class FileService {
     }
     
     public String saveAttachedFile(MultipartFile file, FileContainer entity) {
+        FileStorage newFile = new FileStorage();
+        newFile = initStorageFile(newFile, file);
         String path;
-        String resultFilename = file.getOriginalFilename();
-        path = fileManager.saveFile(file);
-        if (entity != null & !path.isEmpty()) {
-            List<FileStorage> fileStorage = entity.getFiles();
-            FileStorage sameFile = fileStorage.stream()
-                    .filter((v)->v.getName().equals(resultFilename))
-                    .findFirst().orElseGet(()->{
-                        fileStorage.add(new FileStorage());
-                        return fileStorage.get(fileStorage.size()-1);
-                    });
-            sameFile = fillStorageFile(sameFile, file);
-            sameFile.setOwnerType(entity.getEntityType());
-            sameFile.setOwnerId(entity.getEntityId());
-            fileStorageRepository.save(sameFile);
+        path = fileManager.saveFile(file, newFile.getExternalId());
+        if (!path.isEmpty()) {
+            newFile.setOwnerType(entity.getEntityType());
+            newFile.setOwnerId(entity.getEntityId());
+            newFile.setExternalPath(path);
+            entity.getFiles().add(newFile);
+            fileStorageRepository.save(newFile);
+        }
+       return path;
+    }
+
+    public String saveAttachedFile(MultipartFile file, FileContainer entity, String tags, String description) {
+        FileStorage newFile = new FileStorage();
+        newFile = initStorageFile(newFile, file);
+        String path;
+        path = fileManager.saveFile(file, newFile.getExternalId());
+        if (!path.isEmpty()) {
+            newFile.setOwnerType(entity.getEntityType());
+            newFile.setOwnerId(entity.getEntityId());
+            newFile.setExternalPath(path);
+            newFile.setTags(tags);
+            newFile.setDescription(description);
+            entity.getFiles().add(newFile);
+            fileStorageRepository.save(newFile);
         }
         return path;
     }
 
     public String saveFile(MultipartFile file) {
+        FileStorage newFile = new FileStorage();
+        newFile = initStorageFile(newFile, file);
         String path;
-        path = fileManager.saveFile(file);
+        path = fileManager.saveFile(file, newFile.getExternalId());
         if (!path.isEmpty()) {
-            FileStorage sameFile = new FileStorage();
-            sameFile = fillStorageFile(sameFile, file);
-            fileStorageRepository.save(sameFile);
-        }
-        return path;
-    }
-
-    public String saveAttachedFile(MultipartFile file, FileContainer entity, String tags, String description) {
-        String path;
-        String resultFilename = file.getOriginalFilename();
-        path = fileManager.saveFile(file);
-        if (entity != null & !path.isEmpty()) {
-            List<FileStorage> fileStorage = entity.getFiles();
-            FileStorage sameFile = fileStorage.stream()
-                    .filter((v)->v.getName().equals(resultFilename))
-                    .findFirst().orElseGet(()->{
-                        fileStorage.add(new FileStorage());
-                        return fileStorage.get(fileStorage.size()-1);
-                    });
-            sameFile = fillStorageFile(sameFile, file);
-            sameFile.setTags(tags);
-            sameFile.setDescription(description);
-            fileStorageRepository.save(sameFile);
+            fileStorageRepository.save(newFile);
         }
         return path;
     }
@@ -114,7 +111,7 @@ public class FileService {
         if (isOk && entity != null) {
             List<FileStorage> fileStorage = entity.getFiles();
             fileStorage = fileStorage.stream()
-                    .filter((v)-> {
+                    .filter( v-> {
                                 boolean isMatch= v.getId().equals(fileId);
                                 if(isMatch){
                                     fileStorageRepository.delete(v);
@@ -142,7 +139,7 @@ public class FileService {
     public boolean deleteAllAttachedFiles(FileContainer entity) {
         List<FileStorage> fileStorage = entity.getFiles();
         fileStorage.stream()
-                .forEach((v)-> {
+                .forEach(v-> {
                             if(fileManager.deleteFile(v.getExternalId())){
                                 fileStorageRepository.delete(v);
                             }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,9 +20,6 @@ public class Post implements FileContainer {
     private String subtitle;
     @Column(length = 5000)
     private String text;
-//    private String img_path;
-//    @JsonIgnore
-//    private String img;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "attached_files_post_images",
@@ -55,14 +53,6 @@ public class Post implements FileContainer {
         return tag;
     }
 
-//    public String getImg_path() {
-//        return img_path;
-//    }
-//
-//    public void setImg_path(String filename) {
-//        this.img_path = filename;
-//    }
-
     @Override
     public String getEntityType() {
         return "post_images";
@@ -75,6 +65,9 @@ public class Post implements FileContainer {
 
     @Override
     public List<FileStorage> getFiles() {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
         return this.images;
     }
 

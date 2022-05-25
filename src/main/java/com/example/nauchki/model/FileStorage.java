@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "filestorage")
+@Table(name = "files_torage")
 public class FileStorage {
 
     @Id

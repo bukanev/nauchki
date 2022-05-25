@@ -193,9 +193,9 @@ public class UserService {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
             boolean fileConsists = userModel.getFiles().stream()
-                    .anyMatch(v-> v.getId()==fileId);
+                    .anyMatch(v-> v.getId().equals(fileId));
             if(!fileConsists){
-                throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+                throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
             }
             String path = fileSaver.changeFile(file, fileId);
             userRepository.save(userModel);
@@ -225,6 +225,9 @@ public class UserService {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
             String path = fileSaver.saveAttachedFile(file, userModel, tags, description);
+            if(userModel.getFiles().size()==1){
+                userModel.setBaseImageId(userModel.getFiles().get(0).getId());
+            }
             userRepository.save(userModel);
             return path;
         }
@@ -236,9 +239,9 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
         boolean fileConsists = userModel.getFiles().stream()
-                .anyMatch(v-> v.getId()==fileId);
+                .anyMatch(v-> v.getId().equals(fileId));
         if(!fileConsists){
-            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
         }
         userModel.setBaseImageId(fileId);
         userRepository.save(userModel);
@@ -250,11 +253,15 @@ public class UserService {
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
         boolean fileConsists = userModel.getFiles().stream()
-                .anyMatch(v-> v.getId()==fileId);
+                .anyMatch(v-> v.getId().equals(fileId));
         if(!fileConsists){
-            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
         }
-        fileSaver.deleteFile(fileId);
+        if(userModel.getBaseImageId().equals(fileId)){
+            userModel.setBaseImageId(0L);
+        }
+        fileSaver.deleteAttachedFile(fileId, userModel);
+        userRepository.save(userModel);
         return true;
     }
 
@@ -267,13 +274,13 @@ public class UserService {
             return false;
         }
         boolean fileConsists = userModel.getFiles().stream()
-                .anyMatch(v-> v.getId()==fileId);
+                .anyMatch(v-> v.getId().equals(fileId));
         if(!fileConsists){
-            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
         }
+        fileSaver.deleteAttachedFile(fileId, userModel);
         userModel.setBaseImageId(0L);
         userRepository.save(userModel);
-        fileSaver.deleteFile(fileId);
         return true;
     }
 

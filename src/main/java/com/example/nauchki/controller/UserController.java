@@ -1,6 +1,5 @@
 package com.example.nauchki.controller;
 
-import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
@@ -87,8 +86,8 @@ public class UserController {
 
     @ApiOperation("Добавление картинку пользователя по его Principal")
     @PostMapping("/addimg")
-    public String addImg(@RequestParam("file") MultipartFile file,Principal principal){
-        return userService.addImage(file, principal);
+    public String addImg(@RequestParam("file") MultipartFile file, @RequestParam(name="tags", required = false) String tags, @RequestParam(name="description", required = false) String description,Principal principal){
+        return userService.addImage(file, principal, tags, description);
     }
 
     @ApiOperation("Делает выбранную по id картинку пользователя основной")
@@ -97,16 +96,19 @@ public class UserController {
         return userService.setBaseImage(imgId, principal);
     }
 
-    @ApiOperation("Удаление основной картинки пользователя по его Principal," +
-            " или выбранной по id")
+    @ApiOperation("Удаление выбранной по id картинки пользователя по его Principal," +
+            " или основной картинки, если id не указан")
     @DeleteMapping("/deleteimg/{id}")
     public ResponseEntity<HttpStatus> deleteImg(Principal principal, @PathVariable(name = "id", required = false) Long imgId){
-        if(imgId==null){
-            imgId = 0L;
+        if(imgId!=null && imgId>0){
+            return userService.deleteImg(principal, imgId) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }else{
+            return userService.deleteImg(principal) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
-        return userService.deleteImg(principal) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @ApiOperation("Удаление всех картинок пользователя по его Principal")

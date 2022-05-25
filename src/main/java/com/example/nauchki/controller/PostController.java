@@ -26,7 +26,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public List<PostDto> main(@RequestBody Post post) {
-        if (post != null || !post.getTag().isEmpty()) {
+        if (post != null && !post.getTag().isEmpty()) {
             List<PostDto> postDtos = postService.getPost(post);
             return postDtos;
         }
@@ -76,13 +76,13 @@ public class PostController {
     }
 
     @DeleteMapping(value = "/posts/{postid}/image/{imgid}")
-    public void delImages(@PathVariable(name="postid") Long postId, @PathVariable(name="imgid") Long imgid, @RequestParam("file") MultipartFile file, Principal principal){
+    public void delImages(@PathVariable(name="postid") Long postId, @PathVariable(name="imgid") Long imgid, Principal principal){
         postService.delImage(postId, imgid, principal);
     }
 
     @DeleteMapping(value = "/posts/{postid}/images")
-    public void delImages(@PathVariable(name="postid") Long postId, @RequestParam("file") MultipartFile file, Principal principal){
-        postService.delAllImages(postId, file, principal);
+    public void delImages(@PathVariable(name="postid") Long postId, Principal principal){
+        postService.delAllImages(postId, principal);
     }
 
 }

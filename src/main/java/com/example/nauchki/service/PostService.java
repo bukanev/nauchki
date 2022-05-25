@@ -43,7 +43,7 @@ public class PostService {
     public Long addPost(Post post, MultipartFile file){
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            String path = saverFile.saveAttachedFile(file, post);
+            saverFile.saveAttachedFile(file, post);
         }
         return post.getId();
     }
@@ -83,15 +83,16 @@ public class PostService {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
         boolean fileConsists = postModel.getFiles().stream()
-                .anyMatch(v-> v.getId()==imgid);
+                .anyMatch(v-> v.getId().equals(imgid));
         if(!fileConsists){
-            throw new ResourceNotFoundException("File with id '" + imgid + "' not belong to user '" + principal.getName() + "' not found");
+            throw new ResourceNotFoundException("File with id '" + imgid + "' not belong to post '" + principal.getName() + "'");
         }
-        saverFile.deleteFile(imgid);
+        saverFile.deleteAttachedFile(imgid, postModel);
+        postRepo.save(postModel);
     }
 
     @Transactional
-    public void delAllImages(Long postId, MultipartFile file, Principal principal) {
+    public void delAllImages(Long postId, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
         if(saverFile.deleteAllAttachedFiles(postModel)){
