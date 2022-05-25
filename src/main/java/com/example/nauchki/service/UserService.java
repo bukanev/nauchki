@@ -192,7 +192,7 @@ public class UserService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-            boolean fileConsists = userModel.getImages().stream()
+            boolean fileConsists = userModel.getFiles().stream()
                     .anyMatch(v-> v.getId()==fileId);
             if(!fileConsists){
                 throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
@@ -210,8 +210,8 @@ public class UserService {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
             String path = fileSaver.saveAttachedFile(file, userModel);
-            if(userModel.getImages().size()==1){
-                userModel.setBaseImageId(userModel.getImages().get(0).getId());
+            if(userModel.getFiles().size()==1){
+                userModel.setBaseImageId(userModel.getFiles().get(0).getId());
             }
             userRepository.save(userModel);
             return path;
@@ -235,7 +235,7 @@ public class UserService {
     public Long setBaseImage(Long fileId, Principal principal) {
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-        boolean fileConsists = userModel.getImages().stream()
+        boolean fileConsists = userModel.getFiles().stream()
                 .anyMatch(v-> v.getId()==fileId);
         if(!fileConsists){
             throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
@@ -249,7 +249,7 @@ public class UserService {
     public boolean deleteImg(Principal principal, Long fileId){
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-        boolean fileConsists = userModel.getImages().stream()
+        boolean fileConsists = userModel.getFiles().stream()
                 .anyMatch(v-> v.getId()==fileId);
         if(!fileConsists){
             throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");
@@ -266,7 +266,7 @@ public class UserService {
         if(fileId==null || fileId==0){
             return false;
         }
-        boolean fileConsists = userModel.getImages().stream()
+        boolean fileConsists = userModel.getFiles().stream()
                 .anyMatch(v-> v.getId()==fileId);
         if(!fileConsists){
             throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "' not found");

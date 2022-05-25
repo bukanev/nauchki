@@ -20,8 +20,8 @@ import java.util.List;
  */
 public interface FileContainer {
 
-    List<FileStorage> getImages();
-    void setImages(List<FileStorage> images);
+    List<FileStorage> getFiles();
+    void setFiles(List<FileStorage> images);
     Long getEntityId();
     String getEntityType();
 }

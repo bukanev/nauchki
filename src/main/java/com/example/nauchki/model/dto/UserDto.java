@@ -46,7 +46,7 @@ public class UserDto {
 
     public static UserDto valueOf(User user) {
         List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());
-        List<AttachedFileDto> filesDtos = user.getImages().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
+        List<AttachedFileDto> filesDtos = user.getFiles().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
         return new UserDto(
                 user.getId(),
                 user.getUsername(),

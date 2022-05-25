@@ -1,5 +1,6 @@
 package com.example.nauchki.controller;
 
+import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
 import com.example.nauchki.service.UserService;
@@ -91,28 +92,25 @@ public class UserController {
     }
 
     @ApiOperation("Делает выбранную по id картинку пользователя основной")
-    @PostMapping("/setbaseimage")
-    public String setBaseImg(@RequestParam("file") MultipartFile file,Principal principal){
-        return userService.addImage(file, principal);
+    @PutMapping("/setbaseimage/{id}")
+    public Long setBaseImg(@PathVariable(name = "id") Long imgId, @RequestParam("file") MultipartFile file, Principal principal){
+        return userService.setBaseImage(imgId, principal);
     }
 
     @ApiOperation("Удаление основной картинки пользователя по его Principal," +
             " или выбранной по id")
-    @DeleteMapping("/deleteimg")
-    public ResponseEntity<HttpStatus> deleteImg(Principal principal, @RequestParam(name = "id", required = false) Long imgId){
-        if(imgId!=null && imgId>0){
-            return userService.deleteImg(principal) ?
-                    new ResponseEntity<>(HttpStatus.OK) :
-                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-        }else{
-            return userService.deleteImg(principal, imgId) ?
-                    new ResponseEntity<>(HttpStatus.OK) :
-                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    @DeleteMapping("/deleteimg/{id}")
+    public ResponseEntity<HttpStatus> deleteImg(Principal principal, @PathVariable(name = "id", required = false) Long imgId){
+        if(imgId==null){
+            imgId = 0L;
         }
+        return userService.deleteImg(principal) ?
+                new ResponseEntity<>(HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @ApiOperation("Удаление всех картинок пользователя по его Principal")
-    @DeleteMapping("/deleteimg")
+    @DeleteMapping("/deleteimgs")
     public ResponseEntity<HttpStatus> deleteAllImg(Principal principal){
         return userService.deleteAllImages(principal) ?
                 new ResponseEntity<>(HttpStatus.OK) :

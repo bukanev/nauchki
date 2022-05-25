@@ -61,7 +61,7 @@ public class FileService {
         String resultFilename = file.getOriginalFilename();
         path = fileManager.saveFile(file);
         if (entity != null & !path.isEmpty()) {
-            List<FileStorage> fileStorage = entity.getImages();
+            List<FileStorage> fileStorage = entity.getFiles();
             FileStorage sameFile = fileStorage.stream()
                     .filter((v)->v.getName().equals(resultFilename))
                     .findFirst().orElseGet(()->{
@@ -92,7 +92,7 @@ public class FileService {
         String resultFilename = file.getOriginalFilename();
         path = fileManager.saveFile(file);
         if (entity != null & !path.isEmpty()) {
-            List<FileStorage> fileStorage = entity.getImages();
+            List<FileStorage> fileStorage = entity.getFiles();
             FileStorage sameFile = fileStorage.stream()
                     .filter((v)->v.getName().equals(resultFilename))
                     .findFirst().orElseGet(()->{
@@ -112,7 +112,7 @@ public class FileService {
                 ()->new ResourceNotFoundException("File with id '" + fileId + "' not found"));
         boolean isOk = fileManager.deleteFile(atFile.getExternalId());
         if (isOk && entity != null) {
-            List<FileStorage> fileStorage = entity.getImages();
+            List<FileStorage> fileStorage = entity.getFiles();
             fileStorage = fileStorage.stream()
                     .filter((v)-> {
                                 boolean isMatch= v.getId().equals(fileId);
@@ -123,8 +123,8 @@ public class FileService {
                             }
                     )
                     .collect(Collectors.toList());
-            entity.getImages().clear();
-            entity.getImages().addAll(fileStorage);
+            entity.getFiles().clear();
+            entity.getFiles().addAll(fileStorage);
         }
         return isOk;
     }
@@ -140,7 +140,7 @@ public class FileService {
     }
 
     public boolean deleteAllAttachedFiles(FileContainer entity) {
-        List<FileStorage> fileStorage = entity.getImages();
+        List<FileStorage> fileStorage = entity.getFiles();
         fileStorage.stream()
                 .forEach((v)-> {
                             if(fileManager.deleteFile(v.getExternalId())){
@@ -148,7 +148,7 @@ public class FileService {
                             }
                         }
                 );
-        entity.getImages().clear();
+        entity.getFiles().clear();
         return true;
     }
 

@@ -31,7 +31,7 @@ public class PostDto {
                 post.getTitle(),
                 post.getSubtitle(),
                 post.getText(),
-                post.getImages()
+                post.getFiles()
         );
     }
 }

@@ -73,5 +73,14 @@ public class Post implements FileContainer {
         return this.id;
     }
 
+    @Override
+    public List<FileStorage> getFiles() {
+        return this.images;
+    }
+
+    @Override
+    public void setFiles(List<FileStorage> images) {
+        this.images = images;
+    }
 
 }
