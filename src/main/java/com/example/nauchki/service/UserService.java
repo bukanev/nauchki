@@ -1,10 +1,12 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
+import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,20 +36,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final MailSender mailSender;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(@Value("${my-config.url}")String url ,
+    public UserService(@Value("${my-config.url}") String url,
                        JwtProvider jwtProvider,
                        FileService fileSaver,
                        UserRepository userRepository,
                        MailSender mailSender,
-                       PasswordEncoder bCryptPasswordEncoder) {
+                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
         this.url = url;
         this.jwtProvider = jwtProvider;
         this.fileSaver = fileSaver;
         this.userRepository = userRepository;
         this.mailSender = mailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     /**
@@ -60,7 +64,7 @@ public class UserService {
         if (userDto.getEmail() == null || userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             return false;
         }
-        //saveRole();
+        saveRole();
         User user = userDto.mapToUser();
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(1L, "USER"));
@@ -85,14 +89,14 @@ public class UserService {
         return true;
     }
 
-    /*private void saveRole() {
+    private void saveRole() {
         if (roleRepository.findByName("USER") == null) {
             roleRepository.save(new Role(1L, "USER"));
         }
         if (roleRepository.findByName("ADMIN") == null) {
             roleRepository.save(new Role(2L, "ADMIN"));
         }
-    }*/
+    }
 
 
     public boolean deleteUser(Long userId) {
@@ -170,6 +174,9 @@ public class UserService {
     public ResponseEntity getAuthEmail(String email, String password) {
         try {
             Optional<User> user = userRepository.findByEmail(email);
+            if (user.get().getActive() != 2){
+                throw new ExceptionMailConfirmation(String.format("Email '%s' not confirmation", email));
+            }
             if (user.isPresent()) {
                 UserDetails userDetails = user.get();
                 if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
