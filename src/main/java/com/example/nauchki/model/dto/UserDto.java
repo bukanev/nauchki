@@ -24,6 +24,7 @@ public class UserDto {
     private Set<Role> roleList;
     private String secretQuestion;
     private String activationCode;
+    private Integer resetPasswordCode;
     private List<ChildrenDto> childrens;
     private List<AttachedFileDto> images;
     private Long baseImgId;
