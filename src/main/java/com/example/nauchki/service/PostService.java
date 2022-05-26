@@ -41,7 +41,6 @@ public class PostService {
         return false;
     }
 
-    @Transactional
     public Long addPost(Post post, MultipartFile file){
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
