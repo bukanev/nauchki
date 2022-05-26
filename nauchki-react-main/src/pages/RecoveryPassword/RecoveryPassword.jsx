@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { LogDataProvider } from '../Login/DataContextLog';
 import { Input } from '../../UI/Input';
@@ -9,7 +9,7 @@ import { Form } from '../../UI/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { getRecoveryPassData } from '../../store/recoveryPassReducer';
 import { getRecoveryPassThunk } from '../../asyncActions/getRecoveryPassThunk';
-
+import { ModalWindow } from '../../components/ModalWindow/ModalWindow';
 
 const schema = yup.object({
   email: yup
@@ -28,12 +28,20 @@ export const RecoveryPassword = () => {
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
+  const [showModalClick, setShowModalClick] = useState(false);
 
-  const onSubmit = async (data) => {
-    dispatch(await getRecoveryPassThunk(data));
+  const onSubmit = async (email) => {
+    dispatch(await getRecoveryPassThunk(email));
   };
 
-  console.log(data, error?.request?.status);
+  const toggleShowModalClick = () => {
+    setShowModalClick(!showModalClick)
+  }
+  useEffect(() => {
+    if (data?.request?.status === 200) {
+      toggleShowModalClick();
+    }
+  }, [data])
 
   return (
     <LogDataProvider>
@@ -48,10 +56,22 @@ export const RecoveryPassword = () => {
           autoComplete="on"
           error={!!errors.email}
         />
-        <p className="errorText">{errors?.email?.message}</p>
+        <p className="errorText">
+          {error?.request?.status === 304 ?
+            'Почта не зарегистрирована'
+            : ''}
+        </p>
 
         <PrimaryButton>Отправить</PrimaryButton>
       </Form>
+
+      <ModalWindow
+        showModalClick={showModalClick}
+        toggleShowModalClick={toggleShowModalClick}
+      >
+        Письмо на почту отправлено
+      </ModalWindow>
+
     </LogDataProvider>
   );
 };
