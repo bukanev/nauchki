@@ -47,7 +47,7 @@ public class ChildrenService {
     public List<ChildrenDto> getChildren(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            List<Children> childrens = user.get().getChildrenList();
+            List<Children> childrens = user.get().getChildrens();
             for (int i = 0; i < childrens.size(); i++) {
                 Children children = childrens.get(i);
                 long days = getDays(children.getDateOfBirth());

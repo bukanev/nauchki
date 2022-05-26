@@ -60,7 +60,7 @@ public class User implements UserDetails, FileContainer {
     private Set<Role> grantedAuthorities;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Children> childrenList;
+    private List<Children> childrens;
 
     private Integer resetPasswordCode;
 
@@ -79,7 +79,7 @@ public class User implements UserDetails, FileContainer {
     }
 
     public void addChildren(Children children) {
-        this.childrenList.add(children);
+        this.childrens.add(children);
     }
 
     public String getActivationCode() {
