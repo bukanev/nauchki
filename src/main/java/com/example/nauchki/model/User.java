@@ -42,7 +42,7 @@ public class User implements UserDetails, FileContainer {
 
     private String activationCode;
 
-    private Integer active;
+    private Integer active; //2 - означает почта подтверждена.
 
     private Long baseImageId;
 
@@ -61,6 +61,8 @@ public class User implements UserDetails, FileContainer {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Children> childrenList;
+
+    private Integer resetPasswordCode;
 
     public User(String username, String password, Collection<? extends GrantedAuthority> grantedAuthorities) {
     }

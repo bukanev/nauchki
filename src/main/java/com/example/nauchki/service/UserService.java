@@ -1,10 +1,12 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
+import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -35,20 +34,22 @@ public class UserService {
     private final UserRepository userRepository;
     private final MailSender mailSender;
     private final PasswordEncoder bCryptPasswordEncoder;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserService(@Value("${my-config.url}")String url ,
+    public UserService(@Value("${my-config.url}") String url,
                        JwtProvider jwtProvider,
                        FileService fileSaver,
                        UserRepository userRepository,
                        MailSender mailSender,
-                       PasswordEncoder bCryptPasswordEncoder) {
+                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
         this.url = url;
         this.jwtProvider = jwtProvider;
         this.fileSaver = fileSaver;
         this.userRepository = userRepository;
         this.mailSender = mailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     /**
@@ -61,7 +62,7 @@ public class UserService {
         if (userDto.getEmail() == null || userRepository.findByEmail(userDto.getEmail()).isPresent()) {
             return false;
         }
-        //saveRole();
+        saveRole();
         User user = userDto.mapToUser();
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(1L, "USER"));
@@ -76,7 +77,9 @@ public class UserService {
         if (user.getEmail() != null) {
             String message = String.format(
                     "Hello! \n" +
-                            "Welcome to Nauchki! To confirm your email, please, visit next link: " + url+":8080" + "/activate/%s",
+                            "Добро пожаловать в Nauchki!\n" +
+                            "Для подтверждения почты перейдите пожалуйста по ссылке:\n" +
+                            url + ":8080" + "/activate/%s",
                     user.getActivationCode()
             );
             mailSender.send(user.getEmail(), "Activation code", message);
@@ -84,14 +87,14 @@ public class UserService {
         return true;
     }
 
-    /*private void saveRole() {
+    private void saveRole() {
         if (roleRepository.findByName("USER") == null) {
             roleRepository.save(new Role(1L, "USER"));
         }
         if (roleRepository.findByName("ADMIN") == null) {
             roleRepository.save(new Role(2L, "ADMIN"));
         }
-    }*/
+    }
 
 
     public boolean deleteUser(Long userId) {
@@ -125,14 +128,16 @@ public class UserService {
     public boolean editPassword(UserDto userDto) {
         Optional<User> user = userRepository.findByEmail(userDto.getEmail());
         if(user.isPresent()) {
-            user.get().setActivationCode(UUID.randomUUID().toString());
+            User usr = user.get();
+            Random random = new Random();
+            int num = 10000 + random.nextInt(90000);
+            usr.setResetPasswordCode(num);
             String message = String.format(
-                    //TODO изменить url после деплоя фронта
-                    "Для смены пароля пройдите по ссылке: " + url + ":3000" + "/editpassword/%s",
-                    user.get().getActivationCode()
+                    "Код для сброса пароля, не сообщайте его никому:\n%s",
+                    usr.getResetPasswordCode()
             );
-            userRepository.save(user.get());
-            mailSender.send(userDto.getEmail(), "Смена пароля", message);
+            userRepository.save(usr);
+            mailSender.send(usr.getEmail(), "Смена пароля", message);
             return true;
         }
         return false;
@@ -144,6 +149,7 @@ public class UserService {
             return false;
         }
         user.setActivationCode(null);
+        user.setActive(2);
         userRepository.save(user);
         return true;
     }
@@ -169,8 +175,12 @@ public class UserService {
     public ResponseEntity getAuthEmail(String email, String password) {
         try {
             Optional<User> user = userRepository.findByEmail(email);
+
             if (user.isPresent()) {
                 UserDetails userDetails = user.get();
+                if (user.get().getActive() != 2){
+                    throw new ExceptionMailConfirmation(String.format("Email '%s' not confirmation", email));
+                }
                 if (bCryptPasswordEncoder.matches(password, userDetails.getPassword())) {
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(email, null, userDetails.getAuthorities());
                     authentication.setDetails(userDetails);
@@ -309,11 +319,14 @@ public class UserService {
     }
 
     public boolean editPass(UserDto userDto) {
-        User user = userRepository.findByActivationCode(userDto.getActivationCode());
+        if(userDto.getResetPasswordCode() == null){
+            return false;
+        }
+        User user = userRepository.findByResetPasswordCode(userDto.getResetPasswordCode());
         if (user == null) {
             return false;
         }
-        user.setActivationCode(null);
+        user.setResetPasswordCode(null);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
         return true;

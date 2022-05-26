@@ -63,8 +63,12 @@ export const Login = () => {
 
           <PrimaryButton>{isLoading ? <LoaderSvg /> : <p>Войти</p>}</PrimaryButton>
           <div className="routerLinkAuth">
-            <NavLink className="routerLinkAuth-text" to="/registration">
+            <NavLink className="routerLinkAuth-text routerLinkAuth-text_block" to="/registration">
               Регистрация
+            </NavLink>
+
+            <NavLink className="routerLinkAuth-text routerLinkAuth-text_block" to="/recoverypass">
+              Забыли пароль
             </NavLink>
           </div>
         </Form>
