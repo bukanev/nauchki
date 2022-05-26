@@ -58,6 +58,8 @@ public class User implements UserDetails, FileContainer {
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Children> childrenList;
 
+    private Integer resetPasswordCode;
+
     public User(String username, String password, Collection<? extends GrantedAuthority> grantedAuthorities) {
     }
 

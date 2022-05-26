@@ -1,8 +1,8 @@
 package com.example.nauchki.model.dto;
 
-import com.example.nauchki.model.Children;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +26,7 @@ public class UserDto {
     private String secretQuestion;
     private String activationCode;
     private String img_path;
+    private Integer resetPasswordCode;
     private List<ChildrenDto> childrens;
 
     public UserDto(Long id, String name, String login, String password, String number, String email, Set<Role> roleList, String img_path, List<ChildrenDto> childrens) {

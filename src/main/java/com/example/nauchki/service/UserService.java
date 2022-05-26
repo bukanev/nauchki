@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -130,13 +127,16 @@ public class UserService {
     public boolean editPassword(UserDto userDto) {
         Optional<User> user = userRepository.findByEmail(userDto.getEmail());
         if(user.isPresent()) {
-            user.get().setActivationCode(UUID.randomUUID().toString());
+            User usr = user.get();
+            Random random = new Random();
+            int num = 10000 + random.nextInt(90000);
+            usr.setResetPasswordCode(num);
             String message = String.format(
-                    "Для смены пароля пройдите по ссылке: " + url  + "/resetpass/%s",
-                    user.get().getActivationCode()
+                    "Код для сброса пароля, не сообщайте его никому:\n%s",
+                    usr.getResetPasswordCode()
             );
-            userRepository.save(user.get());
-            mailSender.send(userDto.getEmail(), "Смена пароля", message);
+            userRepository.save(usr);
+            mailSender.send(usr.getEmail(), "Смена пароля", message);
             return true;
         }
         return false;
@@ -239,11 +239,14 @@ public class UserService {
     }
 
     public boolean editPass(UserDto userDto) {
-        User user = userRepository.findByActivationCode(userDto.getActivationCode());
+        if(userDto.getResetPasswordCode() == null){
+            return false;
+        }
+        User user = userRepository.findByResetPasswordCode(userDto.getResetPasswordCode());
         if (user == null) {
             return false;
         }
-        user.setActivationCode(null);
+        user.setResetPasswordCode(null);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
         return true;
