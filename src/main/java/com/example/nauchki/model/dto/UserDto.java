@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,35 +46,35 @@ public class UserDto {
     public UserDto() {
     }
 
-    public static UserDto valueOf(User user) {
-        List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());
-        List<AttachedFileDto> filesDtos = user.getFiles().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
-        return new UserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getLogin(),
-                user.getPassword(),
-                user.getNumber(),
-                user.getEmail(),
-                user.getGrantedAuthorities(),
-                filesDtos,
-                user.getBaseImageId(),
-                childrenDtos
-        );
-    }
+//    public static UserDto valueOf(User user) {
+//        List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());
+//        //List<AttachedFileDto> filesDtos = user.getFiles().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
+//        return new UserDto(
+//                user.getId(),
+//                user.getUsername(),
+//                user.getLogin(),
+//                user.getPassword(),
+//                user.getNumber(),
+//                user.getEmail(),
+//                user.getGrantedAuthorities(),
+//                new ArrayList<>(),
+//                user.getBaseImageId(),
+//                childrenDtos
+//        );
+//    }
 
-    public User mapToUser() {
-        User user = new User();
-        user.setId(id);
-        user.setUsername(username);
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setNumber(number);
-        user.setEmail(Email);
-        user.setSecretAnswer(secretAnswer);
-        user.setSecretQuestion(secretQuestion);
-        user.setBaseImageId(baseImgId);
-        return user;
-    }
+//    public User mapToUser() {
+//        User user = new User();
+//        user.setId(id);
+//        user.setUsername(username);
+//        user.setLogin(login);
+//        user.setPassword(password);
+//        user.setNumber(number);
+//        user.setEmail(Email);
+//        user.setSecretAnswer(secretAnswer);
+//        user.setSecretQuestion(secretQuestion);
+//        user.setBaseImageId(baseImgId);
+//        return user;
+//    }
 
 }

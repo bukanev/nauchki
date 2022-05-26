@@ -80,9 +80,5 @@ public class PostController {
         postService.delImage(postId, imgid, principal);
     }
 
-    @DeleteMapping(value = "/posts/{postid}/images")
-    public void delImages(@PathVariable(name="postid") Long postId, Principal principal){
-        postService.delAllImages(postId, principal);
-    }
 
 }

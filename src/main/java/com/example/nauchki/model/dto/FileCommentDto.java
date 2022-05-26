@@ -26,13 +26,4 @@ public class FileCommentDto {
     private String userName;
     private LocalDateTime createTime;
 
-    public static FileCommentDto valueOf(FileComment fileComment) {
-        return new FileCommentDto(
-                fileComment.getId(),
-                fileComment.getComment(),
-                fileComment.getUser().getId(),
-                fileComment.getUser().getUsername(),
-                fileComment.getCreateTime()
-        );
-    }
 }

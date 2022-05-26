@@ -111,11 +111,4 @@ public class UserController {
         }
     }
 
-    @ApiOperation("Удаление всех картинок пользователя по его Principal")
-    @DeleteMapping("/deleteimgs")
-    public ResponseEntity<HttpStatus> deleteAllImg(Principal principal){
-        return userService.deleteAllImages(principal) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
-    }
 }

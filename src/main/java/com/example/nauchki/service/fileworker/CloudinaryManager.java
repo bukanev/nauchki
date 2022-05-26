@@ -5,13 +5,14 @@ import com.cloudinary.utils.ObjectUtils;
 import lombok.RequiredArgsConstructor;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
 
-
+@Primary
 @RequiredArgsConstructor
 @Component
 public class CloudinaryManager implements UploadAndDeleteFileManager {

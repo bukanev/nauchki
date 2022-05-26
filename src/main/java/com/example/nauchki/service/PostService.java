@@ -1,6 +1,7 @@
 package com.example.nauchki.service;
 
 import com.example.nauchki.exceptions.ResourceNotFoundException;
+import com.example.nauchki.mapper.PostMapper;
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
@@ -21,17 +22,18 @@ public class PostService {
 
     private final PostRepo postRepo;
     private final FileService saverFile;
+    private final PostMapper postMapper;
 
     public List<PostDto> getPost(Post filter) {
-        return postRepo.findAll(Example.of(filter)).stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findAll(Example.of(filter)).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public List<PostDto> getAllPost() {
-        return postRepo.findAll().stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findAll().stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public List<PostDto> getAllPost(String tag) {
-        return postRepo.findByTag(tag).stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public boolean deletePost(Long id) {

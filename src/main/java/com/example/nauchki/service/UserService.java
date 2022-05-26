@@ -3,6 +3,8 @@ package com.example.nauchki.service;
 import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
+import com.example.nauchki.mapper.FileMapper;
+import com.example.nauchki.mapper.UserMapper;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
@@ -24,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -35,6 +38,7 @@ public class UserService {
     private final MailSender mailSender;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
     @Autowired
     public UserService(@Value("${my-config.url}") String url,
@@ -42,7 +46,8 @@ public class UserService {
                        FileService fileSaver,
                        UserRepository userRepository,
                        MailSender mailSender,
-                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
+                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository,
+                       UserMapper userMapper) {
         this.url = url;
         this.jwtProvider = jwtProvider;
         this.fileSaver = fileSaver;
@@ -50,6 +55,7 @@ public class UserService {
         this.mailSender = mailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -63,7 +69,8 @@ public class UserService {
             return false;
         }
         saveRole();
-        User user = userDto.mapToUser();
+        //User user = userDto.mapToUser();
+        User user = userMapper.toModel(userDto);
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(1L, "USER"));
         user.setGrantedAuthorities(roles);
@@ -108,7 +115,7 @@ public class UserService {
     public UserDto getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            UserDto userDto = UserDto.valueOf(user.get());
+            UserDto userDto = userMapper.toDto(user.get());
             userDto.setPassword("PROTECTED");
             userDto.setSecretAnswer(user.get().getSecretAnswer());
             return userDto;
@@ -120,7 +127,7 @@ public class UserService {
         Optional<User> userTwo = userRepository.findByEmail(email);
         if (userTwo.isPresent()) {
             userTwo.get().setPassword("PROTECTED");
-            return UserDto.valueOf(userTwo.get());
+            return userMapper.toDto(userTwo.get());
         }
         return new UserDto();
     }
