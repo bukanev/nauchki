@@ -22,9 +22,9 @@ public class FileStorage {
     private Long id;
 
     @Column(name = "ownerId")
-    private Long ownerId;
+    private Long ownerId; // идентификатор владельца файла, можно использовать для определения владельца файла
     @Column(name = "ownerType")
-    private String ownerType;
+    private String ownerType; //тип владельца файла, можно использовать для определения владельца файла
     @Column(name = "name")
     private String name;
     @Column(name = "type")
@@ -36,9 +36,9 @@ public class FileStorage {
     @Column(name = "size")
     private Long size;
     @Column(name = "externalId")
-    private String externalId;
+    private String externalId; //идентификатор файла ф облачном хранилище
     @Column(name = "externalPath")
-    private String externalPath;
+    private String externalPath; //путь к файлу в облачном хранилище
 
     @OneToMany
     @JoinColumn(name="fileId")

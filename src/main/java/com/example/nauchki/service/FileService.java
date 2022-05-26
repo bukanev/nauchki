@@ -19,6 +19,13 @@ public class FileService {
     private final UploadAndDeleteFileManager fileManager;
     private final FileStorageRepository fileStorageRepository;
 
+    /**
+     * инициализация записи файла на основе загруженного файла с клиента
+     * присвоение файлу идентификатора
+     * @param storeFile - запись файла в базе
+     * @param mpFile - загруженный с клиента файл
+     * @return заполненная запись файла
+     */
     public FileStorage initStorageFile(FileStorage storeFile, MultipartFile mpFile){
         storeFile.setName(mpFile.getOriginalFilename());
         storeFile.setType(mpFile.getContentType());
@@ -30,6 +37,12 @@ public class FileService {
         return storeFile;
     }
 
+    /**
+     * изменение записи файла в базе и во внешнем хранилище
+     * @param file - загруженный файл с клиента
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @return путь к файлу во внешнем хранилище
+     */
     public String changeFile(MultipartFile file, Long fileId) {
         String path="";
         FileStorage fileStorage = fileStorageRepository.findById(fileId).orElseThrow(
@@ -44,6 +57,12 @@ public class FileService {
         return path;
     }
 
+    /**
+     * изменение свойств файла без изменения его содержимого
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @param tags - новые теги
+     * @param description - новое описание
+     */
     public void changeFileInfo(Long fileId, String tags, String description) {
         FileStorage fileStorage = fileStorageRepository.findById(fileId).orElseThrow(
                 ()->new ResourceNotFoundException("File with id '" + fileId + "' not found")
@@ -53,14 +72,32 @@ public class FileService {
         fileStorageRepository.save(fileStorage);
     }
 
+    /**
+     * добавление комментария к файлу
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @param userId - идентификатор пользователя оставившего комментарий
+     * @param Comment - комментарий
+     * @return идентификатор добавленного комментария
+     */
     public Long addComment(Long fileId, Long userId, String Comment){
         return 0L;
     }
 
+    /**
+     * удаление комментария
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @param commentId - идентификатор удаляемого комментария в базе, для поиска файла
+     */
     public void deleteComment(Long fileId, Long commentId){
 
     }
-    
+
+    /**
+     * загрузка прикрепленного к сущности файла
+     * @param file - загруженный с клиента файл
+     * @param entity - сущность к которой необходимо прикрепить файл
+     * @return новый путь к файлу во внешнем хранилище
+     */
     public String saveAttachedFile(MultipartFile file, FileContainer entity) {
         FileStorage newFile = new FileStorage();
         newFile = initStorageFile(newFile, file);
@@ -76,6 +113,14 @@ public class FileService {
        return path;
     }
 
+    /**
+     * загрузка прикрепленного к сущности файла с дополнительной информацией
+     * @param file - загруженный с клиента файл
+     * @param entity - сущность к которой необходимо прикрепить файл
+     * @param tags - теги
+     * @param description - описание файла
+     * @return новый путь к файлу во внешнем хранилище
+     */
     public String saveAttachedFile(MultipartFile file, FileContainer entity, String tags, String description) {
         FileStorage newFile = new FileStorage();
         newFile = initStorageFile(newFile, file);
@@ -93,6 +138,11 @@ public class FileService {
         return path;
     }
 
+    /**
+     * загрузка файла в базу без прикрепления к сущности
+     * @param file - загруженный с клиента файл
+     * @return новый путь к файлу во внешнем хранилище
+     */
     public String saveFile(MultipartFile file) {
         FileStorage newFile = new FileStorage();
         newFile = initStorageFile(newFile, file);
@@ -104,6 +154,13 @@ public class FileService {
         return path;
     }
 
+    /**
+     * удаление прикрепленного к сущности файла
+     * принадлежность файла к сущности, должна производиться в сервисе обслуживающим сущность, перед вызовом метода
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @param entity - сущность у которой удаляется файл
+     * @return в случае успеха true
+     */
     public boolean deleteAttachedFile(Long fileId, FileContainer entity) {
         FileStorage atFile = fileStorageRepository.findById(fileId).orElseThrow(
                 ()->new ResourceNotFoundException("File with id '" + fileId + "' not found"));
@@ -126,6 +183,11 @@ public class FileService {
         return isOk;
     }
 
+    /**
+     * удаление файла, который не принадлежит сущности
+     * @param fileId - идентификатор файла в базе, для поиска файла
+     * @return в случае успеха true
+     */
     public boolean deleteFile(Long fileId) {
         FileStorage atFile = fileStorageRepository.findById(fileId).orElseThrow(
                 ()->new ResourceNotFoundException("File with id '" + fileId + "' not found"));
@@ -136,6 +198,11 @@ public class FileService {
         return isOk;
     }
 
+    /**
+     * удаление у сущности всех прикрепленных файлов
+     * @param entity - сущность у которой удаляются файлы
+     * @return в случае успеха true
+     */
     public boolean deleteAllAttachedFiles(FileContainer entity) {
         List<FileStorage> fileStorage = entity.getFiles();
         fileStorage.stream()

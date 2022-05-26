@@ -4,6 +4,7 @@ import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
     private Long id;
     private String username;
@@ -28,23 +30,23 @@ public class UserDto {
     private Integer resetPasswordCode;
     private List<ChildrenDto> childrens;
     private List<AttachedFileDto> images;
-    private Long baseImgId;
+    private Long baseImageId;
 
-    public UserDto(Long id, String name, String login, String password, String number, String email, Set<Role> roleList, List<AttachedFileDto> images, Long baseImgId, List<ChildrenDto> childrens) {
-        this.id = id;
-        this.username = name;
-        this.login = login;
-        this.password = password;
-        this.number = number;
-        this.Email = email;
-        this.roleList = roleList;
-        this.images = images;
-        this.baseImgId = baseImgId;
-        this.childrens = childrens;
-    }
-
-    public UserDto() {
-    }
+//    public UserDto(Long id, String name, String login, String password, String number, String email, Set<Role> roleList, List<AttachedFileDto> images, Long baseImgId, List<ChildrenDto> childrens) {
+//        this.id = id;
+//        this.username = name;
+//        this.login = login;
+//        this.password = password;
+//        this.number = number;
+//        this.Email = email;
+//        this.roleList = roleList;
+//        this.images = images;
+//        this.baseImgId = baseImgId;
+//        this.childrens = childrens;
+//    }
+//
+//    public UserDto() {
+//    }
 
 //    public static UserDto valueOf(User user) {
 //        List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());

@@ -14,7 +14,9 @@ public class UserMapper {
     private final ModelMapper modelMapper;
 
     public UserDto toDto(User model){
-        return modelMapper.map(model, UserDto.class);
+        UserDto dto = modelMapper.map(model, UserDto.class);
+        dto.setRoleList(model.getGrantedAuthorities());
+        return dto;
     }
 
     public User toModel(UserDto dto){
