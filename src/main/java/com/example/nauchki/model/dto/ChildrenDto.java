@@ -5,6 +5,7 @@ import com.example.nauchki.model.Children;
 import com.example.nauchki.model.StandartStage;
 import com.example.nauchki.model.UserStage;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class ChildrenDto {
 
     private Long id;

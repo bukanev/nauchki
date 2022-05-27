@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class PostController {
 
     @PostMapping("/posts")
     public List<PostDto> main(@RequestBody Post post) {
-        if (post != null || !post.getTag().isEmpty()) {
+        if (post != null && !post.getTag().isEmpty()) {
             List<PostDto> postDtos = postService.getPost(post);
             return postDtos;
         }
@@ -47,7 +48,7 @@ public class PostController {
 
 
     @PostMapping(value = "/post")
-    public ResponseEntity<HttpStatus> add(
+    public Long add(
             @RequestParam String title,
             @RequestParam String subtitle,
             @RequestParam String text,
@@ -55,9 +56,7 @@ public class PostController {
             @RequestParam("file") MultipartFile file){
 
         Post post = new Post(tag,title,subtitle,text);
-        return postService.addPost(post , file) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return postService.addPost(post , file);
     }
 
     @PostMapping("/delpost/{id}")
@@ -66,4 +65,20 @@ public class PostController {
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
+
+    @PostMapping(value = "/posts/{postid}/image")
+    public String addImage(@PathVariable(name="postid") Long postId,
+                           @RequestParam(name="description", required = false) String description,
+                           @RequestParam(name="tags", required = false) String tags,
+                           @RequestParam("file") MultipartFile file,
+                           Principal principal){
+        return postService.addImage(postId, tags, description, file, principal);
+    }
+
+    @DeleteMapping(value = "/posts/{postid}/image/{imgid}")
+    public void delImages(@PathVariable(name="postid") Long postId, @PathVariable(name="imgid") Long imgid, Principal principal){
+        postService.delImage(postId, imgid, principal);
+    }
+
+
 }

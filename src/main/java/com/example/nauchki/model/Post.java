@@ -1,26 +1,32 @@
 package com.example.nauchki.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.nauchki.utils.FileContainer;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-public class Post {
+public class Post implements FileContainer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String tag;
     private String title;
     private String subtitle;
     @Column(length = 5000)
     private String text;
-    private String img_path;
-    @JsonIgnore
-    private String img;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "attached_files_post_images",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
+    private List<FileStorage> images;
+
 
     public Post() {
     }
@@ -36,22 +42,38 @@ public class Post {
         return text;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getTag() {
         return tag;
     }
 
-    public String getImg_path() {
-        return img_path;
+    @Override
+    public String getEntityType() {
+        return "post_images";
     }
 
-    public void setImg_path(String filename) {
-        this.img_path = filename;
+    @Override
+    public Long getEntityId() {
+        return this.id;
     }
+
+    @Override
+    public List<FileStorage> getFiles() {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
+        return this.images;
+    }
+
+    @Override
+    public void setFiles(List<FileStorage> images) {
+        this.images = images;
+    }
+
 }
