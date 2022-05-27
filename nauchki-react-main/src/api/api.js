@@ -65,6 +65,14 @@ export const RecoveryPassAPI = {
     });
   },
 };
+export const ResetPassAPI = {
+  resetPass(resetPasswordCode, password) {
+    return Api.post('/editpass', {
+      resetPasswordCode: resetPasswordCode,
+      password: password,
+    });
+  },
+};
 
 export const AdminAPI = {
   addPost(data) {
