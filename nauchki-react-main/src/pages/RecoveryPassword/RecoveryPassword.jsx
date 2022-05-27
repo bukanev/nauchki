@@ -64,13 +64,15 @@ export const RecoveryPassword = () => {
 
         <PrimaryButton>Отправить</PrimaryButton>
       </Form>
+      {data?.request?.status === 200 ?
+        <ModalWindow
+          showModalClick={showModalClick}
+          toggleShowModalClick={toggleShowModalClick}
+        >
+          Письмо на почту отправлено
+        </ModalWindow> : ''
+      }
 
-      <ModalWindow
-        showModalClick={showModalClick}
-        toggleShowModalClick={toggleShowModalClick}
-      >
-        Письмо на почту отправлено
-      </ModalWindow>
 
     </LogDataProvider>
   );
