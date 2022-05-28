@@ -4,6 +4,7 @@ package com.example.nauchki.model.dto;
 import com.example.nauchki.model.Children;
 import com.example.nauchki.model.StandartStage;
 import com.example.nauchki.model.UserStage;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,15 +14,22 @@ import java.util.List;
 
 @Getter
 @Setter
+@Schema(description = "Модель данных о ребенке")
 public class ChildrenDto {
 
+    @Schema(description = "ID ребенка", required = true, example = "1")
     private Long id;
+    @Schema(description = "Имя ребенка", example = "Лена")
     private String name;
+    @Schema(description = "Пол ребенка", example = "Жен")
     private String gender;
+    @Schema(description = "Дата рождения ребенка", example = "01.01.2015")
     private String dateOfBirth;
+    @Schema(description = "Время рождения ребенка", example = "13:23:45")
     private String timeOfBirth;
     private List<StandartStage> standartStages;
     private List<UserStage> userStages;
+    @Schema(description = "Путь к изображению", example = "/img/img.png")
     private String img_path;
 
     public ChildrenDto(Long id, String name, String gender, String dateOfBirth, String timeOfBirth,
