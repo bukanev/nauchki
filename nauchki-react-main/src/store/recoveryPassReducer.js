@@ -13,6 +13,7 @@ export function recoveryPassReducer(state = initialState, action) {
     case 'SET_DATA':
       return { ...state, loading: false, error: '', data: action.payload };
     default:
+      console.log(state);
       return state;
   }
 }

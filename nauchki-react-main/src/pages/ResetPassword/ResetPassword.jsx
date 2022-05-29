@@ -44,7 +44,9 @@ export const ResetPassword = () => {
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
-  const redirectPath = '/login';
+
+  const accessRequest = data?.request?.status === 200;
+
   const onSubmit = async (resetPasswordCode, password) => {
     dispatch(getResetPassThunk(resetPasswordCode, password));
   }
@@ -52,8 +54,9 @@ export const ResetPassword = () => {
   const toggleShowModalClick = () => {
     setShowModalClick(!showModalClick)
   }
+  
   useEffect(() => {
-    if (data?.request?.status === 200) {
+    if (accessRequest) {
       toggleShowModalClick();
     }
   }, [data]);
@@ -96,17 +99,12 @@ export const ResetPassword = () => {
         <PrimaryButton>Войти</PrimaryButton>
       </Form>
 
-      {data?.request?.status === 200 ?
+      {accessRequest &&
         <ModalWindow
           showModalClick={showModalClick}
           toggleShowModalClick={toggleShowModalClick}
-          redirectPath={redirectPath}
-        >
-          Письмо на почту отправлено
-          <NavLink >
-            Ок
-          </NavLink>
-        </ModalWindow> : ''
+          redirectPath={`/login`}
+        > пароль изменен </ModalWindow>
       }
     </LogDataProvider>
   );

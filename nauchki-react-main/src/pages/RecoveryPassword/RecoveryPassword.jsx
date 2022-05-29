@@ -20,6 +20,7 @@ const schema = yup.object({
 export const RecoveryPassword = () => {
   const dispatch = useDispatch();
   const { data, error } = useSelector(getRecoveryPassData);
+  const [showModalClick, setShowModalClick] = useState(false);
   const {
     register,
     formState: { errors },
@@ -28,7 +29,8 @@ export const RecoveryPassword = () => {
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
-  const [showModalClick, setShowModalClick] = useState(false);
+ 
+  const accessRequest = data?.request?.status === 200;
 
   const onSubmit = async (email) => {
     dispatch(await getRecoveryPassThunk(email));
@@ -38,7 +40,7 @@ export const RecoveryPassword = () => {
     setShowModalClick(!showModalClick)
   }
   useEffect(() => {
-    if (data?.request?.status === 200) {
+    if (accessRequest) {
       toggleShowModalClick();
     }
   }, [data])
@@ -64,16 +66,15 @@ export const RecoveryPassword = () => {
 
         <PrimaryButton>Отправить</PrimaryButton>
       </Form>
-      {data?.request?.status === 200 ?
+      {accessRequest &&
         <ModalWindow
           showModalClick={showModalClick}
           toggleShowModalClick={toggleShowModalClick}
+          redirectPath={`/resetpass`}
         >
           Письмо на почту отправлено
-        </ModalWindow> : ''
+        </ModalWindow>
       }
-
-
     </LogDataProvider>
   );
 };
