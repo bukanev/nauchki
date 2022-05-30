@@ -1,5 +1,5 @@
 // export const GET_PHRASE = 'GET_PHRASE';
-import { GET_PHRASE } from "./actions";
+import { GET_PHRASE } from './actions';
 
 const initialState = {
   phase: [],

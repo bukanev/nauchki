@@ -19,4 +19,3 @@ export function ResetPassReducer(state = initialState, action) {
   }
 }
 
-export const getResetPassData = (state) => state.withoutPersist.resetPass;

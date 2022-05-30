@@ -24,4 +24,3 @@ export function recoveryPassReducer(state = initialState, action) {
   }
 }
 
-export const getRecoveryPassData = (state) => state.withoutPersist.recoveryPass;
