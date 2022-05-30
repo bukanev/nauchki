@@ -1,13 +1,19 @@
 import { RecoveryPassAPI } from '../api/api';
+import {
+  setRecoveryPassData,
+  setRecoveryPassError,
+  setRecoveryPassLoading,
+} from '../store/recoveryPass/actions';
 
-export const getRecoveryPassThunk =  ({ email }) => {
+export const getRecoveryPassThunk = ({ email }) => {
   return async (dispatch) => {
     try {
-      dispatch({ type: 'SET_LOADING' });
+      dispatch(setRecoveryPassLoading());
+
       const data = await RecoveryPassAPI.recoveryPass(email);
-      dispatch({ type: 'SET_DATA', payload: data });
+      dispatch(setRecoveryPassData(data));
     } catch (error) {
-      dispatch({ type: 'SET_ERROR', payload: error });
+      dispatch(setRecoveryPassError(error));
     }
   };
 };
