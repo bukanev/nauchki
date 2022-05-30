@@ -1,19 +1,20 @@
 import { ResetPassAPI } from '../api/api';
 import {
-  SET_RESET_PASS_DATA,
-  SET_RESET_PASS_ERROR,
-  SET_RESET_PASS_LOADING,
+  setResetPassData,
+  setResetPassError,
+  setResetPassLoading,
 } from '../store/resetPass/actions';
 
 export const getResetPassThunk = ({ resetPasswordCode, password }) => {
   return async (dispatch) => {
     try {
-      console.log(resetPasswordCode, password);
-      dispatch({ type: SET_RESET_PASS_LOADING });
+      dispatch(setResetPassLoading());
+
       const data = await ResetPassAPI.resetPass(resetPasswordCode, password);
-      dispatch({ type: SET_RESET_PASS_DATA, payload: data });
+
+      dispatch(setResetPassData(data));
     } catch (error) {
-      dispatch({ type: SET_RESET_PASS_ERROR, payload: error });
+      dispatch(setResetPassError);
     }
   };
 };

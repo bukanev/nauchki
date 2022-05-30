@@ -11,6 +11,7 @@ export const getRecoveryPassThunk = ({ email }) => {
       dispatch(setRecoveryPassLoading());
 
       const data = await RecoveryPassAPI.recoveryPass(email);
+      
       dispatch(setRecoveryPassData(data));
     } catch (error) {
       dispatch(setRecoveryPassError(error));
