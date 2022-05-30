@@ -1,5 +1,7 @@
-export const GET_USER_DATA = "GET_USER_DATA";
-export const TOGGLE_AUTH = "TOGGLE_AUTH";
+// export const GET_USER_DATA = "GET_USER_DATA";
+// export const TOGGLE_AUTH = "TOGGLE_AUTH";
+
+import { GET_USER_DATA, TOGGLE_AUTH } from './actions';
 
 const initialState = {
   userData: {},
@@ -23,5 +25,5 @@ export const userReducer = (state = initialState, action) => {
   }
 };
 
-export const getUserDataAC = (payload) => ({ type: GET_USER_DATA, payload });
-export const toggleAuthAC = (payload) => ({ type: TOGGLE_AUTH, payload });
+// export const getUserDataAC = (payload) => ({ type: GET_USER_DATA, payload });
+// export const toggleAuthAC = (payload) => ({ type: TOGGLE_AUTH, payload });
