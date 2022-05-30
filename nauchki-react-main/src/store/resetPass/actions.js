@@ -6,12 +6,12 @@ export const setResetPassLoading = () => ({
   type: SET_RESET_PASS_LOADING,
 });
 
-export const setResetPassData = (payload) => ({
+export const setResetPassData = (data) => ({
   type: SET_RESET_PASS_DATA,
-  payload,
+  payload: data,
 });
 
-export const setResetPassError = (payload) => ({
+export const setResetPassError = (error) => ({
   type: SET_RESET_PASS_ERROR,
-  payload,
+  payload: error,
 });
