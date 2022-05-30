@@ -86,15 +86,29 @@ public class UserController {
 
     @ApiOperation("Добавление картинку пользователя по его Principal")
     @PostMapping("/addimg")
-    public String addImg(@RequestParam("file") MultipartFile file,Principal principal){
-        return userService.addImage(file, principal);
+    public String addImg(@RequestParam("file") MultipartFile file, @RequestParam(name="tags", required = false) String tags, @RequestParam(name="description", required = false) String description,Principal principal){
+        return userService.addImage(file, principal, tags, description);
     }
 
-    @ApiOperation("Удаление картинки пользователя по его Principal")
-    @DeleteMapping("/deleteimg")
-    public ResponseEntity<HttpStatus> deleteImg(Principal principal){
-        return userService.deleteImg(principal) ?
-                new ResponseEntity<>(HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+    @ApiOperation("Делает выбранную по id картинку пользователя основной")
+    @PutMapping("/setbaseimage/{id}")
+    public Long setBaseImg(@PathVariable(name = "id") Long imgId, @RequestParam("file") MultipartFile file, Principal principal){
+        return userService.setBaseImage(imgId, principal);
     }
+
+    @ApiOperation("Удаление выбранной по id картинки пользователя по его Principal," +
+            " или основной картинки, если id не указан")
+    @DeleteMapping("/deleteimg/{id}")
+    public ResponseEntity<HttpStatus> deleteImg(Principal principal, @PathVariable(name = "id", required = false) Long imgId){
+        if(imgId!=null && imgId>0){
+            return userService.deleteImg(principal, imgId) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }else{
+            return userService.deleteImg(principal) ?
+                    new ResponseEntity<>(HttpStatus.OK) :
+                    new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+        }
+    }
+
 }

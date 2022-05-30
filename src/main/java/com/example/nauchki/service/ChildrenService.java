@@ -47,7 +47,7 @@ public class ChildrenService {
     public List<ChildrenDto> getChildren(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            List<Children> childrens = user.get().getChildrenList();
+            List<Children> childrens = user.get().getChildrens();
             for (int i = 0; i < childrens.size(); i++) {
                 Children children = childrens.get(i);
                 long days = getDays(children.getDateOfBirth());
@@ -102,7 +102,7 @@ public class ChildrenService {
 
     public String addChildrenImg(MultipartFile file, Long id) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            String path = fileSaver.saveFile(file, null);
+            String path = fileSaver.saveFile(file);
             Optional<Children> children = childrenRepository.findById(id);
             children.ifPresent(value -> {
                 value.setImg_path(path);
@@ -118,7 +118,7 @@ public class ChildrenService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Children> children = childrenRepository.findById(id);
             if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
-                String path = fileSaver.saveFile(file, null);
+                String path = fileSaver.saveFile(file);
                 children.ifPresent(value -> {
                     value.setImg_path(path);
                     value.setImg(file.getOriginalFilename());
@@ -134,7 +134,7 @@ public class ChildrenService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Children> children = childrenRepository.findById(id);
             if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
-                String path = fileSaver.saveFile(file, null);
+                String path = fileSaver.saveFile(file);
                 children.ifPresent(value -> {
                     ChildrenImg childrenImg = new ChildrenImg();
                     childrenImg.setImgPath(path);

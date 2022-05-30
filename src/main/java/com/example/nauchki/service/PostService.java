@@ -1,14 +1,19 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.ResourceNotFoundException;
+import com.example.nauchki.mapper.PostMapper;
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -17,17 +22,18 @@ public class PostService {
 
     private final PostRepo postRepo;
     private final FileService saverFile;
+    private final PostMapper postMapper;
 
     public List<PostDto> getPost(Post filter) {
-        return postRepo.findAll(Example.of(filter)).stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findAll(Example.of(filter)).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public List<PostDto> getAllPost() {
-        return postRepo.findAll().stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findAll().stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public List<PostDto> getAllPost(String tag) {
-        return postRepo.findByTag(tag).stream().map(PostDto::valueOf).collect(Collectors.toList());
+        return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
     public boolean deletePost(Long id) {
@@ -35,20 +41,64 @@ public class PostService {
         return false;
     }
 
-    public boolean addPost(Post post, MultipartFile file){
+    public Long addPost(Post post, MultipartFile file){
+        post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            String path = saverFile.saveFile(file, null);
-            postRepo.save(post);
-            post.setImg_path(path);
-            return true;
+            saverFile.saveAttachedFile(file, post);
         }
-        return false;
+        return post.getId();
     }
 
 
 
     public List<String> getAllTags() {
         return postRepo.findAllTag();
+    }
+
+    @Transactional
+    public String addImage(Long postId, String tags, String description, MultipartFile file, Principal principal) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<Post> post = postRepo.findById(postId);
+            Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+            String path = saverFile.saveAttachedFile(file, postModel, tags, description);
+            postRepo.save(postModel);
+            return path;
+        }
+        return null;
+    }
+
+    @Transactional
+    public String addImage(Long postId, MultipartFile file, Principal principal) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<Post> post = postRepo.findById(postId);
+            Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+            String path = saverFile.saveAttachedFile(file, postModel);
+            postRepo.save(postModel);
+            return path;
+        }
+        return null;
+    }
+
+    @Transactional
+    public void delImage(Long postId, Long imgid, Principal principal) {
+        Optional<Post> post = postRepo.findById(postId);
+        Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+        boolean fileConsists = postModel.getFiles().stream()
+                .anyMatch(v-> v.getId().equals(imgid));
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + imgid + "' not belong to post '" + principal.getName() + "'");
+        }
+        saverFile.deleteAttachedFile(imgid, postModel);
+        postRepo.save(postModel);
+    }
+
+    @Transactional
+    public void delAllImages(Long postId, Principal principal) {
+        Optional<Post> post = postRepo.findById(postId);
+        Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+        if(saverFile.deleteAllAttachedFiles(postModel)){
+            postRepo.save(postModel);
+        }
     }
 
     /*public boolean addPost(User user, String text, String tag, MultipartFile file){
