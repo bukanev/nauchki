@@ -1,23 +1,25 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
-import { toggleAuthAC } from '../../store/userReducer';
 import { Route, useHistory } from 'react-router';
 import axios from 'axios';
 import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenForm';
-import { getChildrenAC } from '../../store/childrenReducer';
 import { ChildCard } from '../../components/ChildCart/ChildCart';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
+import { selectUserData } from '../../store/user/selectors';
+import { selectChidren } from '../../store/children/selectors';
+import { getChildrenAC } from '../../store/children/actions';
+import { toggleAuthAC } from '../../store/user/actions';
 
 export const PersonalArea = () => {
   const [visibleForm, setVisibleForm] = useState(false);
   const [img, setImg] = useState(null);
   const [avatar, setAvatar] = useState(null);
-  const user = useSelector((state) => state.user.userData);
-  const children = useSelector((state) => state.children.children);
+  const user = useSelector(selectUserData);
+  const children = useSelector(selectChidren);
   const dispatch = useDispatch();
 
-  
+
   let history = useHistory();
   const exitHandler = () => {
     dispatch(toggleAuthAC(false));
@@ -94,11 +96,11 @@ export const PersonalArea = () => {
               type="file"
               name="files"
               id="upload-file__input_1"
-              class="upload-file__input"
+              className="upload-file__input"
               accept=".jpg, .jpeg, .png, .gif, .bmp, .doc, .docx, .xls, .xlsx, .txt, .tar, .zip, .7z, .7zip"
               multiple
             />
-            <label onClick={sendFile} className=" personalArea__button" for="upload-file__input_1">
+            <label onClick={sendFile} className=" personalArea__button" htmlFor="upload-file__input_1">
               <span className="upload-file__text">Прикрепить файл</span>
             </label>
           </div>
@@ -173,6 +175,6 @@ export const PersonalArea = () => {
 
         {<Route exact path="/personalArea/:id" render={(props) => <ChildCard {...props} />} />}
       </div>
-    </div>
+    </div >
   );
 };

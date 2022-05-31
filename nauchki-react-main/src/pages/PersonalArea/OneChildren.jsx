@@ -309,8 +309,8 @@ export const OneChildrenWithoutRouter = (props) => {
                 <li className="oneChildren_listDate" key={t.id}>{`
             ${typeof t.years === 'number' && t.years > 0 ? t.years + 'г.' : ''} 
             ${typeof t.months === 'number' && t.months > 0 ? t.months + 'м.' : ''} 
-            ${typeof t.weeks === 'number' && t.days == 0 && t.weeks > 0 ? t.weeks + 'нед.' : ''} 
-            ${typeof t.days === 'number' && t.weeks == 0 ? t.days + 'д.' : ''} 
+            ${typeof t.weeks === 'number' && t.days === 0 && t.weeks > 0 ? t.weeks + 'нед.' : ''} 
+            ${typeof t.days === 'number' && t.weeks === 0 ? t.days + 'д.' : ''} 
           `}</li>
               );
             })}
