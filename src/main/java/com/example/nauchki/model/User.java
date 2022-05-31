@@ -1,6 +1,7 @@
 package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,25 +20,35 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Table(name = "users")
+@Schema(description = "Модель пользователя")
 public class User implements UserDetails, FileContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID пользователя", required = true, example = "1")
     private Long id;
 
+    @Schema(description = "Имя пользователя", example = "Василий")
     private String username;
 
+    @Schema(description = "Логин", example = "Vasya")
     private String login;
 
+    @Schema(description = "Пароль", example = "Gfk33!")
     private String password;
 
+    @Schema(description = "Электронная почта", example = "vasya@mail.ru")
     private String email;
 
+    @Schema(description = "Номер телефона", example = "89187454514")
     private String number;
 
+    @Schema(description = "Признак активности подписки (0 - некативна, 1 - активна)", example = "1")
     private Integer activate; //тут будет активная или не активная подписка.
 
+    @Schema(description = "Секретный вопрос для восстановления пароля", example = "Любимое число")
     private String secretQuestion;
 
+    @Schema(description = "Ответ на секретный ворос для восстановления пароля", example = "643345864")
     private String secretAnswer;
 
     private String activationCode;

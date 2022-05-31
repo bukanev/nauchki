@@ -6,6 +6,7 @@ import com.example.nauchki.model.dto.ChildrenDto;
 import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.service.ChildrenService;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,11 @@ public class ChildrenController {
     private final ChildrenService childrenService;
     private final StandartStageRepo stageRepo;
 
+    @ApiOperation("Добавление ребенка по id родителя")
     @PostMapping("/children/{id}")
-    public ResponseEntity<ResponseStatus> addChildren(@PathVariable Long id,@RequestBody Children children) {
+    public ResponseEntity<ResponseStatus> addChildren(
+            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
+            @RequestBody Children children) {
         return childrenService.addChildren(id, children) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -35,7 +39,8 @@ public class ChildrenController {
      */
     @ApiOperation("Получение детей по id родителя")
     @GetMapping("/getchildren/{id}")
-    public List<ChildrenDto> getChildren(@PathVariable Long id) {
+    public List<ChildrenDto> getChildren(
+            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id) {
         return childrenService.getChildren(id);
     }
 
@@ -64,8 +69,8 @@ public class ChildrenController {
     @ApiOperation("Добавление фотки ребенка")
     @PostMapping("/addchildrenimg/{id}")
     public String addChildrenImg(
-            @RequestParam("file") MultipartFile file,
-            @PathVariable Long id,
+            @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
+            @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
             Principal principal){
         return childrenService.addChildrenImg(file, id, principal);
     }
@@ -73,9 +78,9 @@ public class ChildrenController {
     @ApiOperation("Добавление фотки в альбом ребенка")
     @PostMapping("/addchildrengallery/{id}")
     public String addChildrenImgToGallery(
-            @RequestParam("file") MultipartFile file,
-            @PathVariable Long id,
-            @RequestParam String comment,
+            @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
+            @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
+            @RequestParam @Parameter(description = "Комментарий") String comment,
             Principal principal){
         return childrenService.addChildrenImgToList(file, id, comment, principal);
     }
