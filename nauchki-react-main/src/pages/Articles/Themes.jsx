@@ -2,10 +2,11 @@ import React from "react";
 import { useSelector } from "react-redux";
 // import { Redirect } from "react-router";
 import { NavLink } from "react-router-dom";
+import { selectTags } from "../../store/posts/selectors";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 
 export const Themes = ({ currentTag, setCurrentTag, isLoading }) => {
-  const tags = useSelector((state) => state.posts.tags);
+  const tags = useSelector(selectTags);
 
   const test = (tag) => {
     setCurrentTag(tag);
