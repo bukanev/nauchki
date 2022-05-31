@@ -19,7 +19,6 @@ export function recoveryPassReducer(state = initialState, action) {
     case SET_RECOVERY_PASS_ERROR:
       return { ...state, loading: false, error: action.payload };
     default:
-      console.log(state);
       return state;
   }
 }
