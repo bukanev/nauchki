@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -54,12 +55,13 @@ public class User implements UserDetails, FileContainer {
        private String activationCode;
 
     private Integer active; //2 - означает почта подтверждена.
+    private Long baseImageId;
 
-    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
-    private String img_path;
-    @JsonIgnore
-    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
-    private String img;
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "attached_files_user_images",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
+    private List<FileStorage> images;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -69,7 +71,9 @@ public class User implements UserDetails, FileContainer {
     private Set<Role> grantedAuthorities;
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<Children> childrenList;
+    private List<Children> childrens;
+
+    private Integer resetPasswordCode;
 
     public User(String username, String password, Collection<? extends GrantedAuthority> grantedAuthorities) {
     }
@@ -86,7 +90,7 @@ public class User implements UserDetails, FileContainer {
     }
 
     public void addChildren(Children children) {
-        this.childrenList.add(children);
+        this.childrens.add(children);
     }
 
     public String getActivationCode() {
@@ -150,6 +154,28 @@ public class User implements UserDetails, FileContainer {
 
     public Set<Role> getGrantedAuthorities() {
         return grantedAuthorities;
+    }
+
+    @Override
+    public String getEntityType() {
+        return "user_images";
+    }
+    @Override
+    public Long getEntityId() {
+        return this.id;
+    }
+
+    @Override
+    public List<FileStorage> getFiles() {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
+        return this.images;
+    }
+
+    @Override
+    public void setFiles(List<FileStorage> images) {
+        this.images = images;
     }
 
 }

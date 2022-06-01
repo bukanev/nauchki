@@ -3,6 +3,8 @@ package com.example.nauchki.service;
 import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
+import com.example.nauchki.mapper.FileMapper;
+import com.example.nauchki.mapper.UserMapper;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
@@ -19,13 +21,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -37,6 +38,7 @@ public class UserService {
     private final MailSender mailSender;
     private final PasswordEncoder bCryptPasswordEncoder;
     private final RoleRepository roleRepository;
+    private final UserMapper userMapper;
 
     @Autowired
     public UserService(@Value("${my-config.url}") String url,
@@ -44,7 +46,8 @@ public class UserService {
                        FileService fileSaver,
                        UserRepository userRepository,
                        MailSender mailSender,
-                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository) {
+                       PasswordEncoder bCryptPasswordEncoder, RoleRepository roleRepository,
+                       UserMapper userMapper) {
         this.url = url;
         this.jwtProvider = jwtProvider;
         this.fileSaver = fileSaver;
@@ -52,6 +55,7 @@ public class UserService {
         this.mailSender = mailSender;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
+        this.userMapper = userMapper;
     }
 
     /**
@@ -65,7 +69,8 @@ public class UserService {
             return false;
         }
         saveRole();
-        User user = userDto.mapToUser();
+        //User user = userDto.mapToUser();
+        User user = userMapper.toModel(userDto);
         Set<Role> roles = new HashSet<>();
         roles.add(new Role(1L, "USER"));
         user.setGrantedAuthorities(roles);
@@ -110,7 +115,7 @@ public class UserService {
     public UserDto getUser(Long id) {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
-            UserDto userDto = UserDto.valueOf(user.get());
+            UserDto userDto = userMapper.toDto(user.get());
             userDto.setPassword("PROTECTED");
             userDto.setSecretAnswer(user.get().getSecretAnswer());
             return userDto;
@@ -122,7 +127,7 @@ public class UserService {
         Optional<User> userTwo = userRepository.findByEmail(email);
         if (userTwo.isPresent()) {
             userTwo.get().setPassword("PROTECTED");
-            return UserDto.valueOf(userTwo.get());
+            return userMapper.toDto(userTwo.get());
         }
         return new UserDto();
     }
@@ -130,13 +135,16 @@ public class UserService {
     public boolean editPassword(UserDto userDto) {
         Optional<User> user = userRepository.findByEmail(userDto.getEmail());
         if(user.isPresent()) {
-            user.get().setActivationCode(UUID.randomUUID().toString());
+            User usr = user.get();
+            Random random = new Random();
+            int num = 10000 + random.nextInt(90000);
+            usr.setResetPasswordCode(num);
             String message = String.format(
-                    "Для смены пароля пройдите по ссылке: " + url  + "/resetpass/%s",
-                    user.get().getActivationCode()
+                    "Код для сброса пароля, не сообщайте его никому:\n%s",
+                    usr.getResetPasswordCode()
             );
-            userRepository.save(user.get());
-            mailSender.send(userDto.getEmail(), "Смена пароля", message);
+            userRepository.save(usr);
+            mailSender.send(usr.getEmail(), "Смена пароля", message);
             return true;
         }
         return false;
@@ -196,34 +204,113 @@ public class UserService {
         return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
-    public String addImage(MultipartFile file, Long id) {
+    @Transactional
+    public String changeImage(MultipartFile file, Long fileId, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            Optional<User> user = userRepository.findById(id);
-            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User with '" + id + "' not found"));
-            String path = fileSaver.saveFile(file, userModel);
+            Optional<User> user = userRepository.findByEmail(principal.getName());
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+            boolean fileConsists = userModel.getFiles().stream()
+                    .anyMatch(v-> v.getId().equals(fileId));
+            if(!fileConsists){
+                throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
+            }
+            String path = fileSaver.changeFile(file, fileId);
             userRepository.save(userModel);
             return path;
         }
         return null;
     }
 
+    @Transactional
     public String addImage(MultipartFile file, Principal principal) {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<User> user = userRepository.findByEmail(principal.getName());
             User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-            String path = fileSaver.saveFile(file, userModel);
+            String path = fileSaver.saveAttachedFile(file, userModel);
+            if(userModel.getFiles().size()==1){
+                userModel.setBaseImageId(userModel.getFiles().get(0).getId());
+            }
             userRepository.save(userModel);
             return path;
         }
         return null;
     }
 
+    @Transactional
+    public String addImage(MultipartFile file, Principal principal, String tags, String description) {
+        if (file != null && !file.getOriginalFilename().isEmpty()) {
+            Optional<User> user = userRepository.findByEmail(principal.getName());
+            User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+            String path = fileSaver.saveAttachedFile(file, userModel, tags, description);
+            if(userModel.getFiles().size()==1){
+                userModel.setBaseImageId(userModel.getFiles().get(0).getId());
+            }
+            userRepository.save(userModel);
+            return path;
+        }
+        return null;
+    }
+
+    @Transactional
+    public Long setBaseImage(Long fileId, Principal principal) {
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        boolean fileConsists = userModel.getFiles().stream()
+                .anyMatch(v-> v.getId().equals(fileId));
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
+        }
+        userModel.setBaseImageId(fileId);
+        userRepository.save(userModel);
+        return fileId;
+    }
+
+    @Transactional
+    public boolean deleteImg(Principal principal, Long fileId){
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        boolean fileConsists = userModel.getFiles().stream()
+                .anyMatch(v-> v.getId().equals(fileId));
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
+        }
+        if(userModel.getBaseImageId().equals(fileId)){
+            userModel.setBaseImageId(0L);
+        }
+        fileSaver.deleteAttachedFile(fileId, userModel);
+        userRepository.save(userModel);
+        return true;
+    }
+
+    @Transactional
     public boolean deleteImg(Principal principal){
         Optional<User> user = userRepository.findByEmail(principal.getName());
         User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
-        return user.filter(p->fileSaver.deleteFile(p.getImg(), p))
-                .filter(p->userRepository.save(p)!=null)
-                .isPresent();
+        Long fileId = userModel.getBaseImageId();
+        if(fileId==null || fileId==0){
+            return false;
+        }
+        boolean fileConsists = userModel.getFiles().stream()
+                .anyMatch(v-> v.getId().equals(fileId));
+        if(!fileConsists){
+            throw new ResourceNotFoundException("File with id '" + fileId + "' not belong to user '" + principal.getName() + "'");
+        }
+        fileSaver.deleteAttachedFile(fileId, userModel);
+        userModel.setBaseImageId(0L);
+        userRepository.save(userModel);
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteAllImages(Principal principal){
+        Optional<User> user = userRepository.findByEmail(principal.getName());
+        User userModel = user.orElseThrow(()->new ResourceNotFoundException("User '" + principal.getName() + "' not found"));
+        if(fileSaver.deleteAllAttachedFiles(userModel)){
+            userModel.setBaseImageId(0L);
+            userRepository.save(userModel);
+            return true;
+        }
+        return false;
     }
 
 
@@ -239,11 +326,14 @@ public class UserService {
     }
 
     public boolean editPass(UserDto userDto) {
-        User user = userRepository.findByActivationCode(userDto.getActivationCode());
+        if(userDto.getResetPasswordCode() == null){
+            return false;
+        }
+        User user = userRepository.findByResetPasswordCode(userDto.getResetPasswordCode());
         if (user == null) {
             return false;
         }
-        user.setActivationCode(null);
+        user.setResetPasswordCode(null);
         user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
         userRepository.save(user);
         return true;

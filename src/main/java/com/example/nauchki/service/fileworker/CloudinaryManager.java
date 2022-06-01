@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-
 @Primary
 @RequiredArgsConstructor
 @Component
@@ -23,7 +22,7 @@ public class CloudinaryManager implements UploadAndDeleteFileManager {
     private String localDir = System.getProperty("user.dir");
 
     @Override
-    public String saveFile(MultipartFile file) {
+    public String saveFile(MultipartFile file, String ExternalId) {
         String path;
         try {
 
@@ -35,7 +34,7 @@ public class CloudinaryManager implements UploadAndDeleteFileManager {
             File img = new File(localDir + uploadPath + "/", resultFilename);
             file.transferTo(img);
             JSONObject object = new JSONObject(cloudinary.uploader().upload(img,
-                    ObjectUtils.asMap("public_id", resultFilename)));
+                    ObjectUtils.asMap("public_id", ExternalId)));
             path = String.valueOf(object.get("url"));
         } catch (
                 IOException e) {
@@ -46,14 +45,13 @@ public class CloudinaryManager implements UploadAndDeleteFileManager {
     }
 
     @Override
-    public boolean deleteFile(String filename) {
+    public boolean deleteFile(String ExternalId) {
         JSONObject object = new JSONObject();
         try {
-            object = new JSONObject(cloudinary.uploader().destroy(filename,null));
+            object = new JSONObject(cloudinary.uploader().destroy(ExternalId,null));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Boolean isOk = String.valueOf(object.get("result")).equals("ok");
-        return isOk;
+        return String.valueOf(object.get("result")).equals("ok");
     }
 }

@@ -27,9 +27,9 @@ public class YandexCloudManager implements UploadAndDeleteFileManager {
 
 
     @Override
-    public String saveFile(MultipartFile file) {
+    public String saveFile(MultipartFile file, String ExternalId) {
         try {
-            URL url = new URL(cloudUrl + "/" + file.getOriginalFilename());
+            URL url = new URL(cloudUrl + "/" + ExternalId);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "multipart/form-data");

@@ -1,12 +1,13 @@
 package com.example.nauchki.model.dto;
 
-import com.example.nauchki.model.Children;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,6 +15,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class UserDto {
     private Long id;
     private String username;
@@ -25,50 +27,56 @@ public class UserDto {
     private Set<Role> roleList;
     private String secretQuestion;
     private String activationCode;
-    private String img_path;
+    private Integer resetPasswordCode;
     private List<ChildrenDto> childrens;
+    private List<AttachedFileDto> images;
+    private Long baseImageId;
 
-    public UserDto(Long id, String name, String login, String password, String number, String email, Set<Role> roleList, String img_path, List<ChildrenDto> childrens) {
-        this.id = id;
-        this.username = name;
-        this.login = login;
-        this.password = password;
-        this.number = number;
-        this.Email = email;
-        this.roleList = roleList;
-        this.img_path = img_path;
-        this.childrens = childrens;
-    }
+//    public UserDto(Long id, String name, String login, String password, String number, String email, Set<Role> roleList, List<AttachedFileDto> images, Long baseImgId, List<ChildrenDto> childrens) {
+//        this.id = id;
+//        this.username = name;
+//        this.login = login;
+//        this.password = password;
+//        this.number = number;
+//        this.Email = email;
+//        this.roleList = roleList;
+//        this.images = images;
+//        this.baseImgId = baseImgId;
+//        this.childrens = childrens;
+//    }
+//
+//    public UserDto() {
+//    }
 
-    public UserDto() {
-    }
+//    public static UserDto valueOf(User user) {
+//        List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());
+//        //List<AttachedFileDto> filesDtos = user.getFiles().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
+//        return new UserDto(
+//                user.getId(),
+//                user.getUsername(),
+//                user.getLogin(),
+//                user.getPassword(),
+//                user.getNumber(),
+//                user.getEmail(),
+//                user.getGrantedAuthorities(),
+//                new ArrayList<>(),
+//                user.getBaseImageId(),
+//                childrenDtos
+//        );
+//    }
 
-    public static UserDto valueOf(User user) {
-        List<ChildrenDto> childrenDtos = user.getChildrenList().stream().map(ChildrenDto::valueOf).collect(Collectors.toList());
-        return new UserDto(
-                user.getId(),
-                user.getUsername(),
-                user.getLogin(),
-                user.getPassword(),
-                user.getNumber(),
-                user.getEmail(),
-                user.getGrantedAuthorities(),
-                user.getImg_path(),
-                childrenDtos
-        );
-    }
-
-    public User mapToUser() {
-        User user = new User();
-        user.setId(id);
-        user.setUsername(username);
-        user.setLogin(login);
-        user.setPassword(password);
-        user.setNumber(number);
-        user.setEmail(Email);
-        user.setSecretAnswer(secretAnswer);
-        user.setSecretQuestion(secretQuestion);
-        return user;
-    }
+//    public User mapToUser() {
+//        User user = new User();
+//        user.setId(id);
+//        user.setUsername(username);
+//        user.setLogin(login);
+//        user.setPassword(password);
+//        user.setNumber(number);
+//        user.setEmail(Email);
+//        user.setSecretAnswer(secretAnswer);
+//        user.setSecretQuestion(secretQuestion);
+//        user.setBaseImageId(baseImgId);
+//        return user;
+//    }
 
 }

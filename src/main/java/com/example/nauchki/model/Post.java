@@ -1,21 +1,24 @@
 package com.example.nauchki.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Schema(description = "Статья")
-public class Post {
+public class Post implements FileContainer {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Schema(description = "ID статьи", required = true, example = "1")
-    private Integer id;
+    private Long id;
     @Schema(description = "Тэги для поиска", example = "питание")
     private String tag;
     @Schema(description = "Название статьи", example = "Чем кормить ребенка")
@@ -25,12 +28,12 @@ public class Post {
     @Column(length = 5000)
     @Schema(description = "Текст статьи", example = "Ребенка надо кормить съедобными и питательными продуктами. ...")
     private String text;
-    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
-    private String img_path;
-    @JsonIgnore
-    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
-    private String img;
-
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinTable(name = "attached_files_post_images",
+            joinColumns = @JoinColumn(name = "id"),
+            inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
+    private List<FileStorage> images;
+  
     public Post() {
     }
 
@@ -45,22 +48,38 @@ public class Post {
         return text;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
     public String getTag() {
         return tag;
     }
 
-    public String getImg_path() {
-        return img_path;
+    @Override
+    public String getEntityType() {
+        return "post_images";
     }
 
-    public void setImg_path(String filename) {
-        this.img_path = filename;
+    @Override
+    public Long getEntityId() {
+        return this.id;
     }
+
+    @Override
+    public List<FileStorage> getFiles() {
+        if(this.images==null){
+            this.images = new ArrayList<>();
+        }
+        return this.images;
+    }
+
+    @Override
+    public void setFiles(List<FileStorage> images) {
+        this.images = images;
+    }
+
 }

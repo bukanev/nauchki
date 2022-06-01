@@ -6,6 +6,7 @@ import com.example.nauchki.model.StandartStage;
 import com.example.nauchki.model.UserStage;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
