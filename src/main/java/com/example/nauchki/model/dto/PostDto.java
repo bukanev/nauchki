@@ -22,7 +22,6 @@ public class PostDto {
     @Schema(description = "Текст статьи", example = "Ребенка надо кормить съедобными и питательными продуктами. ...")
     private String text;
     private List<AttachedFileDto> images;
-
 //    public PostDto(Long id, String tag, String title, String subtitle, String text, List<AttachedFileDto> images) {
 //        this.id = id;
 //        this.tag = tag;

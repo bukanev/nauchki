@@ -59,7 +59,7 @@ public class StandartStage {
     @Schema(description = "Достижения, которые прпоявляются у ребенка в этом возрасте", example = "У ребенка начинает сильнее проявляться реакция на резкий звук. Может прекратить движение, прием пищи, замереть.")
     private String skills;
 
-    @Schema(description = "Комментарий")
+    @Schema(description = "Комментарий", example = "")
     private String alternateText;
 
     public StandartStage(Long id, Integer days, String gender,

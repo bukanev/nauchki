@@ -1,6 +1,7 @@
 package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,10 +52,9 @@ public class User implements UserDetails, FileContainer {
     @Schema(description = "Ответ на секретный ворос для восстановления пароля", example = "643345864")
     private String secretAnswer;
 
-    private String activationCode;
+       private String activationCode;
 
     private Integer active; //2 - означает почта подтверждена.
-
     private Long baseImageId;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)

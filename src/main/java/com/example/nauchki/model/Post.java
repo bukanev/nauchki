@@ -1,5 +1,6 @@
 package com.example.nauchki.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -27,14 +28,12 @@ public class Post implements FileContainer {
     @Column(length = 5000)
     @Schema(description = "Текст статьи", example = "Ребенка надо кормить съедобными и питательными продуктами. ...")
     private String text;
-
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinTable(name = "attached_files_post_images",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
     private List<FileStorage> images;
-
-
+  
     public Post() {
     }
 
