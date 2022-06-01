@@ -1,6 +1,7 @@
 package com.example.nauchki.model;
 
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,33 +13,53 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @Table(name = "standart_stage")
+@Schema(description = "Описание этапа жизни ребенка стандартное (справочное)")
 public class StandartStage {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID записи", required = true, example = "17")
     private Long id;
     @Column(name = "days", nullable = false)
+    @Schema(description = "Количество дней от рождения ребенка", example = "14")
     private Integer days;
+    @Schema(description = "Пол ребенка", example = "Жен")
     private String gender;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону уменьшения №3", example = "49.6")
     private Float medianHeightMinus3;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону уменьшения №2", example = "47.7")
     private Float medianHeightMinus2;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону уменьшения №1", example = "45.8")
     private Float medianHeightMinus1;
+    @Schema(description = "Средний рост ребенка", example = "51.5")
     private Float medianHeight;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону увеличения №1", example = "53.4")
     private Float medianHeightPlus1;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону увеличения №2", example = "55.3")
     private Float medianHeightPlus2;
+    @Schema(description = "Отклонение среднего роста ребенка в сторону увеличения №3", example = "57.2")
     private Float medianHeightPlus3;
 
+    @Schema(description = "Отклонение среднего веса ребенка в сторону уменьшения №3", example = "2.3")
     private Float medianWeightMinus3;
+    @Schema(description = "Отклонение среднего веса ребенка в сторону уменьшения №2", example = "2.7")
     private Float medianWeightMinus2;
+    @Schema(description = "Отклонение среднего веса ребенка в сторону уменьшения №1", example = "3.1")
     private Float medianWeightMinus1;
+    @Schema(description = "Средний вес ребенка", example = "3.6")
     private Float medianWeight;
+    @Schema(description = "Отклонение среднего веса ребенка в сторону увеличения №1", example = "4.1")
     private Float medianWeightPlus1;
+    @Schema(description = "Отклонение среднего веса ребенка в сторону увеличения №2", example = "4.7")
     private Float medianWeightPlus2;
+    @Schema(description = "Отклонение среднего веса ребенка в сторону увеличения №3", example = "5.4")
     private Float medianWeightPlus3;
 
     @Column(length = 4096)
+    @Schema(description = "Достижения, которые прпоявляются у ребенка в этом возрасте", example = "У ребенка начинает сильнее проявляться реакция на резкий звук. Может прекратить движение, прием пищи, замереть.")
     private String skills;
 
+    @Schema(description = "Комментарий")
     private String alternateText;
 
     public StandartStage(Long id, Integer days, String gender,

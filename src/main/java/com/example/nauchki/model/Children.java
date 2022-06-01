@@ -1,6 +1,7 @@
 package com.example.nauchki.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,20 +16,28 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Table(name = "children")
+@Schema(description = "Модель ребенка")
 public class Children {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Schema(description = "ID ребенка", required = true, example = "1")
     private Long id;
+    @Schema(description = "Имя ребенка", example = "Лена")
     private String name;
+    @Schema(description = "Пол ребенка", example = "Жен")
     private String gender;
+    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
     private String img_path;
     @JsonIgnore
+    @Schema(description = "Путь к изображению", example = "http://res.cloudinary.com/hrfps8vte/image/upload/v1648720382/myimage.jpg")
     private String img;
     /** Добавить паттерн даты рождения. Format dd-MM-yyyy */
     @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])[-,.](0?[1-9]|1[012])[-,.](19|20)?[0-9]{2}$")
+    @Schema(description = "Дата рождения ребенка", example = "01.01.2015")
     private String dateOfBirth;
     /** Добавим позже паттерн для времени */
+    @Schema(description = "Время рождения ребенка", example = "13:23:45")
     private String timeOfBirth;
 
     @ManyToOne(fetch = FetchType.LAZY)
