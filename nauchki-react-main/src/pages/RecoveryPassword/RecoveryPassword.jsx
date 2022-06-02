@@ -7,7 +7,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Form } from '../../UI/Form';
 import { useDispatch, useSelector } from 'react-redux';
-import { getRecoveryPassData } from '../../store/recoveryPassReducer';
+import { selectRecoveryPassData } from '../../store/recoveryPass/selectors';
 import { getRecoveryPassThunk } from '../../asyncActions/getRecoveryPassThunk';
 import { ModalWindow } from '../../components/ModalWindow/ModalWindow';
 
@@ -19,7 +19,7 @@ const schema = yup.object({
 
 export const RecoveryPassword = () => {
   const dispatch = useDispatch();
-  const { data, error } = useSelector(getRecoveryPassData);
+  const { data, error } = useSelector(selectRecoveryPassData);
   const [showModalClick, setShowModalClick] = useState(false);
   const {
     register,
@@ -29,7 +29,7 @@ export const RecoveryPassword = () => {
     mode: "onBlur",
     resolver: yupResolver(schema),
   });
- 
+
   const accessRequest = data?.request?.status === 200;
 
   const onSubmit = async (email) => {

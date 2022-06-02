@@ -7,6 +7,7 @@ import { Route, Switch } from "react-router-dom";
 import { OnePost } from "./OnePost";
 import { getTagsThunk } from "../../asyncActions/getTagsThunk";
 import { Themes } from "./Themes";
+import { selectPosts } from "../../store/posts/selectors";
 // import { isLoadingAC } from "../../store/postsReducer";
 
 export const Articles = () => {
@@ -32,12 +33,12 @@ export const Articles = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTag]);
 
-  const posts = useSelector((state) => state.posts.posts);
+  const posts = useSelector(selectPosts);
 
   return (
     <div className="articles">
       <div className="acticles__container">
-        <Themes currentTag={currentTag} setCurrentTag={setCurrentTag} isLoading={isLoading}/>
+        <Themes currentTag={currentTag} setCurrentTag={setCurrentTag} isLoading={isLoading} />
         <div>
           <h1 className="articles__title">Интересные статьи</h1>
           <input

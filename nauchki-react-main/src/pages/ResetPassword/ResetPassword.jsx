@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { useForm } from 'react-hook-form';
 import './resetPassword.scss';
 import { LogDataProvider } from '../Login/DataContextLog';
 import { Input } from '../../UI/Input';
@@ -9,8 +9,7 @@ import { Form } from '../../UI/Form';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ModalWindow } from '../../components/ModalWindow/ModalWindow';
-import { getResetPassData } from '../../store/ResetPassReducer';
-import { useForm } from 'react-hook-form';
+import { selectResetPassData } from '../../store/resetPass/selectors';
 import { getResetPassThunk } from '../../asyncActions/getResetPassThunk';
 
 const schema = yup.object({
@@ -34,7 +33,7 @@ const schema = yup.object({
 
 export const ResetPassword = () => {
   const dispatch = useDispatch();
-  const { data, error } = useSelector(getResetPassData);
+  const { data, error } = useSelector(selectResetPassData);
   const [showModalClick, setShowModalClick] = useState(false);
   const {
     register,
@@ -54,7 +53,7 @@ export const ResetPassword = () => {
   const toggleShowModalClick = () => {
     setShowModalClick(!showModalClick)
   }
-  
+
   useEffect(() => {
     if (accessRequest) {
       toggleShowModalClick();

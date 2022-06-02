@@ -1,5 +1,5 @@
-import { PostsAPI } from "../api/api";
-import { getPostsAC } from "../store/postsReducer";
+import { PostsAPI } from '../api/api';
+import { getPostsAC } from '../store/posts/actions';
 
 export const getPostThunk = (tag) => {
   return async (dispatch) => {

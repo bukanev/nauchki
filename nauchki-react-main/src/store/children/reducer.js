@@ -1,4 +1,6 @@
-export const GET_CHILDREN = "GET_CHILDREN";
+// export const GET_CHILDREN = 'GET_CHILDREN';
+
+import { GET_CHILDREN } from "./actions";
 
 const initialState = {
   children: [],
@@ -16,4 +18,4 @@ export const childrenReducer = (state = initialState, action) => {
   }
 };
 
-export const getChildrenAC = (payload) => ({ type: GET_CHILDREN, payload });
+// export const getChildrenAC = (payload) => ({ type: GET_CHILDREN, payload });

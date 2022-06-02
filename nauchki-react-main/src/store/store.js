@@ -1,35 +1,24 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux';
-import { compose } from 'redux';
-import { postsReducer } from './postsReducer';
-import { userReducer } from './userReducer';
-import { childrenInputReducer } from './OnechildInput';
-import storage from 'redux-persist/lib/storage'; // localStorage
-import { persistStore, persistReducer } from 'redux-persist';
-import { childrenReducer } from './childrenReducer';
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
+import persistReducer from 'redux-persist/es/persistReducer';
 import thunk from 'redux-thunk';
-import { recoveryPassReducer } from './recoveryPassReducer';
-import { ResetPassReducer } from './ResetPassReducer';
+import { withoutPersistReducers } from './withoutPersistReducers';
+import { withPersistReducers } from './withPersistReducers';
+import storage from 'redux-persist/lib/storage';
+import persistStore from 'redux-persist/es/persistStore';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// создаем объект конфигурации для persist
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['withoutPersist'],
 };
+
 const rootReducer = combineReducers({
-  user: userReducer,
-  posts: postsReducer,
-  children: childrenReducer,
-  phase: childrenInputReducer,
-  recoveryPass: recoveryPassReducer,
-  resetPass: ResetPassReducer,
+  withoutPersist: withoutPersistReducers,
+  withPersist: persistReducer(persistConfig, withPersistReducers),
 });
 
-// оборачиваем редьюсеры в persist
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-export const store = createStore(persistedReducer, composeEnhancers(applyMiddleware(thunk)));
-
-// создаем persistor
 export const persistor = persistStore(store);

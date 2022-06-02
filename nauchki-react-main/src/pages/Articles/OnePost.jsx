@@ -2,9 +2,10 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { useHistory } from "react-router";
+import { selectPosts } from "../../store/posts/selectors";
 
 const OnePostWithoutRouter = (props) => {
-  const posts = useSelector((state) => state.posts.posts);
+  const posts = useSelector(selectPosts);
   const filteredPosts = posts.filter(
     (item) => item.id.toString() === props.match.params.id
   );

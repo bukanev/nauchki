@@ -1,5 +1,5 @@
 import { LoginAPI, UserAPI } from '../api/api';
-import { getUserDataAC, toggleAuthAC } from '../store/userReducer';
+import { getUserDataAC, toggleAuthAC } from '../store/user/actions';
 
 export const asyncApiCall = (email, password) => {
   return async (dispatch) => {
