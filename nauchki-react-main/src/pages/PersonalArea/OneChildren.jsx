@@ -8,6 +8,7 @@ import InputChild from '../../UI/InputChild';
 // import { useDispatch } from 'react-redux';
 // import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
 import axios from 'axios';
+import { selectChidren } from '../../store/children/selectors';
 
 function getDate(d) {
   let days = d % 365;
@@ -24,15 +25,20 @@ function getDate(d) {
 }
 
 export const OneChildrenWithoutRouter = (props) => {
-  const children = useSelector((state) => state.children.children);
+  const children = useSelector(selectChidren);
   const [value, setValue] = useState('');
+  const [childrenPhrase, setChildrenPhrase] = useState([]);
+  const [childText, setChildText] = useState('');
+  const [dates, setDates] = useState();
+  const [filteredChildren, setFilteredChildren] = useState();
+  const [imgChildren, setImgChildren] = useState(null);
+  const [avatarChildren, setAvatarChildren] = useState(null);
 
   //Инпут у фразы ребенка
   /*   const dispatch = useDispatch();
   const phase = useSelector((state) => state.phase.phase);
  */
-  const [childrenPhrase, setChildrenPhrase] = useState([]);
-  const [childText, setChildText] = useState('');
+
   const AddNewChildPhrase = (e) => {
     e.preventDefault();
     const newChildPhrase = {
@@ -45,8 +51,7 @@ export const OneChildrenWithoutRouter = (props) => {
   };
 
   // input
-  const [dates, setDates] = useState();
-  const [filteredChildren, setFilteredChildren] = useState();
+
   const onChange = ({ target: { value } }) =>
     setValue((prev) => (/\d+/.test(Number(value)) ? value : prev));
 
@@ -60,9 +65,7 @@ export const OneChildrenWithoutRouter = (props) => {
   }, []);
   // IMG
 
-  const [imgChildren, setImgChildren] = useState(null);
-  const [avatarChildren, setAvatarChildren] = useState(null);
-  console.log(children);
+
   const sendFile = useCallback(async () => {
     try {
       const date = new FormData();
