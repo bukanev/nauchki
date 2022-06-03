@@ -7,18 +7,17 @@ import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenFor
 import { ChildCard } from '../../components/ChildCart/ChildCart';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import { selectUserData } from '../../store/user/selectors';
-import { selectChidren } from '../../store/children/selectors';
-import { getChildrenAC } from '../../store/children/actions';
 import { toggleAuthAC } from '../../store/user/actions';
+import { selectUserChildrenData } from '../../store/userChildren/reducer';
+import { getuserChildrenThunk } from '../../asyncActions/userChildrenThunk/getUserChildrenThunk';
 
 export const PersonalArea = () => {
+  const dispatch = useDispatch();
   const [visibleForm, setVisibleForm] = useState(false);
   const [img, setImg] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const user = useSelector(selectUserData);
-  const children = useSelector(selectChidren);
-  const dispatch = useDispatch();
-
+  const children = useSelector(selectUserChildrenData)
 
   let history = useHistory();
   const exitHandler = () => {
@@ -30,19 +29,8 @@ export const PersonalArea = () => {
     setVisibleForm(!visibleForm);
   };
 
-  // TODO: Перенести в санки получение детей
-  const getChildrenData = (userData) => {
-    dispatch(getChildrenAC(userData));
-  };
-
   const getUserChildren = () => {
-    axios
-      .get(`http://89.108.88.2:8080/getchildren/${user.id}`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        getChildrenData(res.data);
-      });
+    dispatch(getuserChildrenThunk(user.id))
   };
 
   //IMG
