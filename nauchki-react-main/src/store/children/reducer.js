@@ -1,5 +1,3 @@
-// export const GET_CHILDREN = 'GET_CHILDREN';
-
 import { GET_CHILDREN } from "./actions";
 
 const initialState = {
@@ -17,5 +15,3 @@ export const childrenReducer = (state = initialState, action) => {
       return state;
   }
 };
-
-// export const getChildrenAC = (payload) => ({ type: GET_CHILDREN, payload });

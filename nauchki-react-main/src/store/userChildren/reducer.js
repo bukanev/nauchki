@@ -1,18 +1,4 @@
-export const SET_USER_CHILDREN_LOADING = 'USER_CHILDREN::SET_USER_CHILDREN_LOADING';
-export const SET_USER_CHILDREN_DATA = 'USER_CHILDREN::SET_USER_CHILDREN_DATA';
-export const SET_USER_CHILDREN_ERROR = 'USER_CHILDREN::SET_USER_CHILDREN_ERROR';
-
-export const setUserChildrenLoading = () => ({
-  type: SET_USER_CHILDREN_LOADING,
-});
-export const setUserChildrenData = (data) => ({
-  type: SET_USER_CHILDREN_DATA,
-  payload: data,
-});
-export const setUserChildrenError = (error) => ({
-  type: SET_USER_CHILDREN_ERROR,
-  payload: error,
-});
+import { SET_USER_CHILDREN_DATA, SET_USER_CHILDREN_ERROR, SET_USER_CHILDREN_LOADING } from "./actions";
 
 const initialState = {
   loading: false,
@@ -33,4 +19,3 @@ export const UserChildrenReducer = (state = initialState, action) => {
   }
 };
 
-export const selectUserChildrenData = (state) => state.withPersist.userChildren.data;
