@@ -105,3 +105,13 @@ export const SendFileChildren = {
     });
   },
 };
+
+export const sendFileProfile = {
+  addImg(id, data) {
+    return instance.post(`/addimg/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+};
