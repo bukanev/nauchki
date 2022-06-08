@@ -7,9 +7,9 @@ import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenFor
 import { ChildCard } from '../../components/ChildCart/ChildCart';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import { selectUserData } from '../../store/user/selectors';
-import { toggleAuthAC } from '../../store/user/actions';
-import { selectUserChildrenData } from '../../store/userChildren/reducer';
-import { getuserChildrenThunk } from '../../asyncActions/userChildrenThunk/getUserChildrenThunk';
+import { selectUserChildrenData } from '../../store/userChildren/selectors';
+import { getUserChildrenThunk } from '../../store/userChildren/actions';
+import { toggleAuth } from '../../store/user/actions';
 
 export const PersonalArea = () => {
   const dispatch = useDispatch();
@@ -21,7 +21,7 @@ export const PersonalArea = () => {
 
   let history = useHistory();
   const exitHandler = () => {
-    dispatch(toggleAuthAC(false));
+    dispatch(toggleAuth(false));
     history.push('/');
   };
 
@@ -30,7 +30,7 @@ export const PersonalArea = () => {
   };
 
   const getUserChildren = () => {
-    dispatch(getuserChildrenThunk(user.id))
+    dispatch(getUserChildrenThunk(user.id))
   };
 
   //IMG
@@ -93,7 +93,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-        {/* <div className="personalArea__parent_name">{user.username}</div>
++        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}

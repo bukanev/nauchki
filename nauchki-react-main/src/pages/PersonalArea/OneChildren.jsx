@@ -8,8 +8,7 @@ import InputChild from '../../UI/InputChild';
 // import { useDispatch } from 'react-redux';
 // import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
 import axios from 'axios';
-import { selectUserChildrenData } from '../../store/userChildren/reducer';
-
+import { selectUserChildrenData } from '../../store/userChildren/selectors';
 
 function getDate(d) {
   let days = d % 365;
@@ -292,13 +291,13 @@ export const OneChildrenWithoutRouter = (props) => {
               />
               <ButtonChild onClick={AddNewChildPhrase}></ButtonChild>
             </form>
-              {childrenPhrase.map((phrase, index) => (
-                <ChildPost
-                  number={index + 1}
-                  post={phrase}
-                  key={phrase.id}
-                />
-              ))}
+            {childrenPhrase.map((phrase, index) => (
+              <ChildPost
+                number={index + 1}
+                post={phrase}
+                key={phrase.id}
+              />
+            ))}
             <h1 className="oneChildren_paragArtic">Читать полезные статьи</h1>
           </div>
           <div className="oneChildren_articles">
