@@ -1,10 +1,13 @@
 package com.example.nauchki.controller;
 
+import com.example.nauchki.exceptions.OtherUserDataExeption;
+import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Children;
 import com.example.nauchki.model.StandartStage;
 import com.example.nauchki.model.dto.ChildrenDto;
 import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.service.ChildrenService;
+import com.example.nauchki.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -21,12 +24,17 @@ import java.util.List;
 public class ChildrenController {
     private final ChildrenService childrenService;
     private final StandartStageRepo stageRepo;
+    private final JwtProvider jwtProvider;
+    private final UserService userService;
+
 
     @ApiOperation("Добавление ребенка по id родителя")
     @PostMapping("/children/{id}")
     public ResponseEntity<ResponseStatus> addChildren(
             @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
-            @RequestBody Children children) {
+            @RequestBody Children children,
+            @RequestHeader("Authorization") String token) {
+        isCorrectParent(id, token);
         return childrenService.addChildren(id, children) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
@@ -40,10 +48,11 @@ public class ChildrenController {
     @ApiOperation("Получение детей по id родителя")
     @GetMapping("/getchildren/{id}")
     public List<ChildrenDto> getChildren(
-            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id) {
+            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
+            @RequestHeader("Authorization") String token) {
+        isCorrectParent(id, token);
         return childrenService.getChildren(id);
     }
-
 
     /*@GetMapping("/getstage/{id}")
     public List<StandartStage> getStage(@PathVariable int id) {
@@ -71,7 +80,9 @@ public class ChildrenController {
     public String addChildrenImg(
             @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
+            @RequestHeader("Authorization") String token,
             Principal principal){
+        isCorrectParent(childrenService.getParentId(id), token);
         return childrenService.addChildrenImg(file, id, principal);
     }
 
@@ -81,7 +92,18 @@ public class ChildrenController {
             @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
             @RequestParam @Parameter(description = "Комментарий") String comment,
+            @RequestHeader("Authorization") String token,
             Principal principal){
+        isCorrectParent(childrenService.getParentId(id), token);
         return childrenService.addChildrenImgToList(file, id, comment, principal);
     }
+
+    private void isCorrectParent(Long id, String token) {
+        String userAuthEmail = jwtProvider.getUsername(token.substring(7));
+        String userGetEmail = userService.getEmail(id);
+        if (!userAuthEmail.equals(userGetEmail)) {
+            throw new OtherUserDataExeption("Это не ваш ребенок!");
+        }
+    }
+
 }

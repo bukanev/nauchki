@@ -149,4 +149,9 @@ public class ChildrenService {
         }
         return null;
     }
+
+    public Long getParentId (Long id) {
+        return childrenRepository.getById(id).getParent().getId();
+    }
+
 }

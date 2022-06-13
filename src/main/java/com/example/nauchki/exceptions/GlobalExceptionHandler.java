@@ -24,6 +24,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<?> otherUserDataException(OtherUserDataExeption e){
+        log.error("Exception, {}", e.getMessage() + "\n" + e.getStackTrace()[0]);
+        return new ResponseEntity<>(e.getMessage() + "\n" + e.getStackTrace()[0], HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<?> catchOtherException(Exception e){
         log.error("Exception, {}", e.getMessage() + "\n" + e.getStackTrace()[0]);
         return new ResponseEntity<>(e.getMessage() + "\n" + e.getStackTrace()[0], HttpStatus.INTERNAL_SERVER_ERROR);
