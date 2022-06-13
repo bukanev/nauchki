@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getPostThunk } from "../../asyncActions/getPostThunk";
 import { useSelector } from "react-redux";
 import { PostsCardsArea } from "./PostsCardsArea";
 import { Route, Switch } from "react-router-dom";
 import { OnePost } from "./OnePost";
-import { getTagsThunk } from "../../asyncActions/getTagsThunk";
 import { Themes } from "./Themes";
 import { selectPosts } from "../../store/posts/selectors";
+import { getPostThunk, getTagsThunk } from "../../store/posts/actions";
 // import { isLoadingAC } from "../../store/postsReducer";
 
 export const Articles = () => {

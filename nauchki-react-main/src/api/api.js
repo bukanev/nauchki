@@ -88,3 +88,30 @@ export const PostsAPI = {
     return instance.get(`/tags`);
   },
 };
+
+export const UserChildrenAPI = {
+  getUserChildren(userId) {
+    return instance.get(`getchildren/${userId}`);
+  },
+  addChildren() {},
+};
+
+export const SendFileChildren = {
+  addChildrenImg(id, data) {
+    return instance.post(`addChildrenImg/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+};
+
+export const sendFileProfile = {
+  addImg(id, data) {
+    return instance.post(`/addimg/${id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+};

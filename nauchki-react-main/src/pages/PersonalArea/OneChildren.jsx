@@ -8,6 +8,7 @@ import InputChild from '../../UI/InputChild';
 // import { useDispatch } from 'react-redux';
 // import { getchildrenInputAC, GET_PHRASE } from '../../store/OnechildInput';
 import axios from 'axios';
+import { selectUserChildrenData } from '../../store/userChildren/selectors';
 
 function getDate(d) {
   let days = d % 365;
@@ -24,15 +25,20 @@ function getDate(d) {
 }
 
 export const OneChildrenWithoutRouter = (props) => {
-  const children = useSelector((state) => state.children.children);
+  const children = useSelector(selectUserChildrenData);
   const [value, setValue] = useState('');
+  const [childrenPhrase, setChildrenPhrase] = useState([]);
+  const [childText, setChildText] = useState('');
+  const [dates, setDates] = useState();
+  const [filteredChildren, setFilteredChildren] = useState();
+  const [imgChildren, setImgChildren] = useState(null);
+  const [avatarChildren, setAvatarChildren] = useState(null);
 
   //Инпут у фразы ребенка
   /*   const dispatch = useDispatch();
   const phase = useSelector((state) => state.phase.phase);
  */
-  const [childrenPhrase, setChildrenPhrase] = useState([]);
-  const [childText, setChildText] = useState('');
+
   const AddNewChildPhrase = (e) => {
     e.preventDefault();
     const newChildPhrase = {
@@ -45,24 +51,10 @@ export const OneChildrenWithoutRouter = (props) => {
   };
 
   // input
-  const [dates, setDates] = useState();
-  const [filteredChildren, setFilteredChildren] = useState();
   const onChange = ({ target: { value } }) =>
     setValue((prev) => (/\d+/.test(Number(value)) ? value : prev));
 
-  // падало, потому что ф-ю надо за компонент; потому что в переменной первоначально undefined(поэтому сначала создаем переменную, потом ее в стэйт пихаем)
-  useEffect(() => {
-    const filtered = children.filter((item) => item.id.toString() === props.match.params.id);
 
-    setFilteredChildren(filtered);
-    const standartStages = filtered.map((t) => t.standartStages);
-    setDates(standartStages.map((t) => t.map((t) => getDate(t.days))).flat());
-  }, []);
-  // IMG
-
-  const [imgChildren, setImgChildren] = useState(null);
-  const [avatarChildren, setAvatarChildren] = useState(null);
-  console.log(children);
   const sendFile = useCallback(async () => {
     try {
       const date = new FormData();
@@ -73,16 +65,20 @@ export const OneChildrenWithoutRouter = (props) => {
             'Content-Type': 'multipart/form-data',
           },
         })
-
         .then((res) => setAvatarChildren(res.data));
-
       setImgChildren();
     } catch (error) {
       console.log(error);
     }
   }, [imgChildren]);
 
-  // DELETE
+  // падало, потому что ф-ю надо за компонент; потому что в переменной первоначально undefined(поэтому сначала создаем переменную, потом ее в стэйт пихаем)
+  useEffect(() => {
+    const filtered = children.filter((item) => item.id.toString() === props.match.params.id);
+    setFilteredChildren(filtered);
+    const standartStages = filtered.map((t) => t.standartStages);
+    setDates(standartStages.map((t) => t.map((t) => getDate(t.days))).flat());
+  }, []);
 
   return (
     <div>
@@ -259,8 +255,12 @@ export const OneChildrenWithoutRouter = (props) => {
             <div className="childrenSkills_infoNowStend">
               {filteredChildren &&
                 filteredChildren.map(
-                  (children) => children.standartStages[children.standartStages.length - 1].skills,
-                )}
+                  (children) => (
+                    <div key={'skills' + children.standartStages[children.standartStages.length - 1]}>
+                      {children.standartStages[children.standartStages.length - 1].skills}
+                    </div>
+                  ))
+              }
             </div>
           </div>
           <div className="childrenSkills_info">
@@ -271,7 +271,8 @@ export const OneChildrenWithoutRouter = (props) => {
         <div className="oneChildren_banner">БАННЕР С РЕКЛАМОЙ</div>
         <div className="oneChildren_back">
           <div className="oneChildren_gallery">
-            Галерея <button className="circle"></button>
+            Галерея
+            <button className="circle"></button>
           </div>
 
           <div className="oneChildren_upImg">
@@ -290,11 +291,13 @@ export const OneChildrenWithoutRouter = (props) => {
               />
               <ButtonChild onClick={AddNewChildPhrase}></ButtonChild>
             </form>
-            <div childrenPhrase={childrenPhrase}>
-              {childrenPhrase.map((childPh, index) => (
-                <ChildPost number={index + 1} post={childPh} key={childPh.id} />
-              ))}
-            </div>
+            {childrenPhrase.map((phrase, index) => (
+              <ChildPost
+                number={index + 1}
+                post={phrase}
+                key={phrase.id}
+              />
+            ))}
             <h1 className="oneChildren_paragArtic">Читать полезные статьи</h1>
           </div>
           <div className="oneChildren_articles">
@@ -304,16 +307,16 @@ export const OneChildrenWithoutRouter = (props) => {
         </div>
         <ul className="oneChildren_list">
           {dates &&
-            dates.map((t) => {
-              return (
-                <li className="oneChildren_listDate" key={t.id}>{`
-            ${typeof t.years === 'number' && t.years > 0 ? t.years + 'г.' : ''} 
-            ${typeof t.months === 'number' && t.months > 0 ? t.months + 'м.' : ''} 
-            ${typeof t.weeks === 'number' && t.days === 0 && t.weeks > 0 ? t.weeks + 'нед.' : ''} 
-            ${typeof t.days === 'number' && t.weeks === 0 ? t.days + 'д.' : ''} 
-          `}</li>
-              );
-            })}
+            dates.map((t) => (
+              <li className="oneChildren_listDate" key={t.id}>
+                {`
+                    ${typeof t.years === 'number' && t.years > 0 ? t.years + 'г.' : ''} 
+                    ${typeof t.months === 'number' && t.months > 0 ? t.months + 'м.' : ''} 
+                    ${typeof t.weeks === 'number' && t.days === 0 && t.weeks > 0 ? t.weeks + 'нед.' : ''} 
+                    ${typeof t.days === 'number' && t.weeks === 0 ? t.days + 'д.' : ''} 
+          `     }
+              </li>
+            ))}
         </ul>
       </div>
     </div>

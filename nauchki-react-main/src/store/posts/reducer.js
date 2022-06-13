@@ -1,6 +1,3 @@
-// export const GET_POSTS = "GET_POSTS";
-// export const GET_TAGS = "GET_TAGS";
-
 import { GET_POSTS, GET_TAGS } from "./actions";
 
 const initialState = {
@@ -25,6 +22,3 @@ export const postsReducer = (state = initialState, action) => {
       return state;
   }
 };
-
-// export const getPostsAC = (payload) => ({ type: GET_POSTS, payload });
-// export const getTagsAC = (payload) => ({ type: GET_TAGS, payload });

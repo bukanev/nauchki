@@ -8,8 +8,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Form } from '../../UI/Form';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectRecoveryPassData } from '../../store/recoveryPass/selectors';
-import { getRecoveryPassThunk } from '../../asyncActions/getRecoveryPassThunk';
 import { ModalWindow } from '../../components/ModalWindow/ModalWindow';
+import { getRecoveryPassThunk } from '../../store/recoveryPass/actions';
 
 const schema = yup.object({
   email: yup

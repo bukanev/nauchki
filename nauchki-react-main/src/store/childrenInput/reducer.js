@@ -1,4 +1,3 @@
-// export const GET_PHRASE = 'GET_PHRASE';
 import { GET_PHRASE } from './actions';
 
 const initialState = {
@@ -16,5 +15,3 @@ export const childrenInputReducer = (state = initialState, action) => {
       return state;
   }
 };
-
-// export const getchildrenInputAC = (payload) => ({ type: GET_PHRASE, payload });

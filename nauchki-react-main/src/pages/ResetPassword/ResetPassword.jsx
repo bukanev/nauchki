@@ -10,7 +10,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ModalWindow } from '../../components/ModalWindow/ModalWindow';
 import { selectResetPassData } from '../../store/resetPass/selectors';
-import { getResetPassThunk } from '../../asyncActions/getResetPassThunk';
+import { getResetPassThunk } from '../../store/resetPass/actions';
 
 const schema = yup.object({
   resetPasswordCode: yup

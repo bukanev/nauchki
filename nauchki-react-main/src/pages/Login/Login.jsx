@@ -9,8 +9,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { NavLink } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { asyncApiCall } from "../../asyncActions/getAuthUserThunk";
 import { LoaderSvg } from "../../UI/LoaderSvg";
+import { asyncApiCall } from "../../store/user/actions";
 
 const schema = yup.object({
   email: yup.string().email().required(),

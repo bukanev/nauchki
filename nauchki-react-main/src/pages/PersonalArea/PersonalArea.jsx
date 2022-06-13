@@ -7,22 +7,21 @@ import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenFor
 import { ChildCard } from '../../components/ChildCart/ChildCart';
 import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import { selectUserData } from '../../store/user/selectors';
-import { selectChidren } from '../../store/children/selectors';
-import { getChildrenAC } from '../../store/children/actions';
-import { toggleAuthAC } from '../../store/user/actions';
+import { selectUserChildrenData } from '../../store/userChildren/selectors';
+import { getUserChildrenThunk } from '../../store/userChildren/actions';
+import { toggleAuth } from '../../store/user/actions';
 
 export const PersonalArea = () => {
+  const dispatch = useDispatch();
   const [visibleForm, setVisibleForm] = useState(false);
   const [img, setImg] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const user = useSelector(selectUserData);
-  const children = useSelector(selectChidren);
-  const dispatch = useDispatch();
-
+  const children = useSelector(selectUserChildrenData)
 
   let history = useHistory();
   const exitHandler = () => {
-    dispatch(toggleAuthAC(false));
+    dispatch(toggleAuth(false));
     history.push('/');
   };
 
@@ -30,19 +29,8 @@ export const PersonalArea = () => {
     setVisibleForm(!visibleForm);
   };
 
-  // TODO: Перенести в санки получение детей
-  const getChildrenData = (userData) => {
-    dispatch(getChildrenAC(userData));
-  };
-
   const getUserChildren = () => {
-    axios
-      .get(`http://89.108.88.2:8080/getchildren/${user.id}`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        getChildrenData(res.data);
-      });
+    dispatch(getUserChildrenThunk(user.id))
   };
 
   //IMG
@@ -105,7 +93,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-        {/* <div className="personalArea__parent_name">{user.username}</div>
++        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}
