@@ -123,10 +123,6 @@ public class UserService {
         return null;
     }
 
-    public String getEmail (Long id) {
-        return userRepository.getById(id).getEmail();
-    }
-
     public UserDto getUser(String email) {
         Optional<User> userTwo = userRepository.findByEmail(email);
         if (userTwo.isPresent()) {

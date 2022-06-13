@@ -34,8 +34,7 @@ public class ChildrenController {
             @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
             @RequestBody Children children,
             @RequestHeader("Authorization") String token) {
-        isCorrectParent(id, token);
-        return childrenService.addChildren(id, children) ?
+        return childrenService.addChildren(id, children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
@@ -50,8 +49,7 @@ public class ChildrenController {
     public List<ChildrenDto> getChildren(
             @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
             @RequestHeader("Authorization") String token) {
-        isCorrectParent(id, token);
-        return childrenService.getChildren(id);
+        return childrenService.getChildren(id, token);
     }
 
     /*@GetMapping("/getstage/{id}")
@@ -61,16 +59,16 @@ public class ChildrenController {
 
     @ApiOperation("Изменение данных ребенка")
     @PostMapping("/children")
-    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children) {
-        return childrenService.editChildren(children) ?
+    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children, @RequestHeader("Authorization") String token) {
+        return childrenService.editChildren(children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @ApiOperation("Удаление ребенка")
     @DeleteMapping("/deletechildren")
-    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children) {
-        return childrenService.deleteChildren(children) ?
+    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children, @RequestHeader("Authorization") String token) {
+        return childrenService.deleteChildren(children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
@@ -82,8 +80,7 @@ public class ChildrenController {
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
             @RequestHeader("Authorization") String token,
             Principal principal){
-        isCorrectParent(childrenService.getParentId(id), token);
-        return childrenService.addChildrenImg(file, id, principal);
+        return childrenService.addChildrenImg(file, id, token, principal);
     }
 
     @ApiOperation("Добавление фотки в альбом ребенка")
@@ -94,16 +91,7 @@ public class ChildrenController {
             @RequestParam @Parameter(description = "Комментарий") String comment,
             @RequestHeader("Authorization") String token,
             Principal principal){
-        isCorrectParent(childrenService.getParentId(id), token);
-        return childrenService.addChildrenImgToList(file, id, comment, principal);
-    }
-
-    private void isCorrectParent(Long id, String token) {
-        String userAuthEmail = jwtProvider.getUsername(token.substring(7));
-        String userGetEmail = userService.getEmail(id);
-        if (!userAuthEmail.equals(userGetEmail)) {
-            throw new OtherUserDataExeption("Это не ваш ребенок!");
-        }
+        return childrenService.addChildrenImgToList(file, id, comment, token, principal);
     }
 
 }
