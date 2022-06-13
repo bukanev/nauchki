@@ -166,7 +166,7 @@ public class ChildrenService {
         return childrenRepository.getById(id).getParent().getId();
     }
 
-    private void isCorrectParent(Long id, String token) {
+    public void isCorrectParent(Long id, String token) {
         String userAuthEmail = jwtProvider.getUsername(token.substring(UNSUPPORT_SYMBOLS_IN_START_OF_HEADER_WITH_TOKEN));
         String userGetEmail = userRepository.getById(id).getEmail();
         if (!userAuthEmail.equals(userGetEmail)) {

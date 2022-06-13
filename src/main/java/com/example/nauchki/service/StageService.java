@@ -18,6 +18,7 @@ import java.util.Optional;
 public class StageService {
     private final StandartStageRepo standartStageRepo;
     private final ChildrenRepository childrenRepository;
+    private final ChildrenService childrenService;
 
     public boolean saveStandartStage(StandartStage stage, String name) {
         if (standartStageRepo.findByDaysAndGender(stage.getDays(), stage.getGender()) == null
@@ -51,7 +52,8 @@ public class StageService {
         return false;
     }
 
-    public boolean saveUserStage(Long id,UserStage userStage) {
+    public boolean saveUserStage(Long id,UserStage userStage, String token) {
+        childrenService.isCorrectParent(childrenService.getParentId(id), token);
         Optional<Children> children = childrenRepository.findById(id);
         if(children.isPresent()) {
             //userStageRepository.save(userStage);
