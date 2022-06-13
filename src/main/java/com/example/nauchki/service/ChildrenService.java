@@ -34,6 +34,9 @@ public class ChildrenService {
     private final ChildrenImgRepo childrenImgRepo;
     private final JwtProvider jwtProvider;
 
+    //количество сопровождающих символов в начале параметра, содержащего токен ("Bearer " - 7 символов)
+    private static final int UNSUPPORT_SYMBOLS_IN_START_OF_HEADER_WITH_TOKEN = 7;
+
 
     public boolean addChildren(Long id, Children children, String token) {
         isCorrectParent(id, token);
@@ -164,7 +167,7 @@ public class ChildrenService {
     }
 
     private void isCorrectParent(Long id, String token) {
-        String userAuthEmail = jwtProvider.getUsername(token.substring(7));
+        String userAuthEmail = jwtProvider.getUsername(token.substring(UNSUPPORT_SYMBOLS_IN_START_OF_HEADER_WITH_TOKEN));
         String userGetEmail = userRepository.getById(id).getEmail();
         if (!userAuthEmail.equals(userGetEmail)) {
             throw new OtherUserDataExeption("Это не ваш ребенок!");
