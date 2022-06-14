@@ -44,8 +44,9 @@ public class StageController {
     @PostMapping("/us/{id}")
     public ResponseEntity<ResponseStatus> saveUserStage(
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
-            @RequestBody UserStage stage){
-        return stageService.saveUserStage(id,stage)?
+            @RequestBody UserStage stage,
+            @RequestHeader("Authorization") String token){
+        return stageService.saveUserStage(id,stage,token)?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }

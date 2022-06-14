@@ -1,10 +1,13 @@
 package com.example.nauchki.controller;
 
+import com.example.nauchki.exceptions.OtherUserDataExeption;
+import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Children;
 import com.example.nauchki.model.StandartStage;
 import com.example.nauchki.model.dto.ChildrenDto;
 import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.service.ChildrenService;
+import com.example.nauchki.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -21,13 +24,17 @@ import java.util.List;
 public class ChildrenController {
     private final ChildrenService childrenService;
     private final StandartStageRepo stageRepo;
+    private final JwtProvider jwtProvider;
+    private final UserService userService;
+
 
     @ApiOperation("Добавление ребенка по id родителя")
     @PostMapping("/children/{id}")
     public ResponseEntity<ResponseStatus> addChildren(
             @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
-            @RequestBody Children children) {
-        return childrenService.addChildren(id, children) ?
+            @RequestBody Children children,
+            @RequestHeader("Authorization") String token) {
+        return childrenService.addChildren(id, children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
@@ -40,10 +47,10 @@ public class ChildrenController {
     @ApiOperation("Получение детей по id родителя")
     @GetMapping("/getchildren/{id}")
     public List<ChildrenDto> getChildren(
-            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id) {
-        return childrenService.getChildren(id);
+            @PathVariable @Parameter(description = "Идентификатор родителя ребенка", required = true) Long id,
+            @RequestHeader("Authorization") String token) {
+        return childrenService.getChildren(id, token);
     }
-
 
     /*@GetMapping("/getstage/{id}")
     public List<StandartStage> getStage(@PathVariable int id) {
@@ -52,16 +59,16 @@ public class ChildrenController {
 
     @ApiOperation("Изменение данных ребенка")
     @PostMapping("/children")
-    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children) {
-        return childrenService.editChildren(children) ?
+    public ResponseEntity<ResponseStatus> editChildren(@RequestBody Children children, @RequestHeader("Authorization") String token) {
+        return childrenService.editChildren(children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
     @ApiOperation("Удаление ребенка")
     @DeleteMapping("/deletechildren")
-    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children) {
-        return childrenService.deleteChildren(children) ?
+    public ResponseEntity<ResponseStatus> deleteChildren(@RequestBody Children children, @RequestHeader("Authorization") String token) {
+        return childrenService.deleteChildren(children, token) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
@@ -71,8 +78,9 @@ public class ChildrenController {
     public String addChildrenImg(
             @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
+            @RequestHeader("Authorization") String token,
             Principal principal){
-        return childrenService.addChildrenImg(file, id, principal);
+        return childrenService.addChildrenImg(file, id, token, principal);
     }
 
     @ApiOperation("Добавление фотки в альбом ребенка")
@@ -81,7 +89,9 @@ public class ChildrenController {
             @RequestParam("file") @Parameter(description = "Файл с изображением ребенка", required = true) MultipartFile file,
             @PathVariable @Parameter(description = "Идентификатор ребенка", required = true) Long id,
             @RequestParam @Parameter(description = "Комментарий") String comment,
+            @RequestHeader("Authorization") String token,
             Principal principal){
-        return childrenService.addChildrenImgToList(file, id, comment, principal);
+        return childrenService.addChildrenImgToList(file, id, comment, token, principal);
     }
+
 }

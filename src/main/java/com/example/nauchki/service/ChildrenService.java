@@ -1,5 +1,7 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.OtherUserDataExeption;
+import com.example.nauchki.jwt.JwtProvider;
 import com.example.nauchki.model.Children;
 import com.example.nauchki.model.ChildrenImg;
 import com.example.nauchki.model.StandartStage;
@@ -10,6 +12,7 @@ import com.example.nauchki.repository.ChildrenRepository;
 import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,9 +33,10 @@ public class ChildrenService {
     private final UserRepository userRepository;
     private final StandartStageRepo stageRepo;
     private final ChildrenImgRepo childrenImgRepo;
+    private final JwtProvider jwtProvider;
 
-
-    public boolean addChildren(Long id, Children children) {
+    public boolean addChildren(Long id, Children children, String token) {
+        isCorrectParent(id, token);
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent() & children.getName() != null) {
             children.setParent(user.get());
@@ -44,7 +48,8 @@ public class ChildrenService {
     }
 
 
-    public List<ChildrenDto> getChildren(Long id) {
+    public List<ChildrenDto> getChildren(Long id, String token) {
+        isCorrectParent(id, token);
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             List<Children> childrens = user.get().getChildrens();
@@ -73,7 +78,8 @@ public class ChildrenService {
         return days;
     }
 
-    public boolean editChildren(Children children) {
+    public boolean editChildren(Children children, String token) {
+        isCorrectParent(getParentId(children.getId()), token);
         Optional<Children> findChildren = childrenRepository.findById(children.getId());
         if (findChildren.isPresent()) {
             if (children.getName() != null) {
@@ -91,7 +97,8 @@ public class ChildrenService {
         return false;
     }
 
-    public boolean deleteChildren(Children children) {
+    public boolean deleteChildren(Children children, String token) {
+        isCorrectParent(getParentId(children.getId()), token);
         Optional<Children> findChildren = childrenRepository.findById(children.getId());
         if (findChildren.isPresent()) {
             childrenRepository.delete(findChildren.get());
@@ -114,7 +121,8 @@ public class ChildrenService {
         return null;
     }
 
-    public String addChildrenImg(MultipartFile file, Long id, Principal principal) {
+    public String addChildrenImg(MultipartFile file, Long id, String token, Principal principal) {
+        isCorrectParent(getParentId(id), token);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Children> children = childrenRepository.findById(id);
             if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
@@ -130,7 +138,8 @@ public class ChildrenService {
         return null;
     }
 
-    public String addChildrenImgToList(MultipartFile file, Long id, String comment, Principal principal) {
+    public String addChildrenImgToList(MultipartFile file, Long id, String comment, String token, Principal principal) {
+        isCorrectParent(getParentId(id), token);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Children> children = childrenRepository.findById(id);
             if (children.get().getParent().equals(userRepository.findByEmail(principal.getName()).get())) {
@@ -149,4 +158,17 @@ public class ChildrenService {
         }
         return null;
     }
+
+    public Long getParentId (Long id) {
+        return childrenRepository.getById(id).getParent().getId();
+    }
+
+    public void isCorrectParent(Long id, String token) {
+        String userAuthEmail = jwtProvider.getUsername(token.split(" ")[1]);
+        String userGetEmail = userRepository.getById(id).getEmail();
+        if (!StringUtils.equals(userAuthEmail, userGetEmail)) {
+            throw new OtherUserDataExeption("Это не ваш ребенок!");
+        }
+    }
+
 }
