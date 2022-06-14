@@ -12,6 +12,7 @@ import com.example.nauchki.repository.ChildrenRepository;
 import com.example.nauchki.repository.StandartStageRepo;
 import com.example.nauchki.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,10 +34,6 @@ public class ChildrenService {
     private final StandartStageRepo stageRepo;
     private final ChildrenImgRepo childrenImgRepo;
     private final JwtProvider jwtProvider;
-
-    //количество сопровождающих символов в начале параметра, содержащего токен ("Bearer " - 7 символов)
-    private static final int UNSUPPORT_SYMBOLS_IN_START_OF_HEADER_WITH_TOKEN = 7;
-
 
     public boolean addChildren(Long id, Children children, String token) {
         isCorrectParent(id, token);
@@ -167,12 +164,11 @@ public class ChildrenService {
     }
 
     public void isCorrectParent(Long id, String token) {
-        String userAuthEmail = jwtProvider.getUsername(token.substring(UNSUPPORT_SYMBOLS_IN_START_OF_HEADER_WITH_TOKEN));
+        String userAuthEmail = jwtProvider.getUsername(token.split(" ")[1]);
         String userGetEmail = userRepository.getById(id).getEmail();
-        if (!userAuthEmail.equals(userGetEmail)) {
+        if (!StringUtils.equals(userAuthEmail, userGetEmail)) {
             throw new OtherUserDataExeption("Это не ваш ребенок!");
         }
     }
-
 
 }
