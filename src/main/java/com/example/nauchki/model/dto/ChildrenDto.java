@@ -15,6 +15,7 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Schema(description = "Модель данных о ребенке")
 public class ChildrenDto {
 
