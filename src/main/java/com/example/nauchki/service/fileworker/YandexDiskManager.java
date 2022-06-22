@@ -11,6 +11,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +19,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
+@Primary
 @Component
 @Log4j2
 public class YandexDiskManager implements UploadAndDeleteFileManager {
@@ -26,7 +27,6 @@ public class YandexDiskManager implements UploadAndDeleteFileManager {
     private String token;
     private String cloudUrl;
     private HttpURLConnection connection;
-    private String response;
 
     @Autowired
     public YandexDiskManager(@Value("${yandex.box.token}") String token,
@@ -37,177 +37,110 @@ public class YandexDiskManager implements UploadAndDeleteFileManager {
 
     @Override
     public String saveFile(MultipartFile file, String ExternalId) {
+        String path = "";
 
-        //    String fileName = file.getOriginalFilename();
-        String uploadUrl = getUploadLink(ExternalId);
-
-        File convFile = new File(ExternalId);
-        FileOutputStream fos = null;
         try {
+            String uploadUrl = getUploadLink(ExternalId);
+
+            File convFile = new File(ExternalId);
+            FileOutputStream fos = null;
+
             fos = new FileOutputStream(convFile);
             fos.write(file.getBytes());
             fos.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
-        HttpEntity entity = MultipartEntityBuilder.create()
-                .addPart("file", new FileBody(convFile))
-                .build();
 
-        HttpPut request = new HttpPut(uploadUrl);
-        request.setEntity(entity);
+            HttpEntity entity = MultipartEntityBuilder.create()
+                    .addPart("file", new FileBody(convFile))
+                    .build();
 
-        HttpClient client = HttpClientBuilder.create().build();
-        HttpResponse response = null;
-        try {
+            HttpPut request = new HttpPut(uploadUrl);
+            request.setEntity(entity);
+
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpResponse response = null;
+
             response = client.execute(request);
 
-            log.info(
-                    String.format("Response code when request save file:%s , message:%s, url:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(), connection.getURL()));
+            if (connection.getResponseCode() != 200) {
+                log.info(String.format("Response code:%s , message:%s",
+                        connection.getResponseCode(), connection.getResponseMessage()));
+            }
+
+            publishFile(ExternalId);
+            path = getPublishLink(ExternalId);
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             connection.disconnect();
         }
-
-        publishFile(ExternalId);
-        String path = getPublishLink(ExternalId);
-
         return path;
     }
 
-    public String getUploadLink(String ExternalId) {
+    public String getUploadLink(String ExternalId) throws IOException {
 
-        JSONObject jsonObject;
+        String requestUrl = "/resources/upload?path=/" + ExternalId;
+        String requestMethod = "GET";
 
-        try {
-            URL url = new URL(cloudUrl + "/resources/upload?path=/" + ExternalId);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorization", "OAuth " + token);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            log.info(
-                    String.format("Response code:%s , message:%s, metod:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(), connection.getRequestMethod()));
+        getConnection(requestMethod, requestUrl);
 
-            if (connection.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                br.close();
-                jsonObject = new JSONObject(sb.toString());
-                return jsonObject.getString("href");
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            connection.disconnect();
+        if (connection.getResponseCode() == 200) {
+            JSONObject jsonObject = getJsonFromResponse();
+            return jsonObject.getString("href");
         }
-        return response;
+        log.info(
+                String.format("Response code:%s , message:%s",
+                        connection.getResponseCode(), connection.getResponseMessage()));
+        return null;
     }
 
-    public String publishFile(String fileName) {
 
-        JSONObject jsonObject;
+    public void publishFile(String fileName) throws IOException {
 
-        try {
-            URL url = new URL(cloudUrl + "/resources/publish?path=" + fileName);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("Authorization", "OAuth " + token);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            log.info(
-                    String.format("Response code when request publish file:%s , message:%s, metod:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(), connection.getRequestMethod()));
+        String requestUrl = "/resources/publish?path=" + fileName;
+        String requestMethod = "PUT";
 
-            if (connection.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                br.close();
-                jsonObject = new JSONObject(sb.toString());
-                return jsonObject.getString("href");
+        getConnection(requestMethod, requestUrl);
 
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            connection.disconnect();
+        if (connection.getResponseCode() != 200) {
+            log.info(String.format("Response code:%s , message:%s",
+                    connection.getResponseCode(), connection.getResponseMessage()));
         }
-        return response;
     }
 
-    public String getPublishLink(String ExternalId) {
+    public String getPublishLink(String ExternalId) throws IOException {
 
-        JSONObject jsonObject;
+        String requestUrl = "/resources?path=" + ExternalId;
+        String requestMethod = "GET";
 
-        try {
-            URL url = new URL(cloudUrl + "/resources?path=" + ExternalId);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty("Authorization", "OAuth " + token);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            log.info(
-                    String.format("Response code when get publish Link:%s , message:%s, metod:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(), connection.getRequestMethod()));
+        getConnection(requestMethod, requestUrl);
 
-            if (connection.getResponseCode() == 200) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                br.close();
-                jsonObject = new JSONObject(sb.toString());
-                return jsonObject.getString("public_url");
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            connection.disconnect();
+        if (connection.getResponseCode() == 200) {
+            JSONObject jsonObject = getJsonFromResponse();
+            return jsonObject.getString("public_url");
         }
-        return response;
+        log.info(
+                String.format("Response code when get publish Link:%s , message:%s",
+                        connection.getResponseCode(), connection.getResponseMessage()));
+        return connection.getResponseMessage();
     }
-
 
     @Override
     public boolean deleteFile(String ExternalId) {
+
+        String requestUrl = "/resources?path=" + ExternalId;
+        String requestMethod = "DELETE";
+
         try {
-            URL url = new URL(cloudUrl + "/resources?path=" + ExternalId);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("DELETE");
-            connection.setRequestProperty("Authorization", "OAuth " + token);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            log.info(
-                    String.format("Response code when delete file:%s , message:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage()));
+            getConnection(requestMethod, requestUrl);
 
             if (connection.getResponseCode() == 204) {
                 return true;
             }
+            log.info(
+                    String.format("Response code when delete file:%s , message:%s",
+                            connection.getResponseCode(), connection.getResponseMessage()));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -222,22 +155,38 @@ public class YandexDiskManager implements UploadAndDeleteFileManager {
     // на Яндекс диске, в метод надо передавать email пользователя
     public void createDirectory(String email) {
 
+        String requestUrl = "/resources?path=" + email;
+        String requestMethod = "PUT";
+
         try {
-            URL url = new URL(cloudUrl + "/resources?path=" + email);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty("Authorization", "OAuth " + token);
-            connection.setUseCaches(false);
-            connection.setDoOutput(true);
-            log.info(
-                    String.format("Response code when create directory:%s , message:%s, metod:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage(), connection.getRequestMethod()));
+            getConnection(requestMethod, requestUrl);
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             connection.disconnect();
         }
+    }
+
+    public void getConnection(String requestMethod, String requestUrl) throws IOException {
+
+        URL url = new URL(cloudUrl + requestUrl);
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod(requestMethod);
+        connection.setRequestProperty("Authorization", "OAuth " + token);
+        connection.setUseCaches(false);
+        connection.setDoOutput(true);
+    }
+
+    public JSONObject getJsonFromResponse() throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line + "\n");
+        }
+        br.close();
+        JSONObject jsonObject = new JSONObject(sb.toString());
+        return jsonObject;
     }
 }
