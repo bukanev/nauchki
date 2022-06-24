@@ -115,15 +115,20 @@ public class YandexDiskManager implements UploadAndDeleteFileManager {
         }
     }
 
-    public JSONObject getJsonFromResponse(HttpURLConnection connection) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line + "\n");
+    public JSONObject getJsonFromResponse(HttpURLConnection connection) {
+        JSONObject jsonObject = null;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream()))){
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = br.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            br.close();
+            jsonObject = new JSONObject(sb.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        br.close();
-        JSONObject jsonObject = new JSONObject(sb.toString());
         return jsonObject;
     }
 }
