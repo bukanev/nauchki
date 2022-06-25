@@ -1,22 +1,11 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Login } from './pages/Login/Login';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { selectIsAuth } from './store/user/selectors';
 
-export const PrivateRoute = ({ component: Component, ...rest }) => {
+export const PrivateRoute = () => {
   const isAuth = useSelector(selectIsAuth);
+  let location = useLocation();
 
-  return (
-    <Route
-      {...rest}
-      render={(props) => {
-        if (isAuth === true) {
-          return <Component {...props} />;
-        } else {
-          return <Login {...props} />;
-        }
-      }}
-    />
-  );
+  return !isAuth ? <Navigate to="/login" state={{ from: location }} replace /> : <Outlet />;
 };
