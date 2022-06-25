@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { Route, useHistory } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
+// import { Route, useHistory } from 'react-router';
 import axios from 'axios';
 import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenForm';
 import { ChildCard } from '../../components/ChildCart/ChildCart';
@@ -10,6 +9,7 @@ import { selectUserData } from '../../store/user/selectors';
 import { selectUserChildrenData } from '../../store/userChildren/selectors';
 import { getUserChildrenThunk } from '../../store/userChildren/actions';
 import { toggleAuth } from '../../store/user/actions';
+import {  NavLink, useNavigate } from 'react-router-dom';
 
 export const PersonalArea = () => {
   const dispatch = useDispatch();
@@ -19,10 +19,10 @@ export const PersonalArea = () => {
   const user = useSelector(selectUserData);
   const children = useSelector(selectUserChildrenData)
 
-  let history = useHistory();
+  let history = useNavigate();
   const exitHandler = () => {
     dispatch(toggleAuth(false));
-    history.push('/');
+    history('/');
   };
 
   const toggleVisibleForm = () => {
@@ -93,7 +93,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-+        {/* <div className="personalArea__parent_name">{user.username}</div>
+        +        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}
@@ -158,10 +158,12 @@ export const PersonalArea = () => {
         )}
 
         <ul className="personalArea__children-container ">
-          {children && children.map((child) => <ChildCard key={child.id} child={child} />)}
+          {children && children.map((child) =>
+            <ChildCard key={child.id} child={child} />
+          )}
         </ul>
 
-        {<Route exact path="/personalArea/:id" render={(props) => <ChildCard {...props} />} />}
+        <NavLink to="/personalArea/:id" render={<ChildCard />}></NavLink>
       </div>
     </div >
   );

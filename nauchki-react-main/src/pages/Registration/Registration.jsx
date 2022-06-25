@@ -4,10 +4,9 @@ import { Controller, useForm } from "react-hook-form";
 import { PrimaryButton } from "../../UI/PrimaryButton";
 import { Form } from "../../UI/Form";
 import { Input } from "../../UI/Input";
-import { useHistory } from "react-router";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { RegistartionAPI } from "../../api/api";
 import Checkbox from "@material-ui/core/Checkbox";
 import { MainContainer } from "../../UI/MainContainer";
@@ -38,7 +37,7 @@ export const Registration = () => {
   const [checkbox, setCheckbox] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  let history = useHistory();
+  let history = useNavigate();
 
   const {
     register,
@@ -51,7 +50,6 @@ export const Registration = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data)
     setIsLoading(true);
     RegistartionAPI.registartion(
       data.email,
@@ -61,16 +59,10 @@ export const Registration = () => {
       data.username
     )
       .then((res) => {
-        history.push("/login");
+        history("/login");
       })
       .catch((err) => {
-        if (err.response) {
-          console.log("client received an error response (5xx, 4xx)");
-        } else if (err.request) {
-          console.log("client never received a response, or request never left");
-        } else {
-          console.log("anything else");
-        }
+        console.log(err);
       });
   };
 
