@@ -1,0 +1,11 @@
+.active__link {
+    margin-right: 20px;
+    color: red;
+}
+
+.navbar {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    flex-grow: 1;
+}
