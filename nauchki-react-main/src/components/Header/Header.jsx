@@ -17,13 +17,13 @@ export const Header = () => {
         <div>
           <ul className="header__menu">
             <li className="header__menu-item">
-              <NavLink to="/">О проекте</NavLink>
+              <NavLink to="aboutproject">О проекте</NavLink>
             </li>
+            {/* <li className="header__menu-item">
+              <NavLink to="tariff">Тарифы</NavLink>
+            </li> */}
             <li className="header__menu-item">
-              <NavLink to="/">Тарифы</NavLink>
-            </li>
-            <li className="header__menu-item">
-              <NavLink to="/">Источники данных</NavLink>
+              <NavLink to="source">Источники данных</NavLink>
             </li>
           </ul>
         </div>
