@@ -10,16 +10,21 @@ import { RecoveryPassword } from './pages/RecoveryPassword/RecoveryPassword';
 import { PersonalArea } from './pages/PersonalArea/PersonalArea';
 import { PrivateRoute } from './PrivateRoute';
 import { Adminka } from './pages/Adminka/Adminka';
-// import { Articles } from './pages/Articles/Articles';
+import { Articles } from './pages/Articles/Articles';
 import { OneChildren } from './pages/PersonalArea/OneChildren';
 import { Error404 } from './pages/Error 404/Error404';
 import { AdminArticlesTable } from './components/AdminArticlesTable/AdminArticlesTable';
 import AdminArticlesForm from './components/AdminArticlesForm/AdminArticlesForm';
+import { OnePost } from './pages/Articles/OnePost';
 
 export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />}></Route>
+      
+      <Route path={`source`} element={<h1>Data source</h1>}></Route>
+      <Route path={`aboutproject`} element={<h1>О проекте</h1>}></Route>
+      <Route path={`tariff`} element={<h1>Тарифы</h1>}></Route>
 
       <Route path="/registration" component={Registration} />
       <Route path="/login" element={<Login />} />
@@ -43,10 +48,10 @@ export const Router = () => {
         </Route>
       </Route>
 
-      {/* <Route path={`/articles`} element={<PrivateRoute />}>
+      <Route path={`/articles`} element={<PrivateRoute />}>
         <Route path="" element={<Articles />}></Route>
-        <Route path=":id" element={<Articles />}></Route>
-      </Route> */}
+        <Route path=":id" element={<OnePost />}></Route>
+      </Route>
 
       <Route path={`/*`} element={<Error404 />} />
     </Routes>
