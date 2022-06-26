@@ -12,7 +12,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 
-@Primary
 @RequiredArgsConstructor
 @Component
 public class CloudinaryManager implements UploadAndDeleteFileManager {
