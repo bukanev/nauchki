@@ -2,7 +2,9 @@ package com.example.nauchki.service;
 
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.model.FileStorage;
+import com.example.nauchki.model.Post;
 import com.example.nauchki.repository.FileStorageRepository;
+import com.example.nauchki.repository.PostRepo;
 import com.example.nauchki.service.fileworker.UploadAndDeleteFileManager;
 import com.example.nauchki.utils.FileContainer;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 public class FileService {
     private final UploadAndDeleteFileManager fileManager;
     private final FileStorageRepository fileStorageRepository;
+    private final PostRepo postRepo;
 
     /**
      * инициализация записи файла на основе загруженного файла с клиента
@@ -109,6 +112,23 @@ public class FileService {
             newFile.setExternalPath(path);
             entity.getFiles().add(newFile);
             fileStorageRepository.save(newFile);
+        }
+       return path;
+    }
+
+    public String saveAttachedFilePost(MultipartFile file, Post entity) {
+        FileStorage newFile = new FileStorage();
+        newFile = initStorageFile(newFile, file);
+        String path;
+        path = fileManager.saveFile(file, newFile.getExternalId());
+        if (!path.isEmpty()) {
+            newFile.setOwnerType(entity.getEntityType());
+            newFile.setOwnerId(entity.getEntityId());
+            newFile.setExternalPath(path);
+            entity.getFiles().add(newFile);
+            fileStorageRepository.save(newFile);
+            postRepo.save(entity);
+
         }
        return path;
     }
@@ -215,5 +235,4 @@ public class FileService {
         entity.getFiles().clear();
         return true;
     }
-
 }
