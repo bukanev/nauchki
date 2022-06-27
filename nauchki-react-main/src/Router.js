@@ -21,7 +21,7 @@ export const Router = () => {
   return (
     <Routes>
       <Route path="/" element={<Main />}></Route>
-      
+
       <Route path={`source`} element={<h1>Data source</h1>}></Route>
       <Route path={`aboutproject`} element={<h1>О проекте</h1>}></Route>
       <Route path={`tariff`} element={<h1>Тарифы</h1>}></Route>
@@ -45,6 +45,8 @@ export const Router = () => {
           <Route index path="stages" element={<AdminArticlesTable />}></Route>
           <Route index path="stages/edit/:id" element={<AdminArticlesForm />}></Route>
           <Route index path="stages/add" element={<AdminArticlesForm />}></Route>
+
+          {/* <Route index path="feedback" element={<h1>Обратная связь</h1>}></Route> */}
         </Route>
       </Route>
 

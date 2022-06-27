@@ -9,6 +9,7 @@ export const AdminNavbar = () => {
             <Link to={`/adminka`}>Главная </Link>
             <Link to={`articles`}>Статьи</Link>
             <Link to={`stage`}>Стандарты состояния ребенка</Link>
+            {/* <Link to={`feedback`}>Обратная связь</Link> */}
         </div >
     )
 }
