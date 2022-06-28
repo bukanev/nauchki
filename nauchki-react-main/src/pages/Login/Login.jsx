@@ -7,10 +7,11 @@ import { PrimaryButton } from "../../UI/PrimaryButton";
 import { LogDataProvider } from "./DataContextLog";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { NavLink } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 import { asyncApiCall } from "../../store/user/actions";
+import { selectIsAuth } from "../../store/user/selectors";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -20,6 +21,12 @@ const schema = yup.object({
 export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+
+  let auth = useSelector(selectIsAuth);
+  let navigate = useNavigate()
+  let location = useLocation();
+
+  let from = location.state?.from?.pathname || "/";
 
   const {
     register,
@@ -33,6 +40,12 @@ export const Login = () => {
   const onSubmit = (data) => {
     setIsLoading(true);
     dispatch(asyncApiCall(data.email, data.password));
+    setIsLoading(false);
+
+    //Поправить роут на страницу
+    if (auth) {
+      navigate(from, { replace: true })
+    }
   };
 
   return (

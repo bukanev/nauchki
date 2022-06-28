@@ -65,18 +65,13 @@ export const RecoveryPassAPI = {
     });
   },
 };
+
 export const ResetPassAPI = {
   resetPass(resetPasswordCode, password) {
     return Api.post('/editpass', {
       resetPasswordCode: resetPasswordCode,
       password: password,
     });
-  },
-};
-
-export const AdminAPI = {
-  addPost(data) {
-    return Api.post(`/post`, data);
   },
 };
 
@@ -87,13 +82,39 @@ export const PostsAPI = {
   getTags() {
     return instance.get(`/tags`);
   },
+  addPost(data) {
+    return Api.post(
+      `/post`,
+      data,
+      {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      },
+      true,
+    );
+  },
+  deletePost(id) {
+    return Api.post(`delpost/${id}`);
+  },
+  // editPost(id) {
+  //   return Api.post(`editpost/${id}`);
+  // }
 };
 
 export const UserChildrenAPI = {
   getUserChildren(userId) {
-    return instance.get(`getchildren/${userId}`);
+    return instance.get(
+      `getchildren/${userId}`,
+      {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+        },
+      },
+      true,
+    );
   },
-  addChildren() {},
+  //addChildren() { instanse.post()}
 };
 
 export const SendFileChildren = {
