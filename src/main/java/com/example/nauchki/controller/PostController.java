@@ -63,11 +63,11 @@ public class PostController {
             @RequestParam("file") MultipartFile file){
 
         Post post = new Post(tag,title,subtitle,text);
-        return postService.addPost(post , file);
+        return postService.addPost(post, file);
     }
 
     @ApiOperation("Удаление статьи по id")
-    @PostMapping("/delpost/{id}")
+    @DeleteMapping("/delpost/{id}")
     public ResponseEntity<HttpStatus> getPostService(
             @PathVariable @Parameter(description = "Идентификатор статьи", required = true) Long id) {
         return postService.deletePost(id) ?

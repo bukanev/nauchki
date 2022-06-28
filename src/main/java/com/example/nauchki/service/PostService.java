@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class PostService {
 
     private final PostRepo postRepo;
-    private final FileService saverFile;
+    private final FileService fileService;
     private final PostMapper postMapper;
 
     public List<PostDto> getPost(Post filter) {
@@ -42,14 +42,12 @@ public class PostService {
     }
 
     public Long addPost(Post post, MultipartFile file){
-        post = postRepo.save(post);
+     //   post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            saverFile.saveAttachedFile(file, post);
+            fileService.saveAttachedFilePost(file, post);
         }
         return post.getId();
     }
-
-
 
     public List<String> getAllTags() {
         return postRepo.findAllTag();
@@ -60,7 +58,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-            String path = saverFile.saveAttachedFile(file, postModel, tags, description);
+            String path = fileService.saveAttachedFile(file, postModel, tags, description);
             postRepo.save(postModel);
             return path;
         }
@@ -72,7 +70,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-            String path = saverFile.saveAttachedFile(file, postModel);
+            String path = fileService.saveAttachedFile(file, postModel);
             postRepo.save(postModel);
             return path;
         }
@@ -88,7 +86,7 @@ public class PostService {
         if(!fileConsists){
             throw new ResourceNotFoundException("File with id '" + imgid + "' not belong to post '" + principal.getName() + "'");
         }
-        saverFile.deleteAttachedFile(imgid, postModel);
+        fileService.deleteAttachedFile(imgid, postModel);
         postRepo.save(postModel);
     }
 
@@ -96,7 +94,7 @@ public class PostService {
     public void delAllImages(Long postId, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-        if(saverFile.deleteAllAttachedFiles(postModel)){
+        if(fileService.deleteAllAttachedFiles(postModel)){
             postRepo.save(postModel);
         }
     }
