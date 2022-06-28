@@ -36,9 +36,13 @@ public class PostService {
         return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
-    public boolean deletePost(Long id) {
-        //TODO Сделать удаление.
-        return false;
+    @Transactional
+    public boolean deletePost(Long id, Principal principal) {
+        Post post= postRepo.findById(id).orElseThrow(
+                ()->new ResourceNotFoundException("Статья с id '" + id + "' не найдена"));
+        postRepo.delete(post);
+        delAllImages(id, principal);
+        return true;
     }
 
     public Long addPost(Post post, MultipartFile file){

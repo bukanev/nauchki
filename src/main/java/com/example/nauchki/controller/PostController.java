@@ -69,8 +69,8 @@ public class PostController {
     @ApiOperation("Удаление статьи по id")
     @DeleteMapping("/delpost/{id}")
     public ResponseEntity<HttpStatus> getPostService(
-            @PathVariable @Parameter(description = "Идентификатор статьи", required = true) Long id) {
-        return postService.deletePost(id) ?
+            @PathVariable @Parameter(description = "Идентификатор статьи", required = true) Long id, Principal principal) {
+        return postService.deletePost(id, principal) ?
                 new ResponseEntity<>(HttpStatus.OK) :
                 new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
