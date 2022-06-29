@@ -33,7 +33,10 @@ public class Post implements FileContainer {
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
     private List<FileStorage> images;
-  
+
+    @Column(name="author_id")
+    private Long authorId;
+
     public Post() {
     }
 

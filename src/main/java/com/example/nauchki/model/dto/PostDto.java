@@ -1,12 +1,9 @@
 package com.example.nauchki.model.dto;
 
-import com.example.nauchki.model.Post;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Schema(description = "Статья")
@@ -21,6 +18,10 @@ public class PostDto {
     private String subtitle;
     @Schema(description = "Текст статьи", example = "Ребенка надо кормить съедобными и питательными продуктами. ...")
     private String text;
+    @Schema(description = "ID автора статьи", example = "1")
+    private Long authorId;
+    @Schema(description = "Имя автора статьи", example = "Иванов Иван Иваныч")
+    private String authorName;
     private List<AttachedFileDto> images;
 //    public PostDto(Long id, String tag, String title, String subtitle, String text, List<AttachedFileDto> images) {
 //        this.id = id;
