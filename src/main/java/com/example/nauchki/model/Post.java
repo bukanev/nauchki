@@ -1,6 +1,5 @@
 package com.example.nauchki.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -34,17 +33,18 @@ public class Post implements FileContainer {
             inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
     private List<FileStorage> images;
 
-    @Column(name="author_id")
-    private Long authorId;
+    @ManyToOne
+    private User author;
 
     public Post() {
     }
 
-    public Post(String tag, String title, String subtitle, String text) {
+    public Post(String tag, String title, String subtitle, String text, User author) {
         this.tag = tag;
         this.title = title;
         this.subtitle = subtitle;
         this.text = text;
+        this.author = author;
     }
 
     public String getText() {

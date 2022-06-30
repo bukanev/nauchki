@@ -3,7 +3,6 @@ package com.example.nauchki.service;
 import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
-import com.example.nauchki.mapper.FileMapper;
 import com.example.nauchki.mapper.UserMapper;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
@@ -26,7 +25,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -121,6 +119,10 @@ public class UserService {
             return userDto;
         }
         return null;
+    }
+
+    public User getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User by id '" + id + "' not found"));
     }
 
     public UserDto getUser(String email) {

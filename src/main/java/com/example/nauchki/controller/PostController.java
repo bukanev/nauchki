@@ -2,8 +2,10 @@ package com.example.nauchki.controller;
 
 
 import com.example.nauchki.model.Post;
+import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.service.PostService;
+import com.example.nauchki.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ import java.util.List;
 public class PostController {
     @Autowired
     private final PostService postService;
+    private final UserService userService;
+
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -30,8 +34,7 @@ public class PostController {
     @PostMapping("/posts")
     public List<PostDto> main(@RequestBody Post post) {
         if (post != null && !post.getTag().isEmpty()) {
-            List<PostDto> postDtos = postService.getPost(post);
-            return postDtos;
+            return postService.getPost(post);
         }
         return postService.getAllPost();
     }
@@ -60,9 +63,11 @@ public class PostController {
             @RequestParam @Parameter(description = "Дополнение к названию статьи") String subtitle,
             @RequestParam @Parameter(description = "Текст статьи", required = true) String text,
             @RequestParam @Parameter(description = "Тэги статьи") String tag,
+            @RequestParam @Parameter(description = "ID автора") Long authorId,
             @RequestParam("file") MultipartFile file){
 
-        Post post = new Post(tag,title,subtitle,text);
+        User user = userService.getUserEntity(authorId);
+        Post post = new Post(tag,title,subtitle,text, user);
         return postService.addPost(post, file);
     }
 
