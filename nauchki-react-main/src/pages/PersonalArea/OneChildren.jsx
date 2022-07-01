@@ -99,7 +99,7 @@ export const OneChildren = () => {
 
         <div className="oneChild">
           <div>
-            <div className="oneChild_title" key={children.id}>
+            <div className="oneChild_title" key={"title" + children?.id}>
               <div className="oneChild_name"> {children.name}</div>
               <div>
                 {children.img_path ? (
@@ -119,7 +119,7 @@ export const OneChildren = () => {
               <div className="oneChild_age"> ГОД</div>
               <div className="oneChild_dateOfBirth">
                 Дата рождения: <br />
-                {children.dateOfBirth}
+                {children?.dateOfBirth}
               </div>
               <input onChange={updateChildrenImg} type="file" />
               <button
@@ -250,7 +250,7 @@ export const OneChildren = () => {
               <ChildPost
                 number={index + 1}
                 post={phrase}
-                key={phrase.id}
+                key={"phrase" + phrase.id}
               />
             ))}
             <h1 className="oneChildren_paragArtic">Читать полезные статьи</h1>
@@ -261,8 +261,8 @@ export const OneChildren = () => {
           </div>
         </div>
         <ul className="oneChildren_list">
-          {dates?.map((t) => (
-            <li className="oneChildren_listDate" key={"date" + t.years + t.months + t.weeks + t.days} >
+          {dates?.map((t, el) => (
+            <li className="oneChildren_listDate" key={"date" + el} >
               {`
                     ${typeof t.years === 'number' && t.years > 0 ? t.years + 'г.' : ''} 
                     ${typeof t.months === 'number' && t.months > 0 ? t.months + 'м.' : ''} 
