@@ -1,5 +1,5 @@
 import { Input } from "../../UI/Input";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Form } from "../../UI/Form";
 import { MainContainer } from "../../UI/MainContainer";
@@ -22,11 +22,13 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
 
-  let auth = useSelector(selectIsAuth);
-  let navigate = useNavigate()
-  let location = useLocation();
+  const auth = useSelector(selectIsAuth);
+  // const errorAuth = useSelector();
 
-  let from = location.state?.from?.pathname || "/";
+  const navigate = useNavigate()
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/";
 
   const {
     register,
@@ -41,12 +43,11 @@ export const Login = () => {
     setIsLoading(true);
     dispatch(asyncApiCall(data.email, data.password));
     setIsLoading(false);
-
-    //Поправить роут на страницу
-    if (auth) {
-      navigate(from, { replace: true })
-    }
   };
+
+  useEffect(() => {
+    auth && navigate(from, { replace: true })
+  }, [auth])
 
   return (
     <LogDataProvider>
