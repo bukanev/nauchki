@@ -29,7 +29,7 @@ export const asyncApiCall = (email, password) => async (dispatch) => {
       dispatch(errorAuth(err));
     });
 
-  await UserAPI.getAuthUser(email, password)
+  await UserAPI.getAuthUser()
     .then((res) => {
       if (localStorage.getItem('TOKEN')) {
         dispatch(getUserData(res.data));
@@ -37,7 +37,8 @@ export const asyncApiCall = (email, password) => async (dispatch) => {
       }
     })
     .catch((err) => {
-      dispatch(errorAuth(err));
+      console.log(err);
+      // dispatch(errorAuth(err));
     });
 };
 
