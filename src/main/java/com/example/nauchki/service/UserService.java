@@ -7,6 +7,7 @@ import com.example.nauchki.mapper.UserMapper;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
+import com.example.nauchki.model.dto.UserNameDto;
 import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,11 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
+    }
+
+    //for mapstruct
+    public User getUserByUserNameDto(UserNameDto userNameDto){
+        return getUserEntity(userNameDto.getId());
     }
 
     /**
@@ -121,6 +127,9 @@ public class UserService {
         return null;
     }
 
+    public User getUserEntity(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User by email '" + email + "' not found"));
+    }
     public User getUserEntity(Long id) {
         return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User by id '" + id + "' not found"));
     }

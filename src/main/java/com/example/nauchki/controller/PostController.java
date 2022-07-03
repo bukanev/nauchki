@@ -1,6 +1,8 @@
 package com.example.nauchki.controller;
 
 
+import com.example.nauchki.exceptions.DeniedException;
+import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
@@ -25,6 +27,7 @@ public class PostController {
     @Autowired
     private final PostService postService;
     private final UserService userService;
+    private final TokenUtils tokenUtils;
 
 
     @Value("${upload.path}")
@@ -63,10 +66,10 @@ public class PostController {
             @RequestParam @Parameter(description = "Дополнение к названию статьи") String subtitle,
             @RequestParam @Parameter(description = "Текст статьи", required = true) String text,
             @RequestParam @Parameter(description = "Тэги статьи") String tag,
-            @RequestParam @Parameter(description = "ID автора") Long authorId,
             @RequestParam("file") MultipartFile file){
 
-        User user = userService.getUserEntity(authorId);
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        User user = userService.getUserEntity(userName);
         Post post = new Post(tag,title,subtitle,text, user);
         return postService.addPost(post, file);
     }

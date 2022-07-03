@@ -56,7 +56,7 @@ public class PostService {
     }
 
     public Long addPost(Post post, MultipartFile file){
-     //   post = postRepo.save(post);
+        post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             fileService.saveAttachedFilePost(file, post);
         }

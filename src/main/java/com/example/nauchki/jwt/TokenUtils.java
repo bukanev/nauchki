@@ -1,6 +1,5 @@
 package com.example.nauchki.jwt;
 
-import com.example.nauchki.model.Role;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,9 +16,21 @@ public class TokenUtils {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            return null;
+            Optional.empty();
         }
         return Optional.of(auth);
+
+    }
+
+
+    public Optional<String> getPrincipalName(){
+
+        Optional<Authentication> v = getAuthentication();
+        if(v.isPresent()){
+            Authentication a = v.get();
+            return Optional.of((String)a.getPrincipal());
+        }
+        return Optional.empty();
 
     }
 
@@ -27,7 +38,7 @@ public class TokenUtils {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
-            return new ArrayList<String>();
+            return new ArrayList<>();
         }
         List<SimpleGrantedAuthority> lr = (List<SimpleGrantedAuthority>) auth.getAuthorities();
         List<String> ls = new ArrayList<>();

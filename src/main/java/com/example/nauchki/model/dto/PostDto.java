@@ -18,30 +18,7 @@ public class PostDto {
     private String subtitle;
     @Schema(description = "Текст статьи", example = "Ребенка надо кормить съедобными и питательными продуктами. ...")
     private String text;
-    @Schema(description = "ID автора статьи", example = "1")
-    private Long authorId;
-    @Schema(description = "Имя автора статьи", example = "Иванов Иван Иваныч")
-    private String authorName;
+    @Schema(description = "Автор статьи")
+    private UserNameDto author;
     private List<AttachedFileDto> images;
-//    public PostDto(Long id, String tag, String title, String subtitle, String text, List<AttachedFileDto> images) {
-//        this.id = id;
-//        this.tag = tag;
-//        this.title = title;
-//        this.subtitle = subtitle;
-//        this.text = text;
-//        this.images = images;
-//    }
-//
-//    public static PostDto valueOf(Post post){
-//        //List<AttachedFileDto> filesDtos = post.getFiles().stream().map(AttachedFileDto::valueOf).collect(Collectors.toList());
-//        return new PostDto(
-//                post.getId(),
-//                post.getTag(),
-//                post.getTitle(),
-//                post.getSubtitle(),
-//                post.getText(),
-//                new ArrayList<>()
-//        );
-//    }
-
 }
