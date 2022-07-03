@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,7 +71,12 @@ public class PostController {
 
         String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
         User user = userService.getUserEntity(userName);
-        Post post = new Post(tag,title,subtitle,text, user);
+        Post post = Post.builder()
+                .tag(tag)
+                .title(title)
+                .subtitle(subtitle)
+                .text(text)
+                .author(user).build();
         return postService.addPost(post, file);
     }
 
@@ -95,6 +101,7 @@ public class PostController {
 
     @ApiOperation("Удаление из статьи с определенным id изображения с указанным id")
     @DeleteMapping(value = "/posts/{postid}/image/{imgid}")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('AUTHOR')")
     public void delImages(
             @PathVariable(name="postid") @Parameter(description = "Идентификатор статьи", required = true) Long postId,
             @PathVariable(name="imgid") @Parameter(description = "Идентификатор изображения", required = true) Long imgid,

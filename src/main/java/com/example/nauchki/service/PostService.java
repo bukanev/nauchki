@@ -1,5 +1,6 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.DeniedException;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.mapper.PostMapper;
@@ -39,16 +40,13 @@ public class PostService {
         return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
-    //статью может удалить либо автор, либо пользователь с ролью SUPERADMIN
+    //статью может удалить либо автор, либо пользователь с ролью AUTHOR либо ADMIN
     @Transactional
     public boolean deletePost(Long id, Principal principal) {
 
         Post post= postRepo.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException("Статья с id '" + id + "' не найдена"));
-        boolean permition = hasPermitionForDelete(post, principal.getName());
-        if(!permition){
-            throw new AccessDeniedException("Удалить статью может только автор, или администратор");
-        }
+        checkPermitionForEdit(post, principal.getName());
 
         delAllImages(id, principal);
         postRepo.delete(post);
@@ -72,10 +70,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-            boolean permition = hasPermitionForDelete(postModel, principal.getName());
-            if(!permition){
-                throw new AccessDeniedException("Загрузить изображение может только автор, или администратор");
-            }
+            checkPermitionForEdit(postModel, principal.getName());
             String path = fileService.saveAttachedFile(file, postModel, tags, description);
             postRepo.save(postModel);
             return path;
@@ -88,10 +83,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-            boolean permition = hasPermitionForDelete(postModel, principal.getName());
-            if(!permition){
-                throw new AccessDeniedException("Загрузить изображение может только автор, или администратор");
-            }
+            checkPermitionForEdit(postModel, principal.getName());
             String path = fileService.saveAttachedFile(file, postModel);
             postRepo.save(postModel);
             return path;
@@ -103,10 +95,7 @@ public class PostService {
     public void delImage(Long postId, Long imgid, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-        boolean permition = hasPermitionForDelete(postModel, principal.getName());
-        if(!permition){
-            throw new AccessDeniedException("Удалить изображение может только автор, или администратор");
-        }
+        checkPermitionForEdit(postModel, principal.getName());
 
         boolean fileConsists = postModel.getFiles().stream()
                 .anyMatch(v-> v.getId().equals(imgid));
@@ -121,24 +110,23 @@ public class PostService {
     public void delAllImages(Long postId, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
-        boolean permition = hasPermitionForDelete(postModel, principal.getName());
-        if(!permition){
-            throw new AccessDeniedException("Удалить изображения может только автор, или администратор");
-        }
+        checkPermitionForEdit(postModel, principal.getName());
         if(fileService.deleteAllAttachedFiles(postModel)){
             postRepo.save(postModel);
         }
     }
 
-    private boolean hasPermitionForDelete(Post post, String userName){
+    private void checkPermitionForEdit(Post post, String userName){
         boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
-        if(roles.contains("SUPERADMIN")){
+        if(roles.contains("ADMIN")){
             permition = true;
         }else if(post.getAuthor().getEmail().equals(userName)){
             permition = true;
         }
-        return permition;
+        if(!permition){
+            throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
+        }
     }
 
     /*public boolean addPost(User user, String text, String tag, MultipartFile file){

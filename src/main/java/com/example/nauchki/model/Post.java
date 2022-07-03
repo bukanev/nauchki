@@ -2,6 +2,7 @@ package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @Setter
 @Entity
 @Schema(description = "Статья")
+@Builder
 public class Post implements FileContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,12 +41,11 @@ public class Post implements FileContainer {
     public Post() {
     }
 
-    public Post(String tag, String title, String subtitle, String text, User author) {
+    public Post(String tag, String title, String subtitle, String text) {
         this.tag = tag;
         this.title = title;
         this.subtitle = subtitle;
         this.text = text;
-        this.author = author;
     }
 
     public String getText() {

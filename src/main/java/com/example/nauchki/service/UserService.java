@@ -57,7 +57,7 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    //for mapstruct
+    //для Mapstruct, используется там где нужно UserNameDto преобразовать в User
     public User getUserByUserNameDto(UserNameDto userNameDto){
         return getUserEntity(userNameDto.getId());
     }
