@@ -29,8 +29,8 @@ export const PersonalArea = () => {
     setVisibleForm(!visibleForm);
   };
 
-  const getUserChildren = () => {
-    dispatch(getUserChildrenThunk(user.id))
+  const getUserChildren = (userId) => {
+    dispatch(getUserChildrenThunk(userId))
   };
 
   //IMG
@@ -52,8 +52,8 @@ export const PersonalArea = () => {
   }, [img]);
 
   useEffect(() => {
-    getUserChildren();
-  }, []);
+    getUserChildren(user.id);
+  }, [user]);
 
   return (
     <div className="personalArea">
@@ -93,7 +93,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-        +        {/* <div className="personalArea__parent_name">{user.username}</div>
+        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}
@@ -158,7 +158,7 @@ export const PersonalArea = () => {
         )}
 
         <ul className="personalArea__children-container ">
-          {children && children.map((child) =>
+          {children?.map((child) =>
             <ChildCard key={child.id} child={child} />
           )}
         </ul>
