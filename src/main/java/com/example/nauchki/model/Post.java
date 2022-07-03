@@ -2,9 +2,7 @@ package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import java.util.List;
 @Setter
 @Entity
 @Schema(description = "Статья")
+@AllArgsConstructor
 @Builder
 public class Post implements FileContainer {
     @Id
