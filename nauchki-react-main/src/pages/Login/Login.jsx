@@ -8,10 +8,11 @@ import { LogDataProvider } from "./DataContextLog";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import { LoaderSvg } from "../../UI/LoaderSvg";
 import { asyncApiCall } from "../../store/user/actions";
-import { selectIsAuth } from "../../store/user/selectors";
+import { selectErrorAuth, selectIsAuth } from "../../store/user/selectors";
+import { ErrorRequest } from "../ErrorRequest/ErrorRequest";
 
 const schema = yup.object({
   email: yup.string().email().required(),
@@ -23,9 +24,9 @@ export const Login = () => {
   const dispatch = useDispatch();
 
   const auth = useSelector(selectIsAuth);
-  // const errorAuth = useSelector();
+  const errorAuth = useSelector(selectErrorAuth, shallowEqual);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || "/";
@@ -47,13 +48,19 @@ export const Login = () => {
 
   useEffect(() => {
     auth && navigate(from, { replace: true })
-  }, [auth])
+  }, [auth]);
 
   return (
     <LogDataProvider>
       <MainContainer>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h1 className="login_title">Вход</h1>
+          {
+            errorAuth?.response?.status === 401 &&
+            <ErrorRequest>
+              Неверно введенный email или пароль
+            </ErrorRequest>
+          }
           <Input
             {...register('email')}
             id="email"
