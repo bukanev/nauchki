@@ -28,6 +28,11 @@ export const UserAPI = {
         email: email,
         password: password,
       },
+      // {
+      //   headers: {
+      //     Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+      //   },
+      // },
       true,
     );
   },
