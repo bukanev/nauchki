@@ -8,7 +8,6 @@ import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import { selectUserData } from '../../store/user/selectors';
 import { selectUserChildrenData } from '../../store/userChildren/selectors';
 import { getUserChildrenThunk } from '../../store/userChildren/actions';
-import { toggleAuth } from '../../store/user/actions';
 import { logout } from '../../store/user/actions';
 import { NavLink, useNavigate } from 'react-router-dom';
 
