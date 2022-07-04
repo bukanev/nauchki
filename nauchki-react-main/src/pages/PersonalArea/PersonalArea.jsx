@@ -9,6 +9,7 @@ import { selectUserData } from '../../store/user/selectors';
 import { selectUserChildrenData } from '../../store/userChildren/selectors';
 import { getUserChildrenThunk } from '../../store/userChildren/actions';
 import { toggleAuth } from '../../store/user/actions';
+import { logout } from '../../store/user/actions';
 import { NavLink, useNavigate } from 'react-router-dom';
 
 export const PersonalArea = () => {
@@ -22,7 +23,7 @@ export const PersonalArea = () => {
 
   let history = useNavigate();
   const exitHandler = () => {
-    dispatch(toggleAuth(false));
+    dispatch(logout());
     history('/');
   };
 
@@ -96,7 +97,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-        +        {/* <div className="personalArea__parent_name">{user.username}</div>
+        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}
@@ -160,8 +161,8 @@ export const PersonalArea = () => {
           />
         )}
 
-        <div className="personalArea__children-container ">
-          {children && children.map((child) =>
+        <ul className="personalArea__children-container ">
+          {children?.map((child) =>
             <ChildCard key={child.id} child={child} />
           )}
         </div>
