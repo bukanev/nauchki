@@ -1,9 +1,13 @@
 package com.example.nauchki.controller;
 
 
+import com.example.nauchki.exceptions.DeniedException;
+import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.model.Post;
+import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.service.PostService;
+import com.example.nauchki.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +27,9 @@ import java.util.List;
 public class PostController {
     @Autowired
     private final PostService postService;
+    private final UserService userService;
+    private final TokenUtils tokenUtils;
+
 
     @Value("${upload.path}")
     private String uploadPath;
@@ -30,8 +38,7 @@ public class PostController {
     @PostMapping("/posts")
     public List<PostDto> main(@RequestBody Post post) {
         if (post != null && !post.getTag().isEmpty()) {
-            List<PostDto> postDtos = postService.getPost(post);
-            return postDtos;
+            return postService.getPost(post);
         }
         return postService.getAllPost();
     }
@@ -62,7 +69,14 @@ public class PostController {
             @RequestParam @Parameter(description = "Тэги статьи") String tag,
             @RequestParam("file") MultipartFile file){
 
-        Post post = new Post(tag,title,subtitle,text);
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        User user = userService.getUserEntity(userName);
+        Post post = Post.builder()
+                .tag(tag)
+                .title(title)
+                .subtitle(subtitle)
+                .text(text)
+                .author(user).build();
         return postService.addPost(post, file);
     }
 
@@ -87,6 +101,7 @@ public class PostController {
 
     @ApiOperation("Удаление из статьи с определенным id изображения с указанным id")
     @DeleteMapping(value = "/posts/{postid}/image/{imgid}")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('AUTHOR')")
     public void delImages(
             @PathVariable(name="postid") @Parameter(description = "Идентификатор статьи", required = true) Long postId,
             @PathVariable(name="imgid") @Parameter(description = "Идентификатор изображения", required = true) Long imgid,

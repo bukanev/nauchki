@@ -3,11 +3,11 @@ package com.example.nauchki.service;
 import com.example.nauchki.exceptions.ExceptionMailConfirmation;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.JwtProvider;
-import com.example.nauchki.mapper.FileMapper;
 import com.example.nauchki.mapper.UserMapper;
 import com.example.nauchki.model.Role;
 import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.UserDto;
+import com.example.nauchki.model.dto.UserNameDto;
 import com.example.nauchki.repository.RoleRepository;
 import com.example.nauchki.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.security.Principal;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -56,6 +55,11 @@ public class UserService {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
         this.roleRepository = roleRepository;
         this.userMapper = userMapper;
+    }
+
+    //для Mapstruct, используется там где нужно UserNameDto преобразовать в User
+    public User getUserByUserNameDto(UserNameDto userNameDto){
+        return getUserEntity(userNameDto.getId());
     }
 
     /**
@@ -121,6 +125,13 @@ public class UserService {
             return userDto;
         }
         return null;
+    }
+
+    public User getUserEntity(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()->new ResourceNotFoundException("User by email '" + email + "' not found"));
+    }
+    public User getUserEntity(Long id) {
+        return userRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("User by id '" + id + "' not found"));
     }
 
     public UserDto getUser(String email) {

@@ -1,12 +1,15 @@
 package com.example.nauchki.service;
 
+import com.example.nauchki.exceptions.DeniedException;
 import com.example.nauchki.exceptions.ResourceNotFoundException;
+import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.mapper.PostMapper;
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,6 +26,7 @@ public class PostService {
     private final PostRepo postRepo;
     private final FileService fileService;
     private final PostMapper postMapper;
+    private final TokenUtils tokenUtils;
 
     public List<PostDto> getPost(Post filter) {
         return postRepo.findAll(Example.of(filter)).stream().map(postMapper::toDto).collect(Collectors.toList());
@@ -36,17 +40,21 @@ public class PostService {
         return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
+    //статью может удалить либо автор, либо пользователь с ролью AUTHOR либо ADMIN
     @Transactional
     public boolean deletePost(Long id, Principal principal) {
+
         Post post= postRepo.findById(id).orElseThrow(
                 ()->new ResourceNotFoundException("Статья с id '" + id + "' не найдена"));
-        postRepo.delete(post);
+        checkPermitionForEdit(post, principal.getName());
+
         delAllImages(id, principal);
+        postRepo.delete(post);
         return true;
     }
 
     public Long addPost(Post post, MultipartFile file){
-     //   post = postRepo.save(post);
+        post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             fileService.saveAttachedFilePost(file, post);
         }
@@ -62,6 +70,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+            checkPermitionForEdit(postModel, principal.getName());
             String path = fileService.saveAttachedFile(file, postModel, tags, description);
             postRepo.save(postModel);
             return path;
@@ -74,6 +83,7 @@ public class PostService {
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             Optional<Post> post = postRepo.findById(postId);
             Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+            checkPermitionForEdit(postModel, principal.getName());
             String path = fileService.saveAttachedFile(file, postModel);
             postRepo.save(postModel);
             return path;
@@ -85,6 +95,8 @@ public class PostService {
     public void delImage(Long postId, Long imgid, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+        checkPermitionForEdit(postModel, principal.getName());
+
         boolean fileConsists = postModel.getFiles().stream()
                 .anyMatch(v-> v.getId().equals(imgid));
         if(!fileConsists){
@@ -98,8 +110,17 @@ public class PostService {
     public void delAllImages(Long postId, Principal principal) {
         Optional<Post> post = postRepo.findById(postId);
         Post postModel = post.orElseThrow(()->new ResourceNotFoundException("Post '" + postId + "' not found"));
+        checkPermitionForEdit(postModel, principal.getName());
         if(fileService.deleteAllAttachedFiles(postModel)){
             postRepo.save(postModel);
+        }
+    }
+
+    private void checkPermitionForEdit(Post post, String userName){
+        boolean permition = false;
+        List<String> roles = tokenUtils.getRoles();
+        if(!(roles.contains("ADMIN") || post.getAuthor().getEmail().equals(userName))){
+            throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
     }
 

@@ -1,10 +1,8 @@
 package com.example.nauchki.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.example.nauchki.utils.FileContainer;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +12,8 @@ import java.util.List;
 @Setter
 @Entity
 @Schema(description = "Статья")
+@AllArgsConstructor
+@Builder
 public class Post implements FileContainer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,10 @@ public class Post implements FileContainer {
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name="file_id", referencedColumnName = "id"))
     private List<FileStorage> images;
-  
+
+    @ManyToOne
+    private User author;
+
     public Post() {
     }
 

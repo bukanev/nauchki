@@ -18,6 +18,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<?> denied(DeniedException e){
+        log.error("Access denied: {}", e.getMessage());
+        return new ResponseEntity<>("Отсутствует доступ к запрашиваемой операции или ресурсу: " + e.getMessage(), HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler
     public ResponseEntity<?> notFoundException(ResourceNotFoundException e){
         log.error("Resource not found, {}", e.getMessage());
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

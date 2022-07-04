@@ -2,22 +2,14 @@ package com.example.nauchki.mapper;
 
 import com.example.nauchki.model.Post;
 import com.example.nauchki.model.dto.PostDto;
-import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
-import org.springframework.stereotype.Component;
+import com.example.nauchki.service.UserService;
+import org.mapstruct.Mapper;
 
-@Component
-@RequiredArgsConstructor
-public class PostMapper {
+@Mapper(componentModel = "spring", uses={UserService.class})
+public interface PostMapper {
 
-    private final ModelMapper modelMapper;
+    Post toModel(PostDto postDto);
 
-    public PostDto toDto(Post model){
-        return modelMapper.map(model, PostDto.class);
-    }
-
-    public Post toModel(PostDto dto){
-        return modelMapper.map(dto, Post.class);
-    }
+    PostDto toDto(Post model);
 
 }
