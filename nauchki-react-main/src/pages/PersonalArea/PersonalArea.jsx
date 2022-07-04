@@ -9,11 +9,12 @@ import { selectUserData } from '../../store/user/selectors';
 import { selectUserChildrenData } from '../../store/userChildren/selectors';
 import { getUserChildrenThunk } from '../../store/userChildren/actions';
 import { toggleAuth } from '../../store/user/actions';
-import {  NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export const PersonalArea = () => {
   const dispatch = useDispatch();
   const [visibleForm, setVisibleForm] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [img, setImg] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const user = useSelector(selectUserData);
@@ -29,8 +30,8 @@ export const PersonalArea = () => {
     setVisibleForm(!visibleForm);
   };
 
-  const getUserChildren = () => {
-    dispatch(getUserChildrenThunk(user.id))
+  const getUserChildren = (userId) => {
+    dispatch(getUserChildrenThunk(userId))
   };
 
   //IMG
@@ -49,11 +50,13 @@ export const PersonalArea = () => {
     } catch (error) {
       console.log(error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [img]);
 
   useEffect(() => {
-    getUserChildren();
-  }, []);
+    user?.id && getUserChildren(user.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <div className="personalArea">
@@ -64,7 +67,7 @@ export const PersonalArea = () => {
           Выйти
         </button>
         <div className="personalArea__avatar">
-          {user.img_path ? (
+          {user?.img_path ? (
             <img
               className="personalArea__avatar-img"
               src={`${avatar || user.img_path}`}
@@ -101,7 +104,7 @@ export const PersonalArea = () => {
         <div className="personalArea__family">
           <div className="personalArea__list">
             <div className="personalArea__avatar-family">
-              {user.img_path ? (
+              {user?.img_path ? (
                 <img
                   className="personalArea__avatar-img"
                   src={`${avatar || user.img_path}`}
@@ -116,7 +119,7 @@ export const PersonalArea = () => {
               )}
             </div>
             <div className="personalArea__avatar-family">
-              {user.img_path ? (
+              {user?.img_path ? (
                 <img
                   className="personalArea__avatar-img"
                   src={`${avatar || user.img_path}`}
@@ -157,11 +160,11 @@ export const PersonalArea = () => {
           />
         )}
 
-        <ul className="personalArea__children-container ">
+        <div className="personalArea__children-container ">
           {children && children.map((child) =>
             <ChildCard key={child.id} child={child} />
           )}
-        </ul>
+        </div>
 
         <NavLink to="/personalArea/:id" render={<ChildCard />}></NavLink>
       </div>
