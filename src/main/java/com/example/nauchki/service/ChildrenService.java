@@ -37,6 +37,9 @@ public class ChildrenService {
 
     public boolean addChildren(Long id, Children children, String token) {
         isCorrectParent(id, token);
+        if (children.getDateOfBirth() == null) {
+            throw new OtherUserDataExeption("The child must have a date of birth.");
+        }
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent() & children.getName() != null) {
             children.setParent(user.get());
