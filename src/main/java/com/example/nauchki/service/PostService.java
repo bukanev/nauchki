@@ -119,12 +119,7 @@ public class PostService {
     private void checkPermitionForEdit(Post post, String userName){
         boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
-        if(roles.contains("ADMIN")){
-            permition = true;
-        }else if(post.getAuthor().getEmail().equals(userName)){
-            permition = true;
-        }
-        if(!permition){
+        if(!(roles.contains("ADMIN") || post.getAuthor().getEmail().equals(userName))){
             throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
     }
