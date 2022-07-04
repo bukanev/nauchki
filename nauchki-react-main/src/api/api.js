@@ -21,12 +21,13 @@ class Api {
 }
 
 export const UserAPI = {
-  getAuthUser(email, password) {
-    return Api.post(
-      `/user`,
+  getAuthUser() {
+    return instance.get(
+      `/getuser`,
       {
-        email: email,
-        password: password,
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+        },
       },
       true,
     );
