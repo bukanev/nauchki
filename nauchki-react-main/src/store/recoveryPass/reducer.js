@@ -22,4 +22,3 @@ export function recoveryPassReducer(state = initialState, action) {
       return state;
   }
 }
-

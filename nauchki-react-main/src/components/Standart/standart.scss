@@ -18,7 +18,7 @@
 
     &-items {
         display: grid;
-        grid-template-columns: 1fr 1fr auto;
+        grid-template-columns: 1fr 1fr 1fr auto;
         grid-column-gap: 30px;
         margin-bottom: 30px;
     }
@@ -33,6 +33,7 @@
         align-items: center;
         justify-content: center;
         padding: 20px 30px;
+        text-align: center;
         // margin: 0 auto;
 
         & h4,
@@ -48,13 +49,14 @@
         }
 
         & h5 {
-            font-size: 16px;
+            font-size: 20px;
         }
     }
 
 
     &-levels,
-    &-lock {
+    &-lock,
+    &-skills {
         grid-column: span 2;
     }
 
@@ -63,6 +65,7 @@
         flex-direction: row;
         align-items: center;
         justify-content: space-between;
+        margin: 10px 0;
     }
 
     &-lock {
@@ -82,6 +85,19 @@
         }
     }
 
+    &-skills {
+        width: calc(100%-20px);
+        height: calc(100%-20px);
+        padding: 10px;
+        word-wrap: break-word;
+        border: 1px solid #0EAC99;
+        border-radius: 20px;
+        // color: #FFFFFF;
+        // background: #0EAC99;
+        text-align: justify;
+
+    }
+
 }
 
 .level {
@@ -98,9 +114,17 @@
     }
 
     &__color {
-        width: 28px;
-        height: 27px;
+        // width: 28px;
+        // height: 27px;
+
+        width: 50px;
+        height: 40px;
+        padding: 5px;
         border: 1px solid #7C7C7C;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &-one {
             background: #74E4D7;
@@ -116,6 +140,7 @@
 
         &-mediana {
             background: #0EAC99;
+            color: #FFFFFF;
         }
     }
 }

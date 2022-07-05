@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
-import { PostsCardsArea } from "./PostsCardsArea";
-import { Route, Switch } from "react-router-dom";
-import { OnePost } from "./OnePost";
-import { Themes } from "./Themes";
-import { selectPosts } from "../../store/posts/selectors";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { getPostThunk, getTagsThunk } from "../../store/posts/actions";
-// import { isLoadingAC } from "../../store/postsReducer";
+import { selectPosts } from "../../store/posts/selectors";
+
+import { Themes } from "./Themes";
+import { PostItem } from "./PostItem";
 
 export const Articles = () => {
   const dispatch = useDispatch();
+
+  const posts = useSelector(selectPosts);
+
   const [currentTag, setCurrentTag] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,10 +31,7 @@ export const Articles = () => {
       await dispatch(getPostThunk(currentTag.tag));
       setIsLoading(false);
     })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentTag]);
-
-  const posts = useSelector(selectPosts);
 
   return (
     <div className="articles">
@@ -45,20 +44,14 @@ export const Articles = () => {
             placeholder="Поиск по статьям"
           ></input>
           <div className="acticles__cards">
-            <Switch>
-              <Route
-                exact
-                path="/articles"
-                render={() => (
-                  <PostsCardsArea posts={posts} isLoading={isLoading} />
-                )}
-              />
-              <Route
-                exact
-                path="/articles/:id"
-                render={(props) => <OnePost {...props} />}
-              />
-            </Switch>
+
+            <div className="acticles__cards-wrapper">
+              {posts && posts.map((post) =>
+                <Link to="post.id">
+                  <PostItem post={post} key={post.id} />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

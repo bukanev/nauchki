@@ -1,24 +1,29 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { useHistory } from "react-router";
+import { useNavigate, useParams } from "react-router-dom";
 import { selectPosts } from "../../store/posts/selectors";
 
-const OnePostWithoutRouter = (props) => {
+export const OnePost = () => {
+  const params = useParams();
+  
   const posts = useSelector(selectPosts);
-  const filteredPosts = posts.filter(
-    (item) => item.id.toString() === props.match.params.id
-  );
 
-  let history = useHistory();
+  const filteredPosts = posts.filter(
+    (post) => post.id.toString() === params.id && post
+  )
+
+  let navigate = useNavigate();
+
+
   const handleBack = () => {
-    history.push("/articles");
+    navigate("/articles");
   };
 
   return (
     <div className="onePost-wrapper">
-      {filteredPosts && filteredPosts.map((post) => (
-        <div key={post.id}>
+      {
+        filteredPosts &&
+        <div key={filteredPosts[0].id}>
           <button className="onePost-arrowBtn" onClick={handleBack}>
             <svg
               width="53"
@@ -33,26 +38,22 @@ const OnePostWithoutRouter = (props) => {
               />
             </svg>
           </button>
-          <h1 className="onePost-title">{filteredPosts.title !== null ? post.title : 'Нет названия'}</h1>
 
-          <div className="onePost-imgWrapper">
-            <img className="onePost-img" src={post.img} alt="Картинка" />
-          </div>
+          <h1 className="onePost-title">{filteredPosts[0].title}</h1>
+          <h3 className="onePost-title">{filteredPosts[0].subtitle}</h3>
+          <p>{filteredPosts[0].tag}</p>
+          {
+            filteredPosts[0].images.length > 0 &&
+            <div className="onePost-imgWrapper">
+              <img className="onePost-img" src={filteredPosts[0].images[0].externalPath} alt="Картинка" />
+            </div>
+          }
+
           <div className="onePost-textWrapper">
-            <p>{post.text}</p>
+            <p>{filteredPosts[0].text}</p>
           </div>
-          <br />
         </div>
-      ))}
+      }
     </div>
   );
 };
-
-export const OnePost = withRouter(OnePostWithoutRouter);
-/* 
-  withRouter помещает в props history, location, match; 
-  в math содержатся params, в котрые мы поместили id из урла (см Articles). 
-
-  !!! пост оборачивается в NavLink в PostItem, ссылка попадет в url по клику, 
-      затем Route в Arcticles следит за изменениями url и перерисовывает
-*/

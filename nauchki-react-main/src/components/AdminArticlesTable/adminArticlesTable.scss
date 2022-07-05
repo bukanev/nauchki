@@ -1,0 +1,64 @@
+.article {
+    padding: 10px;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    &__header {
+        flex-grow: 1;
+        // display: flex;
+        // flex-direction: row;
+        // align-items: center;
+        // justify-content: space-between;
+        text-align: center;
+        margin-bottom: 20px;
+
+
+    }
+
+    &__content {
+        flex-grow: 2;
+    }
+
+    &__panel {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    &__table {
+        width: 100%;
+        border-collapse: collapse;
+
+        & td {
+            padding: 10px;
+            border: 1px solid #ccc;
+
+            &:nth-child(5),
+            &:nth-child(6) {
+                width: 40px;
+            }
+        }
+
+        &-button {
+            background: none;
+            outline: none;
+            border: none;
+
+            &_delete:hover {
+
+                cursor: pointer;
+                color: #c11;
+            }
+
+            &_edit:hover {
+                cursor: pointer;
+                color: rgb(65, 159, 72);
+            }
+        }
+
+    }
+}

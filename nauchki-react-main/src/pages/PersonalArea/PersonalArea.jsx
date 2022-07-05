@@ -1,7 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { Route, useHistory } from 'react-router';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
 import { AddChildrenForm } from '../../components/AddChildrenForm/AddChildrenForm';
 import { ChildCard } from '../../components/ChildCart/ChildCart';
@@ -9,28 +7,30 @@ import childPlaceholder from '../../img/childCardPlaceholder.jpg';
 import { selectUserData } from '../../store/user/selectors';
 import { selectUserChildrenData } from '../../store/userChildren/selectors';
 import { getUserChildrenThunk } from '../../store/userChildren/actions';
-import { toggleAuth } from '../../store/user/actions';
+import { logout } from '../../store/user/actions';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 export const PersonalArea = () => {
   const dispatch = useDispatch();
   const [visibleForm, setVisibleForm] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [img, setImg] = useState(null);
   const [avatar, setAvatar] = useState(null);
   const user = useSelector(selectUserData);
   const children = useSelector(selectUserChildrenData)
 
-  let history = useHistory();
+  let history = useNavigate();
   const exitHandler = () => {
-    dispatch(toggleAuth(false));
-    history.push('/');
+    dispatch(logout());
+    history('/');
   };
 
   const toggleVisibleForm = () => {
     setVisibleForm(!visibleForm);
   };
 
-  const getUserChildren = () => {
-    dispatch(getUserChildrenThunk(user.id))
+  const getUserChildren = (userId) => {
+    dispatch(getUserChildrenThunk(userId))
   };
 
   //IMG
@@ -49,11 +49,13 @@ export const PersonalArea = () => {
     } catch (error) {
       console.log(error);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [img]);
 
   useEffect(() => {
-    getUserChildren();
-  }, []);
+    user?.id && getUserChildren(user.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   return (
     <div className="personalArea">
@@ -64,7 +66,7 @@ export const PersonalArea = () => {
           Выйти
         </button>
         <div className="personalArea__avatar">
-          {user.img_path ? (
+          {user?.img_path ? (
             <img
               className="personalArea__avatar-img"
               src={`${avatar || user.img_path}`}
@@ -93,7 +95,7 @@ export const PersonalArea = () => {
             </label>
           </div>
         </div>
-+        {/* <div className="personalArea__parent_name">{user.username}</div>
+        {/* <div className="personalArea__parent_name">{user.username}</div>
          <div className="personalArea__parent_email">Email: {user.email}</div>
         <div className="personalArea__parent_login">login:{user.login}</div>
         <div className="personalArea__parent_number">number:{user.number}</div> */}
@@ -101,7 +103,7 @@ export const PersonalArea = () => {
         <div className="personalArea__family">
           <div className="personalArea__list">
             <div className="personalArea__avatar-family">
-              {user.img_path ? (
+              {user?.img_path ? (
                 <img
                   className="personalArea__avatar-img"
                   src={`${avatar || user.img_path}`}
@@ -116,7 +118,7 @@ export const PersonalArea = () => {
               )}
             </div>
             <div className="personalArea__avatar-family">
-              {user.img_path ? (
+              {user?.img_path ? (
                 <img
                   className="personalArea__avatar-img"
                   src={`${avatar || user.img_path}`}
@@ -157,11 +159,13 @@ export const PersonalArea = () => {
           />
         )}
 
-        <ul className="personalArea__children-container ">
-          {children && children.map((child) => <ChildCard key={child.id} child={child} />)}
-        </ul>
+        <div className="personalArea__children-container ">
+          {children?.map((child) =>
+            <ChildCard key={child.id} child={child} />
+          )}
+        </div>
 
-        {<Route exact path="/personalArea/:id" render={(props) => <ChildCard {...props} />} />}
+        <NavLink to="/personalArea/:id" render={<ChildCard />}></NavLink>
       </div>
     </div >
   );
