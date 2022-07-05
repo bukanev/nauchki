@@ -10,7 +10,6 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.cloudinary.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,7 +17,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@Primary
+
 @Component
 @Log4j2
 public class YandexDiskManager implements UploadAndDeleteFileManager {
@@ -93,7 +92,7 @@ public class YandexDiskManager implements UploadAndDeleteFileManager {
         connection.setDoOutput(true);
         if (connection.getResponseCode() != expectedResponseCode) {
             log.info(
-                    String.format("Response code when get publish Link:%s , message:%s",
+                    String.format("Response:%s , message:%s",
                             connection.getResponseCode(), connection.getResponseMessage()));
             return null;
         }

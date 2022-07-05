@@ -1,5 +1,6 @@
 package com.example.nauchki.service.fileworker;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
@@ -10,6 +11,8 @@ import java.io.DataOutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+@Primary
+@Log4j2
 @Component
 public class YandexCloudManager implements UploadAndDeleteFileManager {
 
@@ -27,9 +30,9 @@ public class YandexCloudManager implements UploadAndDeleteFileManager {
 
 
     @Override
-    public String saveFile(MultipartFile file, String ExternalId) {
+    public String saveFile(MultipartFile file, String externalId) {
         try {
-            URL url = new URL(cloudUrl + "/" + ExternalId);
+            URL url = new URL(cloudUrl + externalId);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("PUT");
             connection.setRequestProperty("Content-Type", "multipart/form-data");
@@ -47,12 +50,11 @@ public class YandexCloudManager implements UploadAndDeleteFileManager {
                     return e.getMessage(); //
                 }
             }
-            System.out.println(
-                    String.format("Response code:%s , message:%s",
-                            connection.getResponseCode(),
-                            connection.getResponseMessage()));
-            if (connection.getResponseCode() != 200) {
 
+            if (connection.getResponseCode() != 200) {
+                log.info(
+                        String.format("Response:%s , message:%s",
+                                connection.getResponseCode(), connection.getResponseMessage()));
                 return connection.getErrorStream().toString();
             }
             System.out.println(response = connection.getURL().toString());
@@ -67,18 +69,21 @@ public class YandexCloudManager implements UploadAndDeleteFileManager {
 
 
     @Override
-    public boolean deleteFile(String filename) {
+    public boolean deleteFile(String externalId) {
 
         try {
-            URL url = new URL(cloudUrl +"/" + filename);
+            URL url = new URL(cloudUrl + externalId);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("DELETE");
             connection.setRequestProperty("Authorization", "Token " + token);
             connection.setUseCaches(false);
             connection.setDoOutput(false);
 
-            if (connection.getResponseCode() == 204) {
-                return true;
+            if (connection.getResponseCode() != 204) {
+                log.info(
+                        String.format("Response:%s , message:%s",
+                                connection.getResponseCode(), connection.getResponseMessage()));
+                return false;
             }
 
         } catch (Exception e) {
@@ -86,7 +91,6 @@ public class YandexCloudManager implements UploadAndDeleteFileManager {
         } finally {
             connection.disconnect();
         }
-        return false;
+        return true;
     }
-
 }
