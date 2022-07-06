@@ -1,8 +1,9 @@
 import { LoginAPI, UserAPI } from '../../api/api';
 
-export const GET_USER_DATA = 'GET_USER_DATA';
-export const TOGGLE_AUTH = 'TOGGLE_AUTH';
+export const GET_USER_DATA = 'USER::GET_USER_DATA';
+export const TOGGLE_AUTH = 'USER::TOGGLE_AUTH';
 export const ERROR_AUTH = 'USER::ERROR_AUTH';
+export const ADD_IMAGES = 'PERSONAL_AREA::ADD_IMAGES';
 
 export const getUserData = (payload) => ({
   type: GET_USER_DATA,
@@ -14,10 +15,15 @@ export const toggleAuth = (payload) => ({
   payload,
 });
 
+export const addImage = (payload) => ({
+  type: ADD_IMAGES,
+  payload,
+});
 export const errorAuth = (payload) => ({
   type: ERROR_AUTH,
   payload,
 });
+export const addImages = (payload) => ({ type: ADD_IMAGES, payload });
 
 export const asyncApiCall = (email, password) => async (dispatch) => {
   await LoginAPI.auth(email, password)
@@ -38,8 +44,31 @@ export const asyncApiCall = (email, password) => async (dispatch) => {
     })
     .catch((err) => {
       console.log(err);
-      // dispatch(errorAuth(err));
     });
+};
+
+export const getUserDataThunk = () => (dispatch) => {
+  try {
+    const response = UserAPI.getAuthUser();
+
+    if (response?.request?.status === 200) {
+      dispatch(getUserData(response.data));
+      dispatch(toggleAuth(true));
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const addImagesThunk = (data) => (dispatch) => {
+  try {
+    // const response = UserAPI.postAddImg(data);
+    console.log(data);
+    const addimg = { id: 1, src: 'dsadasd' };
+    dispatch(addImages(addimg));
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const logout = () => (dispatch) => {
