@@ -7,7 +7,9 @@ const instance = axios.create({
 
 class Api {
   static request(url, data, method, withToken = true) {
-    const headers = withToken ? { Authorization: localStorage.getItem('TOKEN') } : undefined;
+    const headers = withToken
+      ? { Authorization: 'Bearer ' + localStorage.getItem('TOKEN') }
+      : undefined;
     return instance.request({ method, url, data, headers });
   }
 
@@ -31,6 +33,13 @@ export const UserAPI = {
       },
       true,
     );
+  },
+  postAddImg(data) {
+    return Api.post(`/addimg`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 };
 
@@ -128,12 +137,13 @@ export const SendFileChildren = {
   },
 };
 
-export const sendFileProfile = {
-  addImg(id, data) {
-    return instance.post(`/addimg/${id}`, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
-};
+// export const sendFileProfile = {
+//   addImg(data) {
+//     return instance.post(`/addimg/`, data, {
+//       headers: {
+//         Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+//         'Content-Type': 'multipart/form-data',
+//       },
+//     });
+//   },
+// };
