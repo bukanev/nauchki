@@ -20,8 +20,6 @@
     align-items: center;
     margin-bottom: 100px;
   }
-
-
 }
 
 .personalArea__main {
@@ -42,7 +40,6 @@
   }
 }
 
-
 .personalArea__button {
   border: none;
   outline: none;
@@ -52,7 +49,6 @@
   font-size: 20px;
   line-height: 23px;
   padding: 10px 30px;
-
 
   &-exit {
     align-self: flex-end;
@@ -80,24 +76,33 @@
 
   &-img {
     width: inherit;
-    background-size: inherit;
-    border-radius: 50%;
+    height: inherit;
+    margin-bottom: 20px;
+    background-color: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid black;
   }
 
   &-family {
     margin-right: 10px;
     width: 70px;
     height: 70px;
+    border-radius: 50%;
+    background-color: none;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
   }
 
 }
-
-
 
 @media screen and (min-width: 768px) {
   .personalArea__avatar {
     width: 150px;
     height: 150px;
+    content: '';
 
     &-family {
       margin-right: 10px;
