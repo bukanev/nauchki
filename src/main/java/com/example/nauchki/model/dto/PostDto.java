@@ -1,12 +1,16 @@
 package com.example.nauchki.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
 @Schema(description = "Статья")
+@AllArgsConstructor
+@Builder
 public class PostDto {
     @Schema(description = "ID статьи", required = true, example = "1")
     private Integer id;

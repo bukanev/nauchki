@@ -25,7 +25,7 @@ public class PostRepositoryTest {
     private PostRepo postRepo;
 
     @Test
-    public void findAllTagTest(){
+    public void findAllTag(){
         tem.persist(Post.builder()
                 .tag("test1")
                 .title("Test post")
@@ -42,7 +42,7 @@ public class PostRepositoryTest {
     }
 
     @Test
-    public void findByTagTest(){
+    public void findByTag(){
         Post p1 = Post.builder()
                 .tag("test1")
                 .title("Test post")
