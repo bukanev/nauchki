@@ -9,7 +9,6 @@ import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,7 +55,8 @@ public class PostService {
     public Long addPost(Post post, MultipartFile file){
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            fileService.saveAttachedFilePost(file, post);
+            //fileService.saveAttachedFilePost(file, post);
+            fileService.saveAttachedFile(file, post);
         }
         return post.getId();
     }
@@ -119,7 +119,11 @@ public class PostService {
     private void checkPermitionForEdit(Post post, String userName){
         boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
-        if(!(roles.contains("ADMIN") || post.getAuthor().getEmail().equals(userName))){
+        if(!(
+                roles.contains("ADMIN")
+                        || (roles.contains("AUTHOR") && post.getAuthor().getEmail().equals(userName))
+            )
+        ){
             throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
     }

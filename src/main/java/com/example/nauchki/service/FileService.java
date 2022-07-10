@@ -8,6 +8,7 @@ import com.example.nauchki.repository.PostRepo;
 import com.example.nauchki.service.fileworker.UploadAndDeleteFileManager;
 import com.example.nauchki.utils.FileContainer;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,9 +19,21 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Component
 public class FileService {
-    private final UploadAndDeleteFileManager fileManager;
-    private final FileStorageRepository fileStorageRepository;
-    private final PostRepo postRepo;
+    private UploadAndDeleteFileManager fileManager;
+    private FileStorageRepository fileStorageRepository;
+//    private final PostRepo postRepo;
+
+
+    @Autowired
+    public FileService(UploadAndDeleteFileManager fileManager, FileStorageRepository fileRepo) {
+        this.fileManager = fileManager;
+        this.fileStorageRepository = fileRepo;
+    }
+
+    //без этого метода не работает подстановка мокито для fileManager
+    public void setFileManager(UploadAndDeleteFileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 
     /**
      * инициализация записи файла на основе загруженного файла с клиента
@@ -116,22 +129,22 @@ public class FileService {
        return path;
     }
 
-    public String saveAttachedFilePost(MultipartFile file, Post entity) {
-        FileStorage newFile = new FileStorage();
-        newFile = initStorageFile(newFile, file);
-        String path;
-        path = fileManager.saveFile(file, newFile.getExternalId());
-        if (!path.isEmpty()) {
-            newFile.setOwnerType(entity.getEntityType());
-            newFile.setOwnerId(entity.getEntityId());
-            newFile.setExternalPath(path);
-            entity.getFiles().add(newFile);
-            fileStorageRepository.save(newFile);
-            postRepo.save(entity);
-
-        }
-       return path;
-    }
+//    public String saveAttachedFilePost(MultipartFile file, Post entity) {
+//        FileStorage newFile = new FileStorage();
+//        newFile = initStorageFile(newFile, file);
+//        String path;
+//        path = fileManager.saveFile(file, newFile.getExternalId());
+//        if (!path.isEmpty()) {
+//            newFile.setOwnerType(entity.getEntityType());
+//            newFile.setOwnerId(entity.getEntityId());
+//            newFile.setExternalPath(path);
+//            entity.getFiles().add(newFile);
+//            fileStorageRepository.save(newFile);
+//            postRepo.save(entity);
+//
+//        }
+//       return path;
+//    }
 
     /**
      * загрузка прикрепленного к сущности файла с дополнительной информацией
@@ -235,4 +248,5 @@ public class FileService {
         entity.getFiles().clear();
         return true;
     }
+
 }

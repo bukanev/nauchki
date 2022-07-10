@@ -2,7 +2,6 @@ package com.example.nauchki;
 
 import com.example.nauchki.model.Post;
 import com.example.nauchki.repository.PostRepo;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
