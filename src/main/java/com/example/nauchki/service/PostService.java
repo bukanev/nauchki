@@ -53,6 +53,8 @@ public class PostService {
     }
 
     public Long addPost(Post post, MultipartFile file){
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        checkPermitionForEdit(post, userName);
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
             //fileService.saveAttachedFilePost(file, post);
@@ -117,7 +119,6 @@ public class PostService {
     }
 
     private void checkPermitionForEdit(Post post, String userName){
-        boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
         if(!(
                 roles.contains("ADMIN")

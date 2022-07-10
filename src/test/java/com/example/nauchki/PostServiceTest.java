@@ -10,6 +10,7 @@ import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.FileStorageRepository;
 import com.example.nauchki.repository.PostRepo;
+import com.example.nauchki.repository.UserRepository;
 import com.example.nauchki.service.FileService;
 import com.example.nauchki.service.PostService;
 import com.example.nauchki.service.fileworker.UploadAndDeleteFileManager;
@@ -70,6 +71,8 @@ public class PostServiceTest {
     private PostMapper postMapper;
     @Autowired
     private FileStorageRepository fileStorageRepository;
+    @Autowired
+    private UserRepository userRepo;
 
     StringWriter writer;
     ObjectMapper objMapper;
@@ -124,9 +127,12 @@ public class PostServiceTest {
     @BeforeAll
     void prepare(){
 
-        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.addScript(new ClassPathResource("/init_db_scripts_post_test.sql"));
-        populator.execute(dataSource);
+        List<Post> list = postRepo.findAll();
+        if(list.size()==0) {
+            ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+            populator.addScript(new ClassPathResource("/init_db_scripts_post_test.sql"));
+            populator.execute(dataSource);
+        }
 
     }
 
@@ -135,15 +141,31 @@ public class PostServiceTest {
     @Transactional
     void addPost() {
 
-        User user = new User();
-        user.setId(1L);
+        List<Post> originList = postRepo.findAll();
+        int originCount = originList.size();
 
-        Post samplePost = new Post();
-        samplePost.setAuthor(user);
-        samplePost.setSubtitle("New post subtitle");
-        samplePost.setText("New post text");
-        samplePost.setTag("post1");
-        samplePost.setTitle("New Post");
+        User user = userRepo.findById(1L).orElseThrow(()->new ResourceNotFoundException("Пользователь не найден"));
+
+        Post samplePost1 = new Post();
+        samplePost1.setAuthor(user);
+        samplePost1.setSubtitle("New post subtitle");
+        samplePost1.setText("New post text");
+        samplePost1.setTag("post1");
+        samplePost1.setTitle("New Post");
+
+        Post samplePost2 = new Post();
+        samplePost2.setAuthor(user);
+        samplePost2.setSubtitle("New post subtitle");
+        samplePost2.setText("New post text");
+        samplePost2.setTag("post1");
+        samplePost2.setTitle("New Post");
+
+        Post samplePost3 = new Post();
+        samplePost3.setAuthor(user);
+        samplePost3.setSubtitle("New post subtitle");
+        samplePost3.setText("New post text");
+        samplePost3.setTag("post1");
+        samplePost3.setTitle("New Post");
 
         MockMultipartFile  mockFile = new MockMultipartFile(
                 "data", "filename.txt", "text/plain", "some data".getBytes()
@@ -151,10 +173,24 @@ public class PostServiceTest {
 
         String s = fileManager.saveFile(mockFile,"133");
 
-        Long newPostID = postService.addPost(samplePost, mockFile);
-        Assertions.assertTrue(newPostID>0);
+        //ADMIN
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("ADMIN"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("admin@test.ru"));
+        Long newPostID1 = postService.addPost(samplePost1, mockFile);
+        Assertions.assertTrue(newPostID1>0);
+        //AUTHOR
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("AUTHOR"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("admin@test.ru"));
+        Long newPostID2 = postService.addPost(samplePost2, mockFile);
+        Assertions.assertTrue(newPostID2>0);
+        //USER
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("USER"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("user@test.ru"));
+        Assertions.assertThrows( DeniedException.class, ()->postService.addPost(samplePost3, mockFile));
 
-        Optional<Post> post = postRepo.findById(newPostID);
+        Assertions.assertEquals(originCount +2, postRepo.findAll().size());
+
+        Optional<Post> post = postRepo.findById(newPostID1);
         Assertions.assertTrue(post.isPresent());
 
         Post newPostModel = post.get();
@@ -342,9 +378,9 @@ public class PostServiceTest {
         postService.delImage(1L, testImgId1, new PrincipalProxy("author@test.ru"));
 
         //проверка оставшихся файлов в статьях
-        originPost = postRepo.findById(1l).orElseThrow(()->new ResourceNotFoundException("Not found"));
+        originPost = postRepo.findById(1L).orElseThrow(()->new ResourceNotFoundException("Not found"));
         Assertions.assertEquals(filesCount1-1, originPost.getFiles().size());
-        originPost = postRepo.findById(2l).orElseThrow(()->new ResourceNotFoundException("Not found"));
+        originPost = postRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException("Not found"));
         Assertions.assertEquals(filesCount2-1, originPost.getFiles().size());
         //проверка оставшихся файлов
         List<FileStorage> currentFiles = fileStorageRepository.findAll();
@@ -382,9 +418,9 @@ public class PostServiceTest {
         List<FileStorage> currentFiles = fileStorageRepository.findAll();
 
         //проверка оставшихся файлов в статьях
-        Post originPost = postRepo.findById(1l).orElseThrow(()->new ResourceNotFoundException("Not found"));
+        Post originPost = postRepo.findById(1L).orElseThrow(()->new ResourceNotFoundException("Not found"));
         Assertions.assertEquals(0, originPost.getFiles().size());
-        originPost = postRepo.findById(2l).orElseThrow(()->new ResourceNotFoundException("Not found"));
+        originPost = postRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException("Not found"));
         Assertions.assertEquals(0, originPost.getFiles().size());
         //проверка оставшихся файлов
         Assertions.assertEquals(originFiles.size() - filesCount1 - filesCount2, currentFiles.size());

@@ -101,7 +101,6 @@ public class PostController {
 
     @ApiOperation("Удаление из статьи с определенным id изображения с указанным id")
     @DeleteMapping(value = "/posts/{postid}/image/{imgid}")
-    @PreAuthorize("hasRole('ADMIN') || hasRole('AUTHOR')")
     public void delImages(
             @PathVariable(name="postid") @Parameter(description = "Идентификатор статьи", required = true) Long postId,
             @PathVariable(name="imgid") @Parameter(description = "Идентификатор изображения", required = true) Long imgid,
