@@ -1,0 +1,51 @@
+/* отдельный пост */
+
+.onePost-imgWrapper {
+    height: 314px;
+    width: 512px;
+    border-radius: 20px;
+    background-color: #c4c4c4;
+    margin-top: 36px;
+  }
+  
+  .onePost-img {
+    height: 314px;
+    width: 512px;
+    border-radius: 20px;
+  }
+  
+  .onePost-title {
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 30px;
+    text-align: center;
+    margin-top: 35px;
+  }
+  
+  .onePost-arrowBtn {
+    border: none;
+    background-color: inherit;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .onePost-arrowBtn:hover {
+    transform: translate3d(-10px, 0px, 0px);
+  }
+  
+  .onePost-wrapper {
+    width: 868px;
+    padding-top: 29px;
+  }
+  
+  .onePost-textWrapper {
+    min-height: 36px;
+    width: 512px;
+    margin-top: 41px;
+    text-align: justify;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19px;
+  }
+  
