@@ -5,6 +5,7 @@ import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.mapper.PostMapper;
 import com.example.nauchki.model.Post;
+import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class PostService {
     private final FileService fileService;
     private final PostMapper postMapper;
     private final TokenUtils tokenUtils;
+    private final UserService userService;
 
     public List<PostDto> getPost(Post filter) {
         return postRepo.findAll(Example.of(filter)).stream().map(postMapper::toDto).collect(Collectors.toList());
@@ -54,6 +56,8 @@ public class PostService {
 
     public Long addPost(Post post, MultipartFile file){
         String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        User user = userService.getUserEntity(userName);
+        post.setAuthor(user);
         checkPermitionForEdit(post, userName);
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
