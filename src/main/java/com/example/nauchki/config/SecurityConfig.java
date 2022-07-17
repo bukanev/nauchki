@@ -68,7 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements WebM
                 .antMatchers("/registration", "/reg","/static/**", "/activate/*", "/auth",
                         "index.html","/swagger-ui", "/editpassword/**","editpass").permitAll()
                 .antMatchers("/del/{spring:[0-9]+}", "/user/{spring:[0-9]+}","/stage/**","/admin","/admin/**").hasAnyAuthority("ADMIN","SUPERADMIN")
-                .antMatchers("/delpost/{spring:[0-9]+}", "/post","/posts/{spring:[0-9]+}/image","/posts/{spring:[0-9]+}/image/{spring:[0-9]+}").hasAnyAuthority("ADMIN","AUTHOR")
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
