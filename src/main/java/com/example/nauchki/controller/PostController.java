@@ -112,7 +112,7 @@ public class PostController {
             value = "Изменение статьи",
             notes = "Изменение статьи (для редактирования изображений нужно использовать методы delete:/posts/{postid}/image/{imgid} и post:/posts/{postid}/image )")
     @PutMapping(value = "/post/{postid}")
-    public PostDto save(
+    public PostDto update(
             @PathVariable(name="postid") @Parameter(description = "Идентификатор статьи", required = true) Long postId,
             @RequestBody PostSaveDto postDto){
         Post post = postMapper.toModel(postDto);
