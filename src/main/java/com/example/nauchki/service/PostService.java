@@ -83,14 +83,15 @@ public class PostService {
         return postMapper.toDto(post);
     }
 
-    public PostDto savePost(Long postId, Post post) {
+    public PostDto updatePost(Long postId, Post post) {
 
-        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Изменение статей доступно только авторизованным пользователям"));
         Post oldPost = postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("Статья с id '" + postId + "' не найдена"));
         checkPermitionForEdit(oldPost, userName);
 
         oldPost.setTitle(post.getTitle());
         oldPost.setText(post.getText());
+        oldPost.setTag(post.getTag());
         oldPost.setSubtitle(post.getSubtitle());
 
         post = postRepo.save(oldPost);

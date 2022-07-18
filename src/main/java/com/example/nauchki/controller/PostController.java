@@ -116,7 +116,7 @@ public class PostController {
             @PathVariable(name="postid") @Parameter(description = "Идентификатор статьи", required = true) Long postId,
             @RequestBody PostSaveDto postDto){
         Post post = postMapper.toModel(postDto);
-        return postService.savePost(postId, post);
+        return postService.updatePost(postId, post);
     }
 
     @ApiOperation("Удаление статьи по id")
