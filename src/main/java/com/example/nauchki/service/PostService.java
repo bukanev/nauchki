@@ -71,9 +71,14 @@ public class PostService {
     }
 
     public PostDto addPost(Post post, MultipartFile file){
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        User user = userService.getUserEntity(userName);
+        post.setAuthor(user);
+        checkPermitionForEdit(post, userName);
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            fileService.saveAttachedFilePost(file, post);
+            //fileService.saveAttachedFilePost(file, post);
+            fileService.saveAttachedFile(file, post);
         }
         return postMapper.toDto(post);
     }
@@ -149,9 +154,12 @@ public class PostService {
     }
 
     private void checkPermitionForEdit(Post post, String userName){
-        boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
-        if(!(roles.contains("ADMIN") || post.getAuthor().getEmail().equals(userName))){
+        if(!(
+                roles.contains("ADMIN")
+                        || (roles.contains("AUTHOR") && post.getAuthor().getEmail().equals(userName))
+        )
+        ){
             throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
     }
