@@ -8,6 +8,5 @@ import lombok.Data;
 public class PostTitle {
     Long id;
     String Title;
-    UserNameDto author;
     String tag;
 }
