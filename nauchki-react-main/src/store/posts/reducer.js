@@ -1,4 +1,4 @@
-import { ADD_POST, DELETE_POST, GET_POSTS, GET_TAGS } from './actions';
+import { ADD_POST, DELETE_POST, GET_POSTS, GET_TAGS, GET_ALL_POSTS } from './actions';
 
 const initialState = {
   posts: [],
@@ -11,6 +11,11 @@ export const postsReducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         posts: payload,
+      };
+    case GET_ALL_POSTS:
+      return {
+        ...state,
+        allPosts: payload,
       };
     case GET_TAGS:
       return {

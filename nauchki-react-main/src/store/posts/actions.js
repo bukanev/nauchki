@@ -2,6 +2,7 @@ import { PostsAPI } from '../../api/api';
 
 export const GET_POSTS = 'GET_POSTS';
 export const GET_TAGS = 'GET_TAGS';
+export const GET_ALL_POSTS = 'GET_ALL_POSTS';
 
 export const ADD_POST = 'ADMIN::ADD_POST';
 export const EDIT_POST = 'ADMIN::EDIT_POST';
@@ -12,6 +13,10 @@ export const POST_ERROR = 'ADMIN::POST_ERROR';
 
 const getPostsAC = (payload) => ({
   type: GET_POSTS,
+  payload,
+});
+const getAllPosts = payload => ({
+  type: GET_ALL_POSTS,
   payload,
 });
 const getTagsAC = (payload) => ({
@@ -54,6 +59,18 @@ export const getPostThunk = (tag) => {
     }
   };
 };
+
+export const getAllPostsThunk = (tag) => {
+  return async (dispatch) => {
+    try {
+      await PostsAPI.getPosts(tag).then((res) => {
+        dispatch(getAllPosts(res.data));
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
 
 export const getTagsThunk = () => {
   return async (dispatch) => {
