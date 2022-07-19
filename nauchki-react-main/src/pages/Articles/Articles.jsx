@@ -1,26 +1,32 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
-
-import { getPostThunk, getTagsThunk } from "../../store/posts/actions";
-import { selectPosts } from "../../store/posts/selectors";
-
-import { Themes } from "./Themes";
-import { PostItem } from "./PostItem";
+import { Articles as ArticlesComponent } from '../../components/Articles/Articles';
+import { useParams } from "react-router-dom";
+import { getAllPostsThunk, getPostThunk, getTagsThunk } from "../../store/posts/actions";
+import { selectPosts, selectTags, selectAllPosts } from "../../store/posts/selectors";
 
 export const Articles = () => {
+
   const dispatch = useDispatch();
 
+  const params = useParams();
+
   const posts = useSelector(selectPosts);
+  const tags = useSelector(selectTags);
+  const allPosts = useSelector(selectAllPosts);
 
   const [currentTag, setCurrentTag] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [searchingPostTitle, setSearchingPostTitle] = useState('');
+
+  let searchingPost = allPosts.find(el => el.title == searchingPostTitle);
 
   useEffect(() => {
     (async () => {
       setIsLoading(true);
       await dispatch(getPostThunk());
       await dispatch(getTagsThunk());
+      await dispatch(getAllPostsThunk());
       setIsLoading(false);
     })();
   }, []);
@@ -34,27 +40,15 @@ export const Articles = () => {
   }, [currentTag]);
 
   return (
-    <div className="articles">
-      <div className="acticles__container">
-        <Themes currentTag={currentTag} setCurrentTag={setCurrentTag} isLoading={isLoading} />
-        <div>
-          <h1 className="articles__title">Интересные статьи</h1>
-          <input
-            className="acrticles__search"
-            placeholder="Поиск по статьям"
-          ></input>
-          <div className="acticles__cards">
-
-            <div className="acticles__cards-wrapper">
-              {posts && posts.map((post) =>
-                <Link to="post.id">
-                  <PostItem post={post} key={post.id} />
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ArticlesComponent
+      posts={posts}
+      tags={tags}
+      isLoading={isLoading}
+      setCurrentTag={setCurrentTag}
+      searchingPost={searchingPost}
+      setSearchingPostTitle={setSearchingPostTitle}
+      searchingPostTitle={searchingPostTitle}
+      params={params}
+    />
   );
 };
