@@ -1,7 +1,5 @@
 .standart {
     width: 90%;
-    // margin-bottom: 130px;
-    // margin-top: 60px;
     margin: 60px auto 130px auto;
 
     &__title {
@@ -53,7 +51,6 @@
         }
     }
 
-
     &-levels,
     &-lock,
     &-skills {
@@ -61,6 +58,7 @@
     }
 
     &-levels {
+        grid-column: 2 / 5;
         display: flex;
         flex-direction: row;
         align-items: center;
@@ -86,18 +84,17 @@
     }
 
     &-skills {
+        grid-column: 2 / 5;
         width: calc(100%-20px);
         height: calc(100%-20px);
         padding: 10px;
         word-wrap: break-word;
         border: 1px solid #0EAC99;
         border-radius: 20px;
-        // color: #FFFFFF;
-        // background: #0EAC99;
         text-align: justify;
-
+        font-size: 16px;
+        line-height: 25px;
     }
-
 }
 
 .level {
@@ -114,9 +111,6 @@
     }
 
     &__color {
-        // width: 28px;
-        // height: 27px;
-
         width: 50px;
         height: 40px;
         padding: 5px;
@@ -125,6 +119,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        font-weight: 500;
 
         &-one {
             background: #74E4D7;

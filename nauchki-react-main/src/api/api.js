@@ -1,24 +1,24 @@
-import * as axios from 'axios';
+import * as axios from "axios";
 
 const instance = axios.create({
   withCredentials: true,
-  baseURL: 'http://89.108.88.2:8080',
+  baseURL: "http://89.108.88.2:8080",
 });
 
 class Api {
   static request(url, data, method, withToken = true) {
     const headers = withToken
-      ? { Authorization: 'Bearer ' + localStorage.getItem('TOKEN') }
+      ? { Authorization: "Bearer " + localStorage.getItem("TOKEN") }
       : undefined;
     return instance.request({ method, url, data, headers });
   }
 
   static post(url, data, withToken) {
-    return Api.request(url, data, 'POST', withToken);
+    return Api.request(url, data, "POST", withToken);
   }
 
   static get(url, withToken) {
-    return Api.request(url, 'GET', withToken);
+    return Api.request(url, "GET", withToken);
   }
 }
 
@@ -28,16 +28,16 @@ export const UserAPI = {
       `/getuser`,
       {
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
         },
       },
-      true,
+      true
     );
   },
   postAddImg(data) {
     return Api.post(`/addimg`, data, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
   },
@@ -51,7 +51,7 @@ export const LoginAPI = {
         email: email,
         password: password,
       },
-      false,
+      false
     );
   },
 };
@@ -70,7 +70,7 @@ export const RegistartionAPI = {
 
 export const RecoveryPassAPI = {
   recoveryPass(email) {
-    return Api.post('/editpassword', {
+    return Api.post("/editpassword", {
       email: email,
     });
   },
@@ -78,7 +78,7 @@ export const RecoveryPassAPI = {
 
 export const ResetPassAPI = {
   resetPass(resetPasswordCode, password) {
-    return Api.post('/editpass', {
+    return Api.post("/editpass", {
       resetPasswordCode: resetPasswordCode,
       password: password,
     });
@@ -87,7 +87,7 @@ export const ResetPassAPI = {
 
 export const PostsAPI = {
   getPosts(tag) {
-    return instance.get(`/posts${tag !== undefined ? `/${tag}` : ''}`);
+    return instance.get(`/posts${tag !== undefined ? `/${tag}` : ""}`);
   },
   getTags() {
     return instance.get(`/tags`);
@@ -98,10 +98,10 @@ export const PostsAPI = {
       data,
       {
         headers: {
-          'Content-type': 'multipart/form-data',
+          "Content-type": "multipart/form-data",
         },
       },
-      true,
+      true
     );
   },
   deletePost(id) {
@@ -112,30 +112,45 @@ export const PostsAPI = {
   // }
 };
 
+/* Children */
 export const UserChildrenAPI = {
   getUserChildren(userId) {
     return instance.get(
       `getchildren/${userId}`,
       {
         headers: {
-          Authorization: 'Bearer ' + localStorage.getItem('TOKEN'),
+          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
         },
       },
-      true,
+      true
+    );
+  },
+  addChildrenImg(id, data) {
+    return instance.post(
+      `addchildrenimg/${id}`,
+      data,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+          "Content-Type": "multipart/form-data",
+        },
+      },
+      true
     );
   },
   //addChildren() { instanse.post()}
 };
 
-export const SendFileChildren = {
-  addChildrenImg(id, data) {
-    return instance.post(`addChildrenImg/${id}`, data, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
-};
+// export const SendFileChildren = {
+//   addChildrenImg(id, data) {
+//     return instance.post(`/addchildrenimg/${id}`, data, {
+//       headers: {
+//         Authorization: "Bearer " + localStorage.getItem("TOKEN"),
+//         "Content-Type": "multipart/form-data",
+//       },
+//     });
+//   },
+// };
 
 // export const sendFileProfile = {
 //   addImg(data) {
