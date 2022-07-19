@@ -176,12 +176,12 @@ public class PostServiceTest {
         //ADMIN
         Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("ADMIN"));
         Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("admin@test.ru"));
-        Long newPostID1 = postService.addPost(samplePost1, mockFile);
+        Long newPostID1 = postService.addPost(samplePost1, mockFile).getId();
         Assertions.assertTrue(newPostID1>0);
         //AUTHOR
         Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("AUTHOR"));
         Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("admin@test.ru"));
-        Long newPostID2 = postService.addPost(samplePost2, mockFile);
+        Long newPostID2 = postService.addPost(samplePost2, mockFile).getId();
         Assertions.assertTrue(newPostID2>0);
         //USER
         Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("USER"));

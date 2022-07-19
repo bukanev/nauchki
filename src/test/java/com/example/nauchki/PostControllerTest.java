@@ -205,7 +205,7 @@ class PostControllerTest {
                 "Add method testing",
                 "Add method testing",
                 "testing",
-                mockFile) > 0
+                mockFile).getId() > 0
         );
 
         //USER
@@ -229,7 +229,7 @@ class PostControllerTest {
                 "Add method testing",
                 "Add method testing",
                 "testing",
-                mockFile) > 0
+                mockFile).getId() > 0
         );
 
         //NO AUTHENTICATED
@@ -345,7 +345,7 @@ class PostControllerTest {
                 mockFile,
                 new PrincipalProxy("author@test.ru")));
 
-        Post currentPost = postRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException(postNotFound_msg));;
+        Post currentPost = postRepo.findById(2L).orElseThrow(()->new ResourceNotFoundException(postNotFound_msg));
         Assertions.assertEquals(originCount+2, currentPost.getFiles().size());
 
     }

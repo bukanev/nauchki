@@ -13,7 +13,7 @@ import java.util.List;
 @Builder
 public class PostDto {
     @Schema(description = "ID статьи", required = true, example = "1")
-    private Integer id;
+    private Long id;
     @Schema(description = "Тэги для поиска", example = "питание")
     private String tag;
     @Schema(description = "Название статьи", example = "Чем кормить ребенка")
