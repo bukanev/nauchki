@@ -1,0 +1,134 @@
+.children {
+  background: linear-gradient(
+    180deg,
+    #71e5a1 0%,
+    #77ffaf 0.01%,
+    #75feaf 0.02%,
+    #3bc8c1 100%
+  );
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 10px auto;
+  box-sizing: border-box;
+
+  &__profile {
+    height: auto;
+    // padding: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    margin-bottom: 30px;
+  }
+}
+
+.profile {
+  &__data {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 30px 50px;
+    margin: 0 auto;
+  }
+
+  &__name,
+  &__birth {
+    grid-column: 1/2;
+  }
+
+  &__age,
+  &__gender {
+    grid-column: 2/3;
+  }
+  &__name,
+  &__birth,
+  &__age,
+  &__gender {
+    & span {
+      font-weight: 400;
+    }
+  }
+}
+
+.gallery__photos {
+  display: flex;
+  flex-direction: row;
+}
+
+.gallery__photo {
+  width: 150px;
+  height: 150px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  margin: 10px 10px;
+}
+
+.children__development {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 30px;
+  margin-bottom: 30px;
+
+  &-form {
+    grid-column: 1/2;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.information__title {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.development {
+  &__field {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    &-label {
+      margin-right: 10px;
+    }
+    &-input {
+      width: 100px;
+      padding: 10px 20px;
+      border: none;
+      outline: none;
+      border-radius: 5px;
+      font-size: 16px;
+      line-height: 20px;
+
+      &[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+
+      &:hover {
+        box-shadow: 0 2px 7px #7c7e7e;
+      }
+
+      &:focus {
+        box-shadow: 0 2px 7px #7c7e7e;
+      }
+    }
+  }
+
+  &__button {
+    display: block;
+    max-width: 300px;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 0 auto;
+    font-size: 16px;
+    line-height: 20px;
+    color: #2b2b2b;
+    &:hover {
+      cursor: pointer;
+      box-shadow: 0 2px 7px #7c7e7e;
+    }
+  }
+}

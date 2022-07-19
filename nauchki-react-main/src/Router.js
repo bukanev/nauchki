@@ -11,7 +11,7 @@ import { PersonalArea } from "./pages/PersonalArea/PersonalArea";
 import { PrivateRoute } from "./PrivateRoute";
 import { Adminka } from "./pages/Adminka/Adminka";
 import { Articles } from "./pages/Articles/Articles";
-import { OneChildren } from "./pages/PersonalArea/OneChildren";
+import { ChildrenProfile } from "./pages/ChildrenProfile/ChildrenProfile";
 import { Error404 } from "./pages/Error 404/Error404";
 import { AdminArticlesTable } from "./components/AdminArticlesTable/AdminArticlesTable";
 import AdminArticlesForm from "./components/AdminArticlesForm/AdminArticlesForm";
@@ -32,7 +32,7 @@ export const Router = () => {
 
       <Route exact path="/personalArea" element={<PrivateRoute />}>
         <Route path="" element={<PersonalArea />}></Route>
-        <Route path=":id" element={<OneChildren />}></Route>
+        <Route path=":id" element={<ChildrenProfile />}></Route>
       </Route>
 
       <Route path={`/adminka`} element={<PrivateRoute />}>

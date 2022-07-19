@@ -2,6 +2,7 @@ import React from "react";
 import { Landing } from "../../components/Landing/Landing";
 import { Information } from "../../components/Information/Informarion";
 import { Standart } from "../../components/Standart/Standart";
+import { NavLink } from "react-router-dom";
 // import { Tariff } from "../../components/Tariff/Tariff";
 
 const standartsStages = {
@@ -30,7 +31,18 @@ export const Main = () => {
     <>
       <Landing />
       <Information />
-      <Standart standartsStages={standartsStages} />
+      <section className="standart" key={standartsStages?.id}>
+        <Standart standartsStages={standartsStages} />
+        <NavLink className="standart_profile" to="/personalArea">
+          Посмотреть информацию о своем ребенке
+        </NavLink>
+        <p className="standart__notice">
+          Представленная информация сформирована на основе открытых источников , не является
+          диагнозом, планом лечения или развития. Носит исключительно ознакомительный харктер для
+          подготовки к осмотру ребёнка профильными медицинскими специалистами.
+        </p>
+      </section>
+
       {/*<Tariff />*/}
     </>
   );
