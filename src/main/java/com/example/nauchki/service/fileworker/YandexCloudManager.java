@@ -14,7 +14,6 @@ import java.net.URL;
 @Primary
 @Log4j2
 @Component
-@Primary
 public class YandexCloudManager implements UploadAndDeleteFileManager {
 
     private String token;
