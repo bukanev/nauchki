@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Articles as ArticlesComponent } from '../../components/Articles/Articles';
+import { Articles as ArticlesComponent } from "../../components/Articles/Articles";
 import { useParams } from "react-router-dom";
-import { getAllPostsThunk, getPostThunk, getTagsThunk } from "../../store/posts/actions";
-import { selectPosts, selectTags, selectAllPosts } from "../../store/posts/selectors";
+import {
+  getAllPostsThunk,
+  getPostThunk,
+  getTagsThunk,
+} from "../../store/posts/actions";
+import {
+  selectPosts,
+  selectTags,
+  selectAllPosts,
+} from "../../store/posts/selectors";
 
 export const Articles = () => {
-
   const dispatch = useDispatch();
 
   const params = useParams();
@@ -17,9 +24,9 @@ export const Articles = () => {
 
   const [currentTag, setCurrentTag] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [searchingPostTitle, setSearchingPostTitle] = useState('');
+  const [searchingPostTitle, setSearchingPostTitle] = useState("");
 
-  let searchingPost = allPosts.find(el => el.title == searchingPostTitle);
+  let searchingPost = allPosts?.find((el) => el.title == searchingPostTitle);
 
   useEffect(() => {
     (async () => {

@@ -1,7 +1,14 @@
-import { ADD_POST, DELETE_POST, GET_POSTS, GET_TAGS, GET_ALL_POSTS } from './actions';
+import {
+  ADD_POST,
+  DELETE_POST,
+  GET_POSTS,
+  GET_TAGS,
+  GET_ALL_POSTS,
+} from "./actions";
 
 const initialState = {
   posts: [],
+  allPosts: [],
   tags: [],
 };
 
