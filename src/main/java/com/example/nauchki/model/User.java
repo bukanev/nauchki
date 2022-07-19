@@ -1,7 +1,6 @@
 package com.example.nauchki.model;
 
 import com.example.nauchki.utils.FileContainer;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

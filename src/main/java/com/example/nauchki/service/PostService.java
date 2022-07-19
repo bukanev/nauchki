@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -77,7 +76,6 @@ public class PostService {
         checkPermitionForEdit(post, userName);
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            //fileService.saveAttachedFilePost(file, post);
             fileService.saveAttachedFile(file, post);
         }
         return postMapper.toDto(post);
@@ -159,7 +157,7 @@ public class PostService {
         if(!(
                 roles.contains("ADMIN")
                         || (roles.contains("AUTHOR") && post.getAuthor().getEmail().equals(userName))
-        )
+            )
         ){
             throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
