@@ -18,7 +18,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-@Primary
+
 @Component
 @Log4j2
 public class YandexDiskManager implements UploadAndDeleteFileManager {

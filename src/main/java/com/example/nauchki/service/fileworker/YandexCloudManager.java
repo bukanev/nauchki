@@ -11,6 +11,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 @Component
+@Primary
 public class YandexCloudManager implements UploadAndDeleteFileManager {
 
     private String token;
