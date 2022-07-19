@@ -1,0 +1,25 @@
+.development__table {
+  display: grid;
+  grid-auto-flow: column;
+  box-sizing: border-box;
+}
+.development__name {
+  grid-column: 1/2;
+
+  & p {
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 20px;
+    margin: auto;
+  }
+}
+.development__name,
+.development__data-value {
+  border: 1px solid #0eac99;
+  border-radius: 5px;
+  border-collapse: collapse;
+  box-sizing: border-box;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
