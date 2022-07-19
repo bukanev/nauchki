@@ -201,6 +201,73 @@ public class PostServiceTest {
 
     @Test
     @Transactional
+    void updatePost() {
+
+
+        List<Post> originList = postRepo.findAll();
+        int originCount = originList.size();
+
+        User user = userRepo.findById(1L).orElseThrow(()->new ResourceNotFoundException("Пользователь не найден"));
+
+        Post oldPost = originList.get(0);
+
+        Post samplePost1 = new Post();
+        samplePost1.setSubtitle("update test (subtitle)");
+        samplePost1.setText("updated text");
+        samplePost1.setTag("updated tag");
+        samplePost1.setTitle("update test");
+
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("ADMIN"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("admin@test.ru"));
+
+        PostDto postDto = postService.updatePost(oldPost.getId(), samplePost1);
+
+        //updated
+        Assertions.assertEquals(postDto.getSubtitle(), samplePost1.getSubtitle());
+        Assertions.assertEquals(postDto.getText(), samplePost1.getText());
+        Assertions.assertEquals(postDto.getTitle(), samplePost1.getTitle());
+        Assertions.assertEquals(postDto.getTag(), samplePost1.getTag());
+        //constant
+        Assertions.assertEquals(postDto.getId(), oldPost.getId());
+        Assertions.assertEquals(postDto.getImages().size(), oldPost.getImages().size());
+        Assertions.assertEquals(postDto.getAuthor().getId(), oldPost.getAuthor().getId());
+
+        Post updatedPost = postRepo.findById(oldPost.getId()).orElseThrow(()->new ResourceNotFoundException("Статья не найдена"));
+
+        //updated
+        Assertions.assertEquals(updatedPost.getSubtitle(), samplePost1.getSubtitle());
+        Assertions.assertEquals(updatedPost.getText(), samplePost1.getText());
+        Assertions.assertEquals(updatedPost.getTitle(), samplePost1.getTitle());
+        Assertions.assertEquals(updatedPost.getTag(), samplePost1.getTag());
+        //constant
+        Assertions.assertEquals(updatedPost.getImages().size(), oldPost.getImages().size());
+        Assertions.assertEquals(postDto.getAuthor().getId(), oldPost.getAuthor().getId());
+
+
+        //удаление под юзером
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("USER"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("user@test.ru"));
+        Assertions.assertThrows( DeniedException.class, ()->postService.updatePost(1L, samplePost1));
+        //удаление под автором не своей статьи
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("AUTHOR"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("author@test.ru"));
+        Assertions.assertThrows( DeniedException.class, ()->postService.updatePost(1L, samplePost1));
+        //удаление под автором своей статьи
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("AUTHOR"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("author@test.ru"));
+        Assertions.assertDoesNotThrow( ()-> postService.updatePost(2L, samplePost1));
+        //удаление под админом не своей статьи
+        Mockito.when(tokenUtils.getRoles()).thenReturn(Arrays.asList("ADMIN"));
+        Mockito.when(tokenUtils.getPrincipalName()).thenReturn(Optional.of("author@test.ru"));
+        Assertions.assertDoesNotThrow(()-> postService.updatePost(1L, samplePost1));
+
+        //количество не должно измениться
+        Assertions.assertEquals(originCount , postRepo.findAll().size());
+
+    }
+
+    @Test
+    @Transactional
     void addImage() {
 
         int imageCount1 = postRepo.findById(1L).orElse(new Post()).getImages().size();
