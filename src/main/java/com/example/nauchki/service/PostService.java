@@ -5,11 +5,14 @@ import com.example.nauchki.exceptions.ResourceNotFoundException;
 import com.example.nauchki.jwt.TokenUtils;
 import com.example.nauchki.mapper.PostMapper;
 import com.example.nauchki.model.Post;
+import com.example.nauchki.model.User;
 import com.example.nauchki.model.dto.PostDto;
+import com.example.nauchki.model.dto.PostTitle;
 import com.example.nauchki.repository.PostRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,17 +30,30 @@ public class PostService {
     private final FileService fileService;
     private final PostMapper postMapper;
     private final TokenUtils tokenUtils;
+    private final UserService userService;
 
     public List<PostDto> getPost(Post filter) {
         return postRepo.findAll(Example.of(filter)).stream().map(postMapper::toDto).collect(Collectors.toList());
+    }
+
+    public Page<PostTitle> getPost(Post filter, int pageNumber, int pageSize) {
+        return postRepo.findAll(Example.of(filter), PageRequest.of(pageNumber, pageSize)).map(postMapper::toTitleDto);
     }
 
     public List<PostDto> getAllPost() {
         return postRepo.findAll().stream().map(postMapper::toDto).collect(Collectors.toList());
     }
 
+    public Page<PostTitle> getAllPost(int pageNumber, int pageSize) {
+        return postRepo.findAll(PageRequest.of(pageNumber, pageSize)).map(postMapper::toTitleDto);
+    }
+
     public List<PostDto> getAllPost(String tag) {
         return postRepo.findByTag(tag).stream().map(postMapper::toDto).collect(Collectors.toList());
+    }
+
+    public Page<PostTitle> getAllPost(String tag, int pageNumber, int pageSize) {
+        return postRepo.findByTag(tag, PageRequest.of(pageNumber, pageSize)).map(postMapper::toTitleDto);
     }
 
     //статью может удалить либо автор, либо пользователь с ролью AUTHOR либо ADMIN
@@ -53,12 +69,32 @@ public class PostService {
         return true;
     }
 
-    public Long addPost(Post post, MultipartFile file){
+    public PostDto addPost(Post post, MultipartFile file){
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Добавление статей доступно только авторизованным пользователям"));
+        User user = userService.getUserEntity(userName);
+        post.setAuthor(user);
+        checkPermitionForEdit(post, userName);
         post = postRepo.save(post);
         if (file != null && !file.getOriginalFilename().isEmpty()) {
-            fileService.saveAttachedFilePost(file, post);
+            fileService.saveAttachedFile(file, post);
         }
-        return post.getId();
+        return postMapper.toDto(post);
+    }
+
+    public PostDto updatePost(Long postId, Post post) {
+
+        String userName = tokenUtils.getPrincipalName().orElseThrow(()-> new DeniedException("Изменение статей доступно только авторизованным пользователям"));
+        Post oldPost = postRepo.findById(postId).orElseThrow(()->new ResourceNotFoundException("Статья с id '" + postId + "' не найдена"));
+        checkPermitionForEdit(oldPost, userName);
+
+        oldPost.setTitle(post.getTitle());
+        oldPost.setText(post.getText());
+        oldPost.setTag(post.getTag());
+        oldPost.setSubtitle(post.getSubtitle());
+
+        post = postRepo.save(oldPost);
+        return postMapper.toDto(post);
+
     }
 
     public List<String> getAllTags() {
@@ -117,9 +153,12 @@ public class PostService {
     }
 
     private void checkPermitionForEdit(Post post, String userName){
-        boolean permition = false;
         List<String> roles = tokenUtils.getRoles();
-        if(!(roles.contains("ADMIN") || post.getAuthor().getEmail().equals(userName))){
+        if(!(
+                roles.contains("ADMIN")
+                        || (roles.contains("AUTHOR") && post.getAuthor().getEmail().equals(userName))
+            )
+        ){
             throw new DeniedException("Добавлять, удалять и редактировать статьи может только администратор или автор статьи");
         }
     }

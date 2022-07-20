@@ -38,6 +38,7 @@ public class Post implements FileContainer {
     private User author;
 
     public Post() {
+        this.images = new ArrayList<>();
     }
 
     public Post(String tag, String title, String subtitle, String text) {
@@ -45,6 +46,7 @@ public class Post implements FileContainer {
         this.title = title;
         this.subtitle = subtitle;
         this.text = text;
+        this.images = new ArrayList<>();
     }
 
     public String getText() {
